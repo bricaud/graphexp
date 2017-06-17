@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>VIAZ graph explorer</title>
+<head>
+<link rel="stylesheet" href="css/graphStyle.css">
+<link rel="stylesheet" href="css/styles.css">
+<!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+<!--<script src="jquery-1.11.3.min.js"></script>-->
+<script src="jquery-3.2.1.min.js"></script>
+<!-- <link rel="stylesheet" href="68eddd94.main.css">-->
+
+<!--<script src="http://d3js.org/d3.v3.min.js"></script>-->
+<script src="d3/d3.min.js"></script>
+<script src="graphConf.js"></script>
+<script src="graphShapes.js"></script>
+<script src="infobox.js"></script>
+<script src="graph_viz.js"></script>
+<script src="graphioGremlin.js"></script>
+
+<script type="text/javascript">
+
+	///////////////////////////////////////////////
+	function search_query(){
+		//if (typeof graph_viz.simulation!=='undefined') {graph_viz.simulation.stop(); console.log('Simulation stopped!');}
+		graphioGremlin.search_query();
+	}
+
+	function get_graph_info(){
+		graphioGremlin.get_graph_info();
+	}
+</script>
+<!-- ------------------------------------------------- -->
+
+
+
+	</head>
+	<body>
+		<div class="header">
+			<div class="container">
+				<h1 class="header-heading">VIAZ graph explorer v 0.1</h1>
+			</div>
+		</div>
+		<div class="nav-bar">
+			<div class="container" id="nav_bar">
+				<ul class="nav">
+					<li>
+						Enter a field: <div id="prop_choice"><input name="search_field" id="search_field" value="" /></div>
+						Enter a Keyword/value to search for: <input name="search_value" id="search_value" value="" />
+					</li>
+					<li><button name="search query" onclick="search_query();">Search</button></li>
+					<li><button name="clear" onclick="graph_viz.clear();">Clear</button></li>
+		  			<li><input type="checkbox" name="Freeze" id="freeze-in" />Freeze exploration</li>
+		  			<li>
+		  				<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show names
+		  			</li>
+		  			<li><button name="graphInfo" onclick="get_graph_info();">Get graph info</button></li>
+				</ul>
+			</div>
+		</div>
+		<div class="content">
+			<div class="container">
+				<div class="main" id="main">
+					<!--<svg width="800" height="800"></svg>-->
+					<svg width="900" height="900"></svg>
+				</div>
+
+				<div class="aside" id="details" style="background-color:transparent;">
+					<div id="messageArea"></div><div id="outputArea"></div>
+				</div>
+				<div  class="aside" id="graphInfo" style="background-color:transparent;">
+				</div>
+				<div  class="aside" id="ImageInfo" style="background-color:transparent;">
+					<center><svg width="200" height="200"></svg></center>
+				</div>
+				<div  class="aside" id="nodeInfo" style="background-color:transparent;">
+				</div>
+
+
+			</div>
+		</div>
+		<div class="footer">
+			<div class="container">
+				<a href="#">About</a>
+			</div>
+		</div>
+		<!-- INITIALIZATION -->
+		<script type="text/javascript">
+			var width = 960,
+				height = 500;
+
+			// Create the graph canvas in the chosen div element
+			graph_viz.init("#main",width,height);
+			// Add the zoom layer to the graph
+			//var svg_graph = 
+			graph_viz.addzoom();
+			graph_viz.layers.set_nb_layers = 4;
+
+			// Create the info box for node details
+			infobox.create("#graphInfo","#nodeInfo"); // from module in infobox.js
+
+			//console.log(graph_viz.graph_events.ev);
+			//graph_viz.graph_events.test();
+
+
+	function change_nav_bar(node_data,edge_data){
+		var nav_bar = d3.select("#prop_choice");
+		nav_bar.select("input").remove();
+		//nav_choices = nav_bar.append("ul");
+		//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
+		var select = d3.select('#prop_choice')
+  			.append('select').attr('class','select').attr('id','search_field')
+    		//.on('change',onchange)
+
+		var options = select
+  			.selectAll('option')
+			.data(node_data).enter()
+			.append('option')
+			.text(function (d) { return d; });
+
+	}
+
+
+
+
+
+
+	//////////////////////////////////////
+	function refresh_data(d,center_f,with_active_node){
+
+		var svg_graph = graph_viz.svg_handle();
+		graph_viz.layers.push_layers();
+		graph_viz.layers.update_data(d);
+
+		//////////////////////////////////////
+		// link handling
+
+		Links = graph_viz.links_data();
+	 
+		//attach the data
+		var data_link = svg_graph.selectAll(".links")
+			.data(Links, function(d) { return d.id; });
+	  
+	  	// links not active anymore are classified old_links
+	  	data_link.exit().attr("class","old_links0");
+
+		// handling active links associated to the data
+		//var link = data_link.enter().merge(data_link).append("g").attr("class", "links").append("line");
+		var link = data_link.enter().append("line").attr("class", "links")
+		  .attr("source_ID",function(d) { return d.source;})
+		  .attr("target_ID",function(d) { return d.target;});
+	 
+		// previous links plus new links are merged
+		link = link.merge(data_link);
+
+
+	  ///////////////////////////////////
+	  // node handling
+	  Nodes = graph_viz.nodes_data();
+
+	 //console.log(Nodes);
+
+	  var data_node = svg_graph.selectAll("g").filter(".node")
+			  .data(Nodes, function(d) { return d.id; });
+
+	  //console.log(data_node);
+	  // old nodes not active any more are tagged
+	  data_node.exit().attr("class","old_node0");
+	  data_node.exit().selectAll(".Active").remove();// ???
+
+	  // nodes associated to the data are constructed
+	  var node = data_node
+			  //.enter().merge(data_node).append("g")
+			  .enter().append("g")
+			  .attr("class", "node").attr("ID",function(d) { return d.id;})
+			  .call(d3.drag()
+				.on("start", graph_viz.graph_events.dragstarted)
+				.on("drag", graph_viz.graph_events.dragged)
+				.on("end", graph_viz.graph_events.dragended));
+
+	  // add node decoration
+	  graphShapes.decorate_node(node,with_active_node);
+
+
+	  node_pin = d3.selectAll(".Pin");
+	  node_pin.on("click",graph_viz.graph_events.pin_it);
+
+	  node.on("click", graph_viz.graph_events.clicked)
+		  .on("mouseover", function(){
+			d3.select(this).select(".Pin").style("visibility", "visible");
+			d3.select(this).selectAll(".text_details").style("visibility", "visible");
+		  })
+		  .on("mouseout", function(){
+			chosen_node = d3.select(this);
+			if(!chosen_node.classed("pinned"))
+			  d3.select(this).select(".Pin").style("visibility", "hidden");
+			  var show_checked = document.getElementById ("showName").checked;
+			  if (!show_checked)
+				d3.select(this).selectAll(".text_details").style("visibility", "hidden");
+		  });
+
+	  svg_graph.selectAll("g").filter(".pinned").moveToFront();
+
+	  graph_viz.layers.remove_duplicates(".node",".old_node");
+	  graph_viz.layers.remove_duplicates(".links",".old_links");
+
+	  nodeSvg = node.merge(data_node);
+
+	  ///////////////////////////////
+	  // Force simulation
+	  // simulation model and parameters
+	  
+	  
+
+	  simulation = graph_viz.simulation_start(center_f);
+	  // Associate the simulation with the data
+	  simulation.nodes(Nodes).on("tick", ticked);
+	  simulation.force("link").links(Links);
+	  simulation.alphaTarget(0);
+
+	  ////////////////////////
+	  // handling simulation steps
+	  // move the nodes and links at each simulation step, following this rule:
+	  function ticked() {
+		link
+			.attr("x1", function(d) { return d.source.x; })
+			.attr("y1", function(d) { return d.source.y; })
+			.attr("x2", function(d) { return d.target.x; })
+			.attr("y2", function(d) { return d.target.y; });
+		nodeSvg
+		  .attr("transform", function(d) { return "translate(" + d.x + ", " + d.y + ")"; });  
+	  }
+	  
+	}
+
+
+
+
+
+
+
+
+		</script>
+
+	</body>
+</html>

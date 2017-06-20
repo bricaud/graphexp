@@ -6,6 +6,10 @@ var graphShapes = (function(){
 	var default_stroke_width = 2;
 	var default_node_color = "#80E810"
 
+	var default_edge_stroke_width = 3;
+	var default_edge_color = '#CCC';
+	var edge_label_color = '#111'
+
 	function node_size(d){
 		if ('size' in d) {return d.size;}
 		else {return default_node_size;}
@@ -36,12 +40,26 @@ var graphShapes = (function(){
 		else {return d.label}
 	}
 
+	function edge_stroke_width(d){
+		if ('stroke_width' in d) {return d.stroke_width;}
+		else {return default_edge_stroke_width;}
+	}
+
+	function edge_text(d){
+		if ('text' in d){return d.text;}
+		else {return d.properties.weight;}
+	}
+
+	function edge_color(d){
+		if ('color' in d){return d.color;}
+		else {return default_edge_color;}
+	}
 	/////////////////////////////////////////////////////////////
 	// decorate the node
 	function decorate_node(node,with_active_node){
 	// the node layout is defined here
 	// function for drawing the node size according to the node degree
-
+		var active_node_width = 6;
 		var color_scale = d3.scaleOrdinal(d3.schemeCategory10);
 		var color_list = {"Artist": "#E81042", "Concert": "#80e810", "Band": "#10DDE8"};
 		var color_list = {"Artist": "blue", "Concert": "green", "Band": "orange"};
@@ -99,9 +117,9 @@ var graphShapes = (function(){
 		if(with_active_node){
 		  d3.selectAll(".node").each(function(d){
 			if(d.id==with_active_node){
-			  var n_radius = Number(d3.select(this).select(".base_circle").attr("r"))+6;
-			  console.log(d3.select(this).select("circle").attr("r"))
-			  console.log(n_radius)
+			  var n_radius = Number(d3.select(this).select(".base_circle").attr("r"))+active_node_width;
+			  //console.log(d3.select(this).select("circle").attr("r"))
+			  //console.log(n_radius)
 			  d3.select(this)
 				.append("circle").classed("Active",true)
 				.attr("r", n_radius)
@@ -117,6 +135,75 @@ var graphShapes = (function(){
 			}
 		  });
 		}
+	}
+
+	function decorate_link(edges,edgepaths,edgelabels){
+
+		var edges_deco = edges.append("line").attr("class", "links")
+		  .attr("source_ID",function(d) { return d.source;})
+		  .attr("target_ID",function(d) { return d.target;});
+	 
+
+		graph_viz.create_arrows();
+		// Attach the arrows
+		edges_deco.attr("marker-end", function(d) {return "url(#marker_" + d.id + ")"})
+		.attr('stroke-width', edge_stroke_width)
+		.append('title').text(function(d){return d.properties.weight;});
+
+		// Attach the edge labels
+		var e_label = create_edge_label(edgepaths,edgelabels);
+		var edgepaths_deco = e_label[0];
+		var edgelabels_deco = e_label[1];
+
+		edgelabels_deco.append('textPath')
+			.attr('class','edge_text')
+			.attr('href', function (d, i) {return '#edgepath' + i})
+			.style("text-anchor", "middle")
+			.style("pointer-events", "none")
+			.attr("startOffset", "50%")
+			.text(function (d) {return d.label});
+
+		// Attach the edge actions
+		attach_edge_actions(edges_deco)
+
+		return [edges_deco,edgepaths_deco,edgelabels_deco]
+
+	}
+
+	function create_edge_label(edgepaths,edgelabels){
+
+		var edgepaths_deco = edgepaths.append('path')
+			.attr('class','edgepath')
+			.attr('fill-opacity',0)
+			.attr('stroke-opacity',0)
+			//.attr('stroke-width',10)
+			.attr('id',function (d, i) {return 'edgepath' + i;})
+			.style("pointer-events", "none");
+
+		var edgelabels_deco = edgelabels.append('text')
+			//.attr('x',10)
+			.attr('dy',-3)
+			.style("pointer-events", "none")
+			.attr('class','edgelabel')
+			.attr('id',function (d, i) {return 'edgelabel' + i})
+			.attr('font-size', 10)
+			.attr('fill', edge_label_color);
+
+		return [edgepaths_deco,edgelabels_deco];
+ 
+
+	}
+
+	function attach_edge_actions(edge){
+		edge.on("mouseover", function(){
+			console.log('mouse over!!');
+			d3.select(this).selectAll(".text_details").style("visibility", "visible");
+		  })
+		  .on("mouseout", function(){
+			d3.select(this).selectAll(".text_details").style("visibility", "hidden");
+		  })
+		  .on("click", function(d){console.log('edge clicked!');infobox.display_info(d);});
+
 	}
 
 	///////////////////////////////////////
@@ -141,16 +228,21 @@ var graphShapes = (function(){
 
 	//////////////////////////////////////////////
 	function show_names(){
-  		var text_to_show = d3.selectAll(".text_details");
-  		var input = document.getElementById ("showName");
-  		var isChecked = input.checked;
-  		if (isChecked) text_to_show.style("visibility", "visible");
-  		else {text_to_show.style("visibility", "hidden");}
+		var text_to_show = d3.selectAll(".text_details");
+		var input = document.getElementById ("showName");
+		var isChecked = input.checked;
+		if (isChecked) text_to_show.style("visibility", "visible");
+		else {text_to_show.style("visibility", "hidden");}
 	}	
 	return {
-		show_names:show_names,
-		decorate_node:decorate_node,
-		node_color:node_color
+		show_names : show_names,
+		decorate_node : decorate_node,
+		decorate_link : decorate_link,
+		node_color : node_color,
+		node_size : node_size,
+		edge_color : edge_color,
+		node_stroke_width : node_stroke_width,
+		create_edge_label :create_edge_label
 	};
 
 })();

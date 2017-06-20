@@ -114,11 +114,21 @@
 		//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
 		var select = d3.select('#prop_choice')
   			.append('select').attr('class','select').attr('id','search_field')
+  		
+  		var select_node = select.append('optgroup').attr('label','Nodes')
     		//.on('change',onchange)
 
-		var options = select
+		var select_edge = select.append('optgroup').attr('label','Edges')
+
+		var node_options = select_node
   			.selectAll('option')
 			.data(node_data).enter()
+			.append('option')
+			.text(function (d) { return d; });
+
+		var edge_options = select_edge
+  			.selectAll('option')
+			.data(edge_data).enter()
 			.append('option')
 			.text(function (d) { return d; });
 
@@ -144,16 +154,32 @@
 		//attach the data
 		var data_link = svg_graph.selectAll(".links")
 			.data(Links, function(d) { return d.id; });
+
+		var data_edgepaths = svg_graph.selectAll(".edgepath")
+			.data(Links, function(d) { return d.id; });
+		var data_edgelabels = svg_graph.selectAll(".edgelabel")
+			.data(Links, function(d) { return d.id; });
 	  
 	  	// links not active anymore are classified old_links
 	  	data_link.exit().attr("class","old_links0");
+	  	var edgesp_toremove = data_edgepaths.exit().remove();//attr("class","old_links0");
+	  	var edgesl_toremove = data_edgelabels.exit().remove();//.attr("class","old_links0");
 
+	  	//var edges_toremove = edgelabels.exit();
+
+	  	//console.log(edgesl_toremove)
+	  	//edgesl_toremove.remove();
+	 	//console.log(svg_graph.selectAll(".edgelabels"))
 		// handling active links associated to the data
-		//var link = data_link.enter().merge(data_link).append("g").attr("class", "links").append("line");
-		var link = data_link.enter().append("line").attr("class", "links")
-		  .attr("source_ID",function(d) { return d.source;})
-		  .attr("target_ID",function(d) { return d.target;});
-	 
+		var edgepaths_e = data_edgepaths.enter(),
+			edgelabels_e = data_edgelabels.enter()
+			link_e = data_link.enter();
+		var decor_out = graphShapes.decorate_link(link_e,edgepaths_e,edgelabels_e);
+		var link = decor_out[0],
+			edgepaths = decor_out[1],
+			edgelabels = decor_out[2];
+
+	
 		// previous links plus new links are merged
 		link = link.merge(data_link);
 
@@ -232,7 +258,24 @@
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; });
 		nodeSvg
-		  .attr("transform", function(d) { return "translate(" + d.x + ", " + d.y + ")"; });  
+			.attr("transform", function(d) { return "translate(" + d.x + ", " + d.y + ")"; }); 
+
+		edgepaths.attr('d', function (d) {
+            return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
+        });
+
+        edgelabels.attr('transform', function (d) {
+            if (d.target.x < d.source.x) {
+                var bbox = this.getBBox();
+
+                rx = bbox.x + bbox.width / 2;
+                ry = bbox.y + bbox.height / 2;
+                return 'rotate(180 ' + rx + ' ' + ry + ')';
+            }
+            else {
+                return 'rotate(0)';
+            }
+        }); 
 	  }
 	  
 	}

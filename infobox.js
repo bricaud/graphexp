@@ -71,7 +71,7 @@ var infobox = (function(){
 		_display_IDinfo(node_data)
 		_display_DBinfo(node_data);
 		//_display_WIKIinfo(node_data,_side_summary,_side_image,_bottom_info);
-	    console.log('Node ID: '+node_data.id);
+	    //console.log('Node ID: '+node_data.id);
 	}
 
 	//////////////////////
@@ -92,17 +92,27 @@ var infobox = (function(){
 	function _display_DBinfo(d){
 		_table_DBinfo.select("tbody").remove();
 	 	var info_table = _table_DBinfo.append("tbody");
-	 	for (var key in d.properties){
-	 		for (var subkey in d.properties[key]){
-	 			console.log(subkey)
-	 			console.log(d.properties[key])
-	 			console.log(d.properties[key][subkey])
-	 			var new_info_row = info_table.append("tr");
+	 	if (d.type=='vertex'){
+		 	for (var key in d.properties){
+		 		for (var subkey in d.properties[key]){
+		 			//console.log(subkey)
+		 			//console.log(d.properties[key])
+		 			//console.log(d.properties[key][subkey])
+		 			var new_info_row = info_table.append("tr");
+		 			new_info_row.append("td").text(key);
+		 			new_info_row.append("td").text(d.properties[key][subkey].value);
+		 			new_info_row.append("td").text(d.properties[key][subkey].id);// TODO: handle VertexProperty
+		 		}
+		 	}
+		}
+		else {
+		 	for (var key in d.properties){
+		 		var new_info_row = info_table.append("tr");
 	 			new_info_row.append("td").text(key);
-	 			new_info_row.append("td").text(d.properties[key][subkey].value);
-	 			new_info_row.append("td").text(d.properties[key][subkey].id);// TODO: handle VertexProperty
-	 		}
-	 	}
+	 			new_info_row.append("td").text(d.properties[key]);
+	 			new_info_row.append("td").text("")
+			}
+		}
 	}
 
 

@@ -19,6 +19,25 @@ var graph_viz = (function(){
 			_svg = d3.select(label).select("svg");
 			//width = +svg.attr("width");
 			//height = +svg.attr("height");
+
+		// definition of the arrow for links.
+		/*_svg.append("svg:defs").selectAll("marker")
+			.data(["end"])      // Different link/path types can be defined here
+			.enter().append("svg:marker")    // This section adds in the arrows
+			.attr("id", String)
+			.attr("viewBox", "0 -5 10 10")
+			.attr("refX", graphShapes.default_node_size)//+graphShapes.default_node_width)
+			.attr("refY", 0)
+			.attr("markerWidth", 6)
+			.attr("markerHeight", 6)
+			.attr("orient", "auto")
+			.append("svg:path")
+			.attr("d", "M0,-5L10,0L0,5");*/
+
+		
+
+
+
 	}
 
 	function svg_handle(){
@@ -33,6 +52,18 @@ var graph_viz = (function(){
 		return _Nodes;
 	}
 
+	function node_data(id){
+		// return data associated to the node with id 'id'
+		for (var node in _Nodes){
+			//console.log(_Nodes[node])
+			if (_Nodes[node].id==id){
+				var match = _Nodes[node];
+				break;
+			}
+		} 
+		return match;
+	}
+
 	function links(){
 		return _links;
 	}
@@ -41,6 +72,27 @@ var graph_viz = (function(){
 		return _Links;
 	}
 	
+	function create_arrows(){
+		_svg.selectAll("marker")
+			.data(_Links)
+			.enter()
+			.append('svg:marker')
+			.attr('id', function(d){ return 'marker_' + d.id})
+			.attr('markerHeight', 5)
+			.attr('markerWidth', 5)
+			.attr('markerUnits', 'strokeWidth')
+			.attr('orient', 'auto')
+			.attr('refX', function (d){
+				 var node = node_data(d.target);
+				 return graphShapes.node_size(node)+graphShapes.node_stroke_width(node);
+				})
+			.attr('refY', 0)
+			.attr('viewBox',  "0 -5 10 10")
+			.append('svg:path')
+			.attr('d', "M0,-5L10,0L0,5")
+			.style('fill',function(d){return graphShapes.edge_color(d)});
+	}
+
 	///////////////////////////////////////
 	// Remove force layout and data
 	function clear(){
@@ -327,6 +379,7 @@ var graph_viz = (function(){
 			if (isChecked) infobox.display_info(d);
 			else {
 				simulation.stop();
+				// remove the oldest links and nodes
 				_svg.selectAll(".old_node"+layers.depth()).remove();
 				_svg.selectAll(".old_links"+layers.depth()).remove();
 				infobox.display_info(d);
@@ -357,6 +410,7 @@ var graph_viz = (function(){
 				}
 			}
 		}
+
 		return {
 			dragstarted:dragstarted,
 			dragged:dragged,
@@ -376,8 +430,10 @@ var graph_viz = (function(){
 		nodes : nodes,
 		links : links,
 		nodes_data : nodes_data,
+		node_data : node_data,
 		links_data : links_data,
 		init : init,
+		create_arrows : create_arrows,
 		addzoom : addzoom,
 		clear : clear,
 		simulation : simulation,

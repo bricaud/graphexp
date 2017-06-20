@@ -32,7 +32,11 @@ var graphioGremlin = (function(){
 	  		var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
 	  			  	}
 	  	else{
-	  		var has_str = "has('"+input_field+"','"+filtered_string+"')"
+	  		if (isInt(input_string)){
+	  			var has_str = "has('"+input_field+"',"+filtered_string+")"
+	  		} else {
+	  			var has_str = "has('"+input_field+"','"+filtered_string+"')"
+	  		}
 			var gremlin_query = "g.V()."+has_str
 	  		var gremlin_query_nodes = "nodes = g.V()."+has_str
 	  		var gremlin_query_edges = "edges = g.V()."+has_str
@@ -47,7 +51,11 @@ var graphioGremlin = (function(){
 		run_ajax_request(gremlin_query,'search',null,message)	  	
 	}
 
-
+	function isInt(value) {
+	  return !isNaN(value) && 
+	         parseInt(Number(value)) == value && 
+	         !isNaN(parseInt(value, 10));
+	}
 	function click_query(d) {
 		// Gremlin query
 		var gremlin_query = "g.V("+d.id+").bothE().bothV().path()"
@@ -87,12 +95,12 @@ var graphioGremlin = (function(){
 					refresh_data(graph,center_f,active_node);
 				}
 				else if (query_type=='graphInfo'){
-					console.log(Data);
+					//console.log(Data);
 					infobox.display_graph_info(Data);
 					var node_properties = make_properties_list(Data[1][0]);
-					console.log(node_properties);
+					//console.log(node_properties);
 					var edge_properties = make_properties_list(Data[3][0]);
-					console.log(edge_properties);
+					//console.log(edge_properties);
 					change_nav_bar(node_properties,edge_properties);
 				}
             $('#outputArea').html(message);
@@ -166,7 +174,7 @@ var graphioGremlin = (function(){
 	}
 
 	function extract_info(data) {
-		var data_dic = {id:data.id,label:data.label,properties:{}}
+		var data_dic = {id:data.id, label:data.label, type:data.type, properties:{}}
 		var prop_dic = data.properties
 		for (var key in prop_dic) {
   			if (prop_dic.hasOwnProperty(key)) {

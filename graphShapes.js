@@ -4,11 +4,12 @@ var graphShapes = (function(){
 
 	var default_node_size = 15;
 	var default_stroke_width = 2;
-	var default_node_color = "#80E810"
+	var default_node_color = "#80E810";
+	var active_node_width = 6;
 
 	var default_edge_stroke_width = 3;
 	var default_edge_color = '#CCC';
-	var edge_label_color = '#111'
+	var edge_label_color = '#111';
 
 	function node_size(d){
 		if ('size' in d) {return d.size;}
@@ -58,41 +59,36 @@ var graphShapes = (function(){
 	// decorate the node
 	function decorate_node(node,with_active_node){
 	// the node layout is defined here
-	// function for drawing the node size according to the node degree
-		var active_node_width = 6;
-		var color_scale = d3.scaleOrdinal(d3.schemeCategory10);
-		var color_list = {"Artist": "#E81042", "Concert": "#80e810", "Band": "#10DDE8"};
-		var color_list = {"Artist": "blue", "Concert": "green", "Band": "orange"};
-		var color_list = {"Artist": color_scale(1), "Band": color_scale(2), "Concert": color_scale(3)};
-		//var color_list = {"Artist": color_scale(7), "Band": color_scale(8), "Concert": color_scale(9)};
-		//color assignment
-		//var get_color = {"gpe": "#E81042", "person": "#80e810", "org": "#10DDE8"};
+	// node: the selection of nodes with their data
+	// with_active_node: the Id of the active node if any
+
+		var node_deco = node.append("g")
+			.attr("class", "node").attr("ID",function(d) { return d.id;});
 
 
+		// Attach the event listener
+		attach_node_actions(node_deco)
 
-		node.moveToFront();
+		node_deco.moveToFront();
 
-		var node_base_circle = node.append("circle").classed("base_circle",true)
+		// Create the circle shape
+		var node_base_circle = node_deco.append("circle").classed("base_circle",true)
 			//.attr("r", 12)
 			.attr("r",node_size)
-			//.attr("fill", function(d) { return color(d.group); })
 			.style("stroke-width",node_stroke_width)
 			.style("stroke","black")
 			.attr("fill", node_color);
-
-		//node_base_circle.transition();
-
 		node_base_circle.append("title").text(node_title);
 
-
-		var text_name = node.append("text").classed("text_details",true)
+		// Add the text to the nodes
+		var node_text = node_deco.append("text").classed("text_details",true)
 		  //.attr("x", 12)
 		  .attr("x",function(d){return node_size(d)+2;})
 		  //.attr("y", ".31em")
 		  .text(node_text)
 		  .style("visibility", "hidden");
 
-		var text_date = node.append("text").classed("text_details",true)
+		var node_text2 = node_deco.append("text").classed("text_details",true)
 		  //.attr("x", 12)
 		  //.attr("y", 15)
 		  .attr("x",function(d){return node_size(d)+2;})
@@ -100,41 +96,65 @@ var graphShapes = (function(){
 		  .text(node_subtext)
 		  .style("visibility", "hidden");
 
-		//  var node_pin = node.append("circle").classed("Pin",true)
-		//      .attr("r", node_size)
-		//      .attr("transform", function(d) { return "translate("+node_size(d)/2+","+(-node_size(d)/2)+")"; })
-		//      .attr("fill", function(d) { return color(d.labelV); })
-		//      .moveToBack()
 
-		var node_pin = node.append("circle").classed("Pin",true)
+		// Add the node pin
+		var node_pin = node_deco.append("circle").classed("Pin",true)
 			.attr("r", function(d){return node_size(d)/2;})
 			.attr("transform", function(d) { return "translate("+(node_size(d)*3/4)+","+(-node_size(d)*3/4)+")"; })
 			.attr("fill", node_color)
 			.moveToBack()
 			.style("visibility", "hidden");
 
-		// spot the active node and draw a circle around it
+		node_pin.on("click",graph_viz.graph_events.pin_it);
+
+		// spot the active node and draw additional circle around it
 		if(with_active_node){
-		  d3.selectAll(".node").each(function(d){
-			if(d.id==with_active_node){
-			  var n_radius = Number(d3.select(this).select(".base_circle").attr("r"))+active_node_width;
-			  //console.log(d3.select(this).select("circle").attr("r"))
-			  //console.log(n_radius)
-			  d3.select(this)
-				.append("circle").classed("Active",true)
-				.attr("r", n_radius)
-				.attr("fill", node_color)
-				.attr("opacity",0.3)
-				.moveToBack();
-				//.attr("transform", function(d) { return "translate(-12,-12)"; })
-				//.attr("fill", function(d) { return color(d.labelV); });
-				//.append("circle").classed("Active",true)
-				//.attr("r", 4)
-				//.attr("transform", function(d) { return "translate(-12,-12)"; })
-				//.attr("fill", function(d) { return color(d.labelV); });
-			}
-		  });
+			d3.selectAll(".node").each(function(d){
+				if(d.id==with_active_node){
+					var n_radius = Number(d3.select(this).select(".base_circle").attr("r"))+active_node_width;
+					//console.log(d3.select(this).select("circle").attr("r"))
+					//console.log(n_radius)
+					d3.select(this)
+						.append("circle").classed("Active",true)
+						.attr("r", n_radius)
+						.attr("fill", node_color)
+						.attr("opacity",0.3)
+						.moveToBack();
+						//.attr("transform", function(d) { return "translate(-12,-12)"; })
+						//.attr("fill", function(d) { return color(d.labelV); });
+						//.append("circle").classed("Active",true)
+						//.attr("r", 4)
+						//.attr("transform", function(d) { return "translate(-12,-12)"; })
+						//.attr("fill", function(d) { return color(d.labelV); });
+				}
+			});
 		}
+
+
+		return node_deco;
+	}
+
+	function attach_node_actions(node){
+		node.call(d3.drag()
+				.on("start", graph_viz.graph_events.dragstarted)
+				.on("drag", graph_viz.graph_events.dragged)
+				.on("end", graph_viz.graph_events.dragended));
+
+
+	  	node.on("click", graph_viz.graph_events.clicked)
+			.on("mouseover", function(){
+				d3.select(this).select(".Pin").style("visibility", "visible");
+				d3.select(this).selectAll(".text_details").style("visibility", "visible");
+		  	})
+			.on("mouseout", function(){
+				var chosen_node = d3.select(this);
+				if(!chosen_node.classed("pinned"))
+					d3.select(this).select(".Pin").style("visibility", "hidden");
+				var show_checked = document.getElementById ("showName").checked;
+				if (!show_checked)
+					d3.select(this).selectAll(".text_details").style("visibility", "hidden");
+		  });
+
 	}
 
 	function decorate_link(edges,edgepaths,edgelabels){
@@ -205,6 +225,8 @@ var graphShapes = (function(){
 		  .on("click", function(d){console.log('edge clicked!');infobox.display_info(d);});
 
 	}
+
+
 
 	///////////////////////////////////////
 	// https://github.com/wbkd/d3-extended

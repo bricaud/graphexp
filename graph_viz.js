@@ -315,7 +315,7 @@ var graph_viz = (function(){
 	function simulation_start(center_f){
 		// Define the force applied to the nodes
 		simulation = d3.forceSimulation()
-			.force("charge", d3.forceManyBody().strength(-100))
+			.force("charge", d3.forceManyBody().strength(-600))
 			.force("link", d3.forceLink().strength(0.5).id(function(d) { return d.id; }));
 
 		if (center_f == 1){
@@ -335,6 +335,129 @@ var graph_viz = (function(){
 		}));
 		return simulation;
 	}
+
+
+
+	//////////////////////////////////////
+	function refresh_data(d,center_f,with_active_node){
+
+		var svg_graph = svg_handle();
+		layers.push_layers();
+		layers.update_data(d);
+
+		//////////////////////////////////////
+		// link handling
+
+		var Links = links_data();
+	 
+		//attach the data
+		var data_link = svg_graph.selectAll(".links")
+			.data(Links, function(d) { return d.id; });
+
+		var data_edgepaths = svg_graph.selectAll(".edgepath")
+			.data(Links, function(d) { return d.id; });
+		var data_edgelabels = svg_graph.selectAll(".edgelabel")
+			.data(Links, function(d) { return d.id; });
+	  
+		// links not active anymore are classified old_links
+		data_link.exit().attr("class","old_links0");
+		var edgesp_toremove = data_edgepaths.exit().remove();
+		var edgesl_toremove = data_edgelabels.exit().remove();
+
+		
+		// handling active links associated to the data
+		var edgepaths_e = data_edgepaths.enter(),
+			edgelabels_e = data_edgelabels.enter(),
+			link_e = data_link.enter();
+		var decor_out = graphShapes.decorate_link(link_e,edgepaths_e,edgelabels_e);
+		var link = decor_out[0],
+			edgepaths = decor_out[1],
+			edgelabels = decor_out[2];
+
+	
+		// previous links plus new links are merged
+		link = link.merge(data_link);
+
+
+		///////////////////////////////////
+		// node handling
+		var Nodes = nodes_data();
+
+		//console.log(Nodes);
+
+		var data_node = svg_graph.selectAll("g").filter(".node")
+			.data(Nodes, function(d) { return d.id; });
+
+		//console.log(data_node);
+		// old nodes not active any more are tagged
+		data_node.exit().attr("class","old_node0");
+		data_node.exit().selectAll(".Active").remove();// ???
+
+		// nodes associated to the data are constructed
+		var node = data_node.enter();
+
+		// add node decoration
+		var node_deco = graphShapes.decorate_node(node,with_active_node);
+
+		var nodeSvg = node_deco.merge(data_node);
+
+
+		//////////////////////////////////
+		// Additional clean up
+		svg_graph.selectAll("g").filter(".pinned").moveToFront();
+
+
+		layers.remove_duplicates(".node",".old_node");
+		layers.remove_duplicates(".links",".old_links");
+
+
+
+		///////////////////////////////
+		// Force simulation
+		// simulation model and parameters
+	
+	
+		var simulation = simulation_start(center_f);
+		// Associate the simulation with the data
+		simulation.nodes(Nodes).on("tick", ticked);
+		simulation.force("link").links(Links);
+		simulation.alphaTarget(0);
+
+		////////////////////////
+		// handling simulation steps
+		// move the nodes and links at each simulation step, following this rule:
+		function ticked() {
+			link
+				.attr("x1", function(d) { return d.source.x; })
+				.attr("y1", function(d) { return d.source.y; })
+				.attr("x2", function(d) { return d.target.x; })
+				.attr("y2", function(d) { return d.target.y; });
+			nodeSvg
+				.attr("transform", function(d) { return "translate(" + d.x + ", " + d.y + ")"; }); 
+
+			edgepaths.attr('d', function (d) {
+				return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
+			});
+
+			edgelabels.attr('transform', function (d) {
+				if (d.target.x < d.source.x) {
+					var bbox = this.getBBox();
+
+					var rx = bbox.x + bbox.width / 2;
+					var ry = bbox.y + bbox.height / 2;
+					return 'rotate(180 ' + rx + ' ' + ry + ')';
+				}
+				else {
+					return 'rotate(0)';
+				}
+			});
+		}
+
+	}
+
+
+
+
 
 	var graph_events = (function (){
 		//////////////////////////////////
@@ -438,6 +561,7 @@ var graph_viz = (function(){
 		clear : clear,
 		simulation : simulation,
 		simulation_start : simulation_start,
+		refresh_data : refresh_data,
 		layers : layers,
 		graph_events : graph_events
 	};

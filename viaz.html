@@ -54,11 +54,11 @@
 					</li>
 					<li><button name="search query" onclick="search_query();">Search</button></li>
 					<li><button name="clear" onclick="graph_viz.clear();">Clear</button></li>
-		  			<li><input type="checkbox" name="Freeze" id="freeze-in" />Freeze exploration</li>
-		  			<li>
-		  				<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show names
-		  			</li>
-		  			<li><button name="graphInfo" onclick="get_graph_info();">Get graph info</button></li>
+					<li><input type="checkbox" name="Freeze" id="freeze-in" />Freeze exploration</li>
+					<li>
+						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show names
+					</li>
+					<li><button name="graphInfo" onclick="get_graph_info();">Get graph info</button></li>
 				</ul>
 			</div>
 		</div>
@@ -72,13 +72,16 @@
 				<div class="aside" id="details" style="background-color:transparent;">
 					<div id="messageArea"></div><div id="outputArea"></div>
 				</div>
+				<div  class="aside" id="nodeInfo" style="background-color:transparent;">
+				</div>				
 				<div  class="aside" id="graphInfo" style="background-color:transparent;">
 				</div>
+				<!--
 				<div  class="aside" id="ImageInfo" style="background-color:transparent;">
-					<center><svg width="200" height="200"></svg></center>
+					<center><svg width="100" height="100"></svg></center>
 				</div>
-				<div  class="aside" id="nodeInfo" style="background-color:transparent;">
-				</div>
+				-->
+
 
 
 			</div>
@@ -113,21 +116,21 @@
 		//nav_choices = nav_bar.append("ul");
 		//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
 		var select = d3.select('#prop_choice')
-  			.append('select').attr('class','select').attr('id','search_field')
-  		
-  		var select_node = select.append('optgroup').attr('label','Nodes')
-    		//.on('change',onchange)
+			.append('select').attr('class','select').attr('id','search_field')
+		
+		var select_node = select.append('optgroup').attr('label','Nodes')
+			//.on('change',onchange)
 
 		var select_edge = select.append('optgroup').attr('label','Edges')
 
 		var node_options = select_node
-  			.selectAll('option')
+			.selectAll('option')
 			.data(node_data).enter()
 			.append('option')
 			.text(function (d) { return d; });
 
 		var edge_options = select_edge
-  			.selectAll('option')
+			.selectAll('option')
 			.data(edge_data).enter()
 			.append('option')
 			.text(function (d) { return d; });
@@ -138,147 +141,6 @@
 
 
 
-
-	//////////////////////////////////////
-	function refresh_data(d,center_f,with_active_node){
-
-		var svg_graph = graph_viz.svg_handle();
-		graph_viz.layers.push_layers();
-		graph_viz.layers.update_data(d);
-
-		//////////////////////////////////////
-		// link handling
-
-		Links = graph_viz.links_data();
-	 
-		//attach the data
-		var data_link = svg_graph.selectAll(".links")
-			.data(Links, function(d) { return d.id; });
-
-		var data_edgepaths = svg_graph.selectAll(".edgepath")
-			.data(Links, function(d) { return d.id; });
-		var data_edgelabels = svg_graph.selectAll(".edgelabel")
-			.data(Links, function(d) { return d.id; });
-	  
-	  	// links not active anymore are classified old_links
-	  	data_link.exit().attr("class","old_links0");
-	  	var edgesp_toremove = data_edgepaths.exit().remove();//attr("class","old_links0");
-	  	var edgesl_toremove = data_edgelabels.exit().remove();//.attr("class","old_links0");
-
-	  	//var edges_toremove = edgelabels.exit();
-
-	  	//console.log(edgesl_toremove)
-	  	//edgesl_toremove.remove();
-	 	//console.log(svg_graph.selectAll(".edgelabels"))
-		// handling active links associated to the data
-		var edgepaths_e = data_edgepaths.enter(),
-			edgelabels_e = data_edgelabels.enter()
-			link_e = data_link.enter();
-		var decor_out = graphShapes.decorate_link(link_e,edgepaths_e,edgelabels_e);
-		var link = decor_out[0],
-			edgepaths = decor_out[1],
-			edgelabels = decor_out[2];
-
-	
-		// previous links plus new links are merged
-		link = link.merge(data_link);
-
-
-	  ///////////////////////////////////
-	  // node handling
-	  Nodes = graph_viz.nodes_data();
-
-	 //console.log(Nodes);
-
-	  var data_node = svg_graph.selectAll("g").filter(".node")
-			  .data(Nodes, function(d) { return d.id; });
-
-	  //console.log(data_node);
-	  // old nodes not active any more are tagged
-	  data_node.exit().attr("class","old_node0");
-	  data_node.exit().selectAll(".Active").remove();// ???
-
-	  // nodes associated to the data are constructed
-	  var node = data_node
-			  //.enter().merge(data_node).append("g")
-			  .enter().append("g")
-			  .attr("class", "node").attr("ID",function(d) { return d.id;})
-			  .call(d3.drag()
-				.on("start", graph_viz.graph_events.dragstarted)
-				.on("drag", graph_viz.graph_events.dragged)
-				.on("end", graph_viz.graph_events.dragended));
-
-	  // add node decoration
-	  graphShapes.decorate_node(node,with_active_node);
-
-
-	  node_pin = d3.selectAll(".Pin");
-	  node_pin.on("click",graph_viz.graph_events.pin_it);
-
-	  node.on("click", graph_viz.graph_events.clicked)
-		  .on("mouseover", function(){
-			d3.select(this).select(".Pin").style("visibility", "visible");
-			d3.select(this).selectAll(".text_details").style("visibility", "visible");
-		  })
-		  .on("mouseout", function(){
-			chosen_node = d3.select(this);
-			if(!chosen_node.classed("pinned"))
-			  d3.select(this).select(".Pin").style("visibility", "hidden");
-			  var show_checked = document.getElementById ("showName").checked;
-			  if (!show_checked)
-				d3.select(this).selectAll(".text_details").style("visibility", "hidden");
-		  });
-
-	  svg_graph.selectAll("g").filter(".pinned").moveToFront();
-
-	  graph_viz.layers.remove_duplicates(".node",".old_node");
-	  graph_viz.layers.remove_duplicates(".links",".old_links");
-
-	  nodeSvg = node.merge(data_node);
-
-	  ///////////////////////////////
-	  // Force simulation
-	  // simulation model and parameters
-	  
-	  
-
-	  simulation = graph_viz.simulation_start(center_f);
-	  // Associate the simulation with the data
-	  simulation.nodes(Nodes).on("tick", ticked);
-	  simulation.force("link").links(Links);
-	  simulation.alphaTarget(0);
-
-	  ////////////////////////
-	  // handling simulation steps
-	  // move the nodes and links at each simulation step, following this rule:
-	  function ticked() {
-		link
-			.attr("x1", function(d) { return d.source.x; })
-			.attr("y1", function(d) { return d.source.y; })
-			.attr("x2", function(d) { return d.target.x; })
-			.attr("y2", function(d) { return d.target.y; });
-		nodeSvg
-			.attr("transform", function(d) { return "translate(" + d.x + ", " + d.y + ")"; }); 
-
-		edgepaths.attr('d', function (d) {
-            return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
-        });
-
-        edgelabels.attr('transform', function (d) {
-            if (d.target.x < d.source.x) {
-                var bbox = this.getBBox();
-
-                rx = bbox.x + bbox.width / 2;
-                ry = bbox.y + bbox.height / 2;
-                return 'rotate(180 ' + rx + ' ' + ry + ')';
-            }
-            else {
-                return 'rotate(0)';
-            }
-        }); 
-	  }
-	  
-	}
 
 
 

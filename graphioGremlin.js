@@ -86,13 +86,13 @@ var graphioGremlin = (function(){
 					var graph = arrange_data_path(Data);
 					//console.log(graph)
 					var center_f = 0;
-					refresh_data(graph,center_f,active_node); //center_f=0 mean no attraction to the center for the nodes  
+					graph_viz.refresh_data(graph,center_f,active_node); //center_f=0 mean no attraction to the center for the nodes  
 				}
 				else if (query_type=='search'){
 					var graph = arrange_data(Data);
 					//console.log(graph)
 					var center_f = 1;
-					refresh_data(graph,center_f,active_node);
+					graph_viz.refresh_data(graph,center_f,active_node);
 				}
 				else if (query_type=='graphInfo'){
 					//console.log(Data);

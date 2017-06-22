@@ -142,7 +142,7 @@ var graph_viz = (function(){
 			for (var k=nb_layers;k>0;k--) {
 				var kp=k-1;
 				_svg.selectAll(".old_links"+kp).attr("class","old_links"+k);
-				_svg.selectAll(".old_node"+kp).attr("class","old_node"+k);
+				_svg.selectAll(".old_node"+kp).classed("old_node"+k,true);//attr("class","old_node"+k);
 			};
 		}
 
@@ -153,7 +153,7 @@ var graph_viz = (function(){
 
 		function update_data(d){
 			// Save the data
-			var previous_nodes =  _svg.selectAll("g").filter(".node");
+			var previous_nodes =  _svg.selectAll("g").filter(".active_node");
 			var previous_nodes_data = previous_nodes.data();
 			old_Nodes = updateAdd(old_Nodes,previous_nodes_data);
 			var previous_links =  _svg.selectAll(".links");
@@ -385,12 +385,12 @@ var graph_viz = (function(){
 
 		//console.log(Nodes);
 
-		var data_node = svg_graph.selectAll("g").filter(".node")
+		var data_node = svg_graph.selectAll("g").filter(".active_node")
 			.data(Nodes, function(d) { return d.id; });
 
 		//console.log(data_node);
 		// old nodes not active any more are tagged
-		data_node.exit().attr("class","old_node0");
+		data_node.exit().classed("old_node0",true).classed("active_node",false);//;attr("class","old_node0");
 		data_node.exit().selectAll(".Active").remove();// ???
 
 		// nodes associated to the data are constructed
@@ -407,7 +407,7 @@ var graph_viz = (function(){
 		svg_graph.selectAll("g").filter(".pinned").moveToFront();
 
 
-		layers.remove_duplicates(".node",".old_node");
+		layers.remove_duplicates(".active_node",".old_node");
 		layers.remove_duplicates(".links",".old_links");
 
 
@@ -519,7 +519,7 @@ var graph_viz = (function(){
 			var pinned_node = d3.select(this.parentNode);
 			//console.log('Pinned!')
 			//console.log(pinned_node.classed("node"));
-			if (pinned_node.classed("node")){
+			if (pinned_node.classed("active_node")){
 				if (!pinned_node.classed("pinned")){
 					pinned_node.classed("pinned",true);
 					console.log('Pinned!');

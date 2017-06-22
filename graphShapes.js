@@ -27,18 +27,18 @@ var graphShapes = (function(){
 	}
 
 	function node_title(d){
-		if ('node_title' in d){return d.node_title}
-		else {return d.label}
+		if ('node_title' in d){return d.node_title;}
+		else {return d.label;}
 	}
 
 	function node_text(d){
-		if ('node_text' in d){return d.node_text}
-		else {return d.id}
+		if ('node_text' in d){return d.node_text;}
+		else {return d.id;}
 	}
 
 	function node_subtext(d){
-		if ('node_subtext' in d){return d.node_subtext}
-		else {return d.label}
+		if ('node_subtext' in d){return d.node_subtext;}
+		else {return d.label;}
 	}
 
 	function edge_stroke_width(d){
@@ -63,7 +63,8 @@ var graphShapes = (function(){
 	// with_active_node: the Id of the active node if any
 
 		var node_deco = node.append("g")
-			.attr("class", "node").attr("ID",function(d) { return d.id;});
+			.attr("class", "active_node").attr("ID",function(d) { return d.id;})
+			.classed("node",true);
 
 
 		// Attach the event listener
@@ -81,14 +82,14 @@ var graphShapes = (function(){
 		node_base_circle.append("title").text(node_title);
 
 		// Add the text to the nodes
-		var node_text = node_deco.append("text").classed("text_details",true)
+		node_deco.append("text").classed("text_details",true)
 		  //.attr("x", 12)
 		  .attr("x",function(d){return node_size(d)+2;})
 		  //.attr("y", ".31em")
 		  .text(node_text)
 		  .style("visibility", "hidden");
 
-		var node_text2 = node_deco.append("text").classed("text_details",true)
+		node_deco.append("text").classed("text_details",true)
 		  //.attr("x", 12)
 		  //.attr("y", 15)
 		  .attr("x",function(d){return node_size(d)+2;})
@@ -109,7 +110,7 @@ var graphShapes = (function(){
 
 		// spot the active node and draw additional circle around it
 		if(with_active_node){
-			d3.selectAll(".node").each(function(d){
+			d3.selectAll(".active_node").each(function(d){
 				if(d.id==with_active_node){
 					var n_radius = Number(d3.select(this).select(".base_circle").attr("r"))+active_node_width;
 					//console.log(d3.select(this).select("circle").attr("r"))

@@ -102,6 +102,7 @@ var graphioGremlin = (function(){
 					var edge_properties = make_properties_list(Data[3][0]);
 					//console.log(edge_properties);
 					change_nav_bar(node_properties,edge_properties);
+					display_properties_bar(node_properties,edge_properties);
 				}
             $('#outputArea').html(message);
 			$('#messageArea').html('');

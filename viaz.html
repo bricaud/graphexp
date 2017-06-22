@@ -137,12 +137,65 @@
 
 	}
 
+	function display_properties_bar(node_data,edge_data){
+		var nav_bar = d3.select("#nav_bar");
+		var property_bar = nav_bar.append("div").attr("id","property_bar");
+		property_bar.append('text').text('Node properties: ')
+		//d3.select('#property_bar').append('text').text('hello')
+		property_bar.selectAll('input')
+			.data(node_data).enter()
+			.append('label')
+			.text(function (d) { return d; })
+			.append('input').attr('type','checkbox').attr('id',function (d) { return 'prop_'+d; })
+			//.attr('onchange',function(d){display_prop(d);});
+			.attr('onchange','display_prop(id)');
+		
+
+	}
 
 
+	function display_prop(prop_id){
+		var text_base_offset = 10;
+		var text_offset = 10;
+		var text_size
+		if(d3.select("#"+prop_id).property("checked")){
+			nodes_data = graph_viz.nodes_data();
+			console.log(nodes_data)
+			console.log(d3.selectAll('.prop_details')._groups[0])
+			if (d3.selectAll('.prop_details')._groups[0][0]){
+				console.log(d3.selectAll('.prop_details')._groups[0][0].getComputedTextLength());
+			}
+			if (d3.selectAll('.node')._groups[0].length>0){
+				var prop_nb = d3.selectAll('.prop_details')._groups[0].length/d3.selectAll('.node')._groups[0].length;
 
+			
+			console.log(prop_id)
+			prop_name= prop_id.slice(5)
+			console.log(prop_name)
+			d3.selectAll('.node')//.select('text')
+				//.data(nodes_data).enter()
+				//.append('text')
+				.append("text").classed("prop_details",true).classed(prop_id,true)
+		  		//.attr("x", 12)
+		  		.attr("y",function(d){return graphShapes.node_size(d)+text_base_offset+text_offset*prop_nb;})
+		  		//.attr("y", ".31em")
+				.text(function(d){return get_prop_value(d,prop_name);});
+				//.each();
+			}
+		}
+		else{
+			d3.selectAll('.node').select('.'+prop_id).remove();
+		}
+	}
 
-
-
+	function get_prop_value(d,prop_name){
+		if (prop_name in d.properties){
+			return d.properties[prop_name][0].value;
+		}
+		else {
+			return "";
+		}
+	}
 
 
 

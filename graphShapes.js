@@ -131,6 +131,8 @@ var graphShapes = (function(){
 			});
 		}
 
+		// add property info if checkbox checked
+		add_checkbox_prop('nodes',node_deco)
 
 		return node_deco;
 	}
@@ -160,9 +162,10 @@ var graphShapes = (function(){
 
 	function decorate_link(edges,edgepaths,edgelabels){
 
-		var edges_deco = edges.append("line").attr("class", "links")
-		  .attr("source_ID",function(d) { return d.source;})
-		  .attr("target_ID",function(d) { return d.target;});
+		var edges_deco = edges.append("line").attr("class", "edge").classed("active_edge",true)
+			.attr("source_ID",function(d) { return d.source;})
+			.attr("target_ID",function(d) { return d.target;})
+			.attr("ID",function(d) { return d.id;});
 	 
 
 		graph_viz.create_arrows();
@@ -178,7 +181,7 @@ var graphShapes = (function(){
 
 		edgelabels_deco.append('textPath')
 			.attr('class','edge_text')
-			.attr('href', function (d, i) {return '#edgepath' + i})
+			.attr('href', function (d, i) {return '#edgepath' + d.id})
 			.style("text-anchor", "middle")
 			.style("pointer-events", "none")
 			.attr("startOffset", "50%")
@@ -187,26 +190,47 @@ var graphShapes = (function(){
 		// Attach the edge actions
 		attach_edge_actions(edges_deco)
 
+		// add property info if checkbox checked
+		add_checkbox_prop('edges',edgelabels_deco)
+
 		return [edges_deco,edgepaths_deco,edgelabels_deco]
 
+	}
+
+	function add_checkbox_prop(item,selected_items){
+		if (item=='edges'){
+			var item_properties = graphioGremlin.get_edge_properties();
+		} else if (item=='nodes'){
+			var item_properties = graphioGremlin.get_node_properties();
+		}
+		for (var prop_idx in item_properties){
+			var prop_name = item_properties[prop_idx];
+			var prop_id_nb = prop_idx;
+			var prop_id = item+"_"+prop_name;
+			if((!d3.select("#"+prop_id).empty()) && d3.select("#"+prop_id).property("checked")){
+				attach_property(selected_items,prop_name,prop_id_nb,item);
+			}
+		}		
 	}
 
 	function create_edge_label(edgepaths,edgelabels){
 
 		var edgepaths_deco = edgepaths.append('path')
-			.attr('class','edgepath')
+			.attr('class','edgepath').classed("active_edgepath",true)
 			.attr('fill-opacity',0)
 			.attr('stroke-opacity',0)
 			//.attr('stroke-width',10)
-			.attr('id',function (d, i) {return 'edgepath' + i;})
+			.attr('id',function (d, i) {return 'edgepath' + d.id;})
+			.attr("ID",function(d) { return d.id;})
 			.style("pointer-events", "none");
 
 		var edgelabels_deco = edgelabels.append('text')
 			//.attr('x',10)
 			.attr('dy',-3)
 			.style("pointer-events", "none")
-			.attr('class','edgelabel')
-			.attr('id',function (d, i) {return 'edgelabel' + i})
+			.attr('class','edgelabel').classed("active_edgelabel",true)
+			.attr('id',function (d, i) {return 'edgelabel' + d.id})
+			.attr("ID",function(d) { return d.id;})
 			.attr('font-size', 10)
 			.attr('fill', edge_label_color);
 

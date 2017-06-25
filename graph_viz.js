@@ -141,8 +141,10 @@ var graph_viz = (function(){
 			// and move to the next layer
 			for (var k=nb_layers;k>0;k--) {
 				var kp=k-1;
-				_svg.selectAll(".old_links"+kp).attr("class","old_links"+k);
+				_svg.selectAll(".old_edge"+kp).classed("old_edge"+k,true);
 				_svg.selectAll(".old_node"+kp).classed("old_node"+k,true);//attr("class","old_node"+k);
+				_svg.selectAll(".old_edgepath"+kp).classed("old_edgepath"+k,true);
+				_svg.selectAll(".old_edgelabel"+kp).classed("old_edgelabel"+k,true);
 			};
 		}
 
@@ -156,7 +158,7 @@ var graph_viz = (function(){
 			var previous_nodes =  _svg.selectAll("g").filter(".active_node");
 			var previous_nodes_data = previous_nodes.data();
 			old_Nodes = updateAdd(old_Nodes,previous_nodes_data);
-			var previous_links =  _svg.selectAll(".links");
+			var previous_links =  _svg.selectAll(".active_edge");
 			var previous_links_data = previous_links.data();
 			old_Links = updateAdd(old_Links,previous_links_data);
 
@@ -236,19 +238,24 @@ var graph_viz = (function(){
 			for(var i=0; i < active_nodes.length; i++ ) {
 			  for(var j=0; j < active_nodes.length; j++ ) {
 				if (active_nodes[i].id==row.source.id && active_nodes[j].id==row.target.id) {
-				  //console.log('found match!',_Nodes[i].id,_Nodes[j].id);
+				  //console.log('found match!',active_nodes[i].id,active_nodes[j].id);
+				  //console.log(row)
 				  var L_data={source:row.source.id, target:row.target.id, type:row.type, value:row.value, id:row.id};
+				  var L_data = row;
+				  L_data['source'] = row.source.id;
+				  L_data['target'] = row.target.id;
 				  active_links=active_links.concat(L_data);
 				}
 				else if (active_nodes[i].id==row.source && active_nodes[j].id==row.target) {
-				  //console.log('found match!',_Nodes[i].id,_Nodes[j].id);
+				  //console.log('found match type 2!',active_nodes[i].id,active_nodes[j].id);
+				  //console.log(row)
 				  var L_data=row;
 				  active_links=active_links.concat(L_data);
 				}
 			  }
 			}
 		  });
-		  // the active links are in active_links but the can be some duplicates
+		  // the active links are in active_links but there can be some duplicates
 		  // remove duplicates links
 		  var dic = {};
 		  for ( var i=0; i < active_links.length; i++ )
@@ -347,59 +354,60 @@ var graph_viz = (function(){
 
 		//////////////////////////////////////
 		// link handling
-
-		var Links = links_data();
 	 
 		//attach the data
-		var data_link = svg_graph.selectAll(".links")
-			.data(Links, function(d) { return d.id; });
-
-		var data_edgepaths = svg_graph.selectAll(".edgepath")
-			.data(Links, function(d) { return d.id; });
-		var data_edgelabels = svg_graph.selectAll(".edgelabel")
-			.data(Links, function(d) { return d.id; });
+		var all_links = svg_graph.selectAll(".active_edge")
+			.data(_Links, function(d) { return d.id; });
+		var all_edgepaths = svg_graph.selectAll(".active_edgepath")
+			.data(_Links, function(d) { return d.id; });
+		var all_edgelabels = svg_graph.selectAll(".active_edgelabel")
+			.data(_Links, function(d) { return d.id; });
 	  
 		// links not active anymore are classified old_links
-		data_link.exit().attr("class","old_links0");
-		var edgesp_toremove = data_edgepaths.exit().remove();
-		var edgesl_toremove = data_edgelabels.exit().remove();
+		all_links.exit().classed("old_edge0",true).classed("active_edge",false);
+		all_edgepaths.exit().classed("old_edgepath0",true).classed("active_edgepath",false);
+		all_edgelabels.exit().classed("old_edgelabel0",true).classed("active_edgelabel",false);
+		//var edgesp_toremove = data_edgepaths.exit().remove();
+		//var edgesl_toremove = data_edgelabels.exit().remove();
 
 		
 		// handling active links associated to the data
-		var edgepaths_e = data_edgepaths.enter(),
-			edgelabels_e = data_edgelabels.enter(),
-			link_e = data_link.enter();
+		var edgepaths_e = all_edgepaths.enter(),
+			edgelabels_e = all_edgelabels.enter(),
+			link_e = all_links.enter();
 		var decor_out = graphShapes.decorate_link(link_e,edgepaths_e,edgelabels_e);
-		var link = decor_out[0],
-			edgepaths = decor_out[1],
+		_links = decor_out[0];
+
+		var	edgepaths = decor_out[1],
 			edgelabels = decor_out[2];
 
 	
 		// previous links plus new links are merged
-		link = link.merge(data_link);
+		_links = _links.merge(all_links);
+		edgepaths = edgepaths.merge(all_edgepaths);
+		edgelabels = edgelabels.merge(all_edgelabels);
 
 
 		///////////////////////////////////
 		// node handling
-		var Nodes = nodes_data();
 
-		//console.log(Nodes);
-
-		var data_node = svg_graph.selectAll("g").filter(".active_node")
-			.data(Nodes, function(d) { return d.id; });
+		var all_nodes = svg_graph.selectAll("g").filter(".active_node")
+			.data(_Nodes, function(d) { return d.id; });
 
 		//console.log(data_node);
 		// old nodes not active any more are tagged
-		data_node.exit().classed("old_node0",true).classed("active_node",false);//;attr("class","old_node0");
-		data_node.exit().selectAll(".Active").remove();// ???
+		all_nodes.exit().classed("old_node0",true).classed("active_node",false);//;attr("class","old_node0");
+		all_nodes.exit().selectAll(".Active").remove();// ???
 
 		// nodes associated to the data are constructed
-		var node = data_node.enter();
+		_nodes = all_nodes.enter();
 
 		// add node decoration
-		var node_deco = graphShapes.decorate_node(node,with_active_node);
+		var node_deco = graphShapes.decorate_node(_nodes,with_active_node);
 
-		var nodeSvg = node_deco.merge(data_node);
+		var _nodes = node_deco.merge(all_nodes);
+
+
 
 
 		//////////////////////////////////
@@ -408,8 +416,9 @@ var graph_viz = (function(){
 
 
 		layers.remove_duplicates(".active_node",".old_node");
-		layers.remove_duplicates(".links",".old_links");
-
+		layers.remove_duplicates(".active_edge",".old_edge");
+		layers.remove_duplicates(".active_edgepath",".old_edgepath");
+		layers.remove_duplicates(".active_edgelabel",".old_edgelabel");
 
 
 		///////////////////////////////
@@ -419,20 +428,20 @@ var graph_viz = (function(){
 	
 		var simulation = simulation_start(center_f);
 		// Associate the simulation with the data
-		simulation.nodes(Nodes).on("tick", ticked);
-		simulation.force("link").links(Links);
+		simulation.nodes(_Nodes).on("tick", ticked);
+		simulation.force("link").links(_Links);
 		simulation.alphaTarget(0);
 
 		////////////////////////
 		// handling simulation steps
 		// move the nodes and links at each simulation step, following this rule:
 		function ticked() {
-			link
+			_links
 				.attr("x1", function(d) { return d.source.x; })
 				.attr("y1", function(d) { return d.source.y; })
 				.attr("x2", function(d) { return d.target.x; })
 				.attr("y2", function(d) { return d.target.y; });
-			nodeSvg
+			_nodes
 				.attr("transform", function(d) { return "translate(" + d.x + ", " + d.y + ")"; }); 
 
 			edgepaths.attr('d', function (d) {
@@ -456,7 +465,18 @@ var graph_viz = (function(){
 	}
 
 
-
+	function get_node_edges(node_id){
+		var connected_edges = d3.selectAll(".edge").filter(
+			function(item){
+				if (item.source==node_id || item.source.id==node_id){
+					return item;
+				}
+				else if (item.target==node_id || item.target.id==node_id){
+					return item;
+				}
+			});
+		return connected_edges;
+	}
 
 
 	var graph_events = (function (){
@@ -480,12 +500,26 @@ var graph_viz = (function(){
 		}
 
 		function dragged(d) {
-			d.fx = d3.event.x;
-			d.fy = d3.event.y;
+			var connected_edges = get_node_edges(d.id);
+			var f_connected_edges = connected_edges.filter("*:not(.active_edge)")
+			if(f_connected_edges._groups[0].length==0){
+				d.fx = d3.event.x;
+				d.fy = d3.event.y;
+			}
+			else{
+				f_connected_edges
+					.style("stroke-width",function(){return parseInt(d3.select(this).attr("stroke-width"))+2;})
+					.style("stroke-opacity",1)
+					.classed("blocking",true)
+			}
 		}
 
 		function dragended(d) {
 			if (!d3.event.active) simulation.alphaTarget(0);
+			d3.selectAll(".blocking")
+				.style("stroke-width",function(){return d3.select(this).attr("stroke-width");})
+				.style("stroke-opacity",function(){return d3.select(this).attr("stroke-opacity");})
+				.classed("blocking",false)
 			// d.fx = null;
 			// d.fy = null;
 		}
@@ -504,7 +538,9 @@ var graph_viz = (function(){
 				simulation.stop();
 				// remove the oldest links and nodes
 				_svg.selectAll(".old_node"+layers.depth()).remove();
-				_svg.selectAll(".old_links"+layers.depth()).remove();
+				_svg.selectAll(".old_edge"+layers.depth()).remove();
+				_svg.selectAll(".old_edgepath"+layers.depth()).remove();
+				_svg.selectAll(".old_edgelabel"+layers.depth()).remove();
 				infobox.display_info(d);
 				graphioGremlin.click_query(d);              
 				//d3.select(this).attr("class","active_node");

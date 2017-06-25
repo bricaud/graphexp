@@ -1,6 +1,18 @@
 
 var graphioGremlin = (function(){
 	"use strict";
+
+	var _node_properties = [];
+	var _edge_properties = [];
+
+
+	function get_node_properties(){
+		return _node_properties;
+	}
+	function get_edge_properties(){
+		return _edge_properties;
+	}
+
 	function get_graph_info(){
 		var gremlin_query_nodes = "nodes = g.V().groupCount().by(label);"
 		var gremlin_query_edges = "edges = g.E().groupCount().by(label);"
@@ -97,12 +109,13 @@ var graphioGremlin = (function(){
 				else if (query_type=='graphInfo'){
 					//console.log(Data);
 					infobox.display_graph_info(Data);
-					var node_properties = make_properties_list(Data[1][0]);
+					_node_properties = make_properties_list(Data[1][0]);
 					//console.log(node_properties);
-					var edge_properties = make_properties_list(Data[3][0]);
+					_edge_properties = make_properties_list(Data[3][0]);
 					//console.log(edge_properties);
-					change_nav_bar(node_properties,edge_properties);
-					display_properties_bar(node_properties,edge_properties);
+					change_nav_bar(_node_properties,_edge_properties);
+					display_properties_bar(_node_properties,'nodes','Node properties:');
+					display_properties_bar(_edge_properties,'edges','Edge properties:');
 				}
             $('#outputArea').html(message);
 			$('#messageArea').html('');
@@ -191,6 +204,8 @@ var graphioGremlin = (function(){
 
 
 	return {
+		get_node_properties : get_node_properties,
+		get_edge_properties : get_edge_properties,
 		get_graph_info : get_graph_info,
 		search_query : search_query,
 		click_query :click_query

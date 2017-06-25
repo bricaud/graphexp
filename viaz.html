@@ -137,60 +137,87 @@
 
 	}
 
-	function display_properties_bar(node_data,edge_data){
+	function display_properties_bar(node_prop_list,item,text){
 		var nav_bar = d3.select("#nav_bar");
-		var property_bar = nav_bar.append("div").attr("id","property_bar");
-		property_bar.append('text').text('Node properties: ')
+		var property_bar = nav_bar.append("div").attr("id","property_bar_"+item);
+		property_bar.append('text').text(text)
 		//d3.select('#property_bar').append('text').text('hello')
 		property_bar.selectAll('input')
-			.data(node_data).enter()
+			.data(node_prop_list).enter()
 			.append('label')
 			.text(function (d) { return d; })
-			.append('input').attr('type','checkbox').attr('id',function (d) { return 'prop_'+d; })
+			.append('input').attr('type','checkbox').attr('id',function (d) { return item+"_"+d; })
+			.attr('id_nb',function (d) { console.log(node_prop_list.indexOf(d)); return node_prop_list.indexOf(d); })
 			//.attr('onchange',function(d){display_prop(d);});
-			.attr('onchange','display_prop(id)');
+			.attr('onchange','display_prop(this)');
 		
 
 	}
 
 
-	function display_prop(prop_id){
+	function display_prop(prop){
+		var prop_id = prop.id;
+		var prop_id_nb = prop.getAttribute('id_nb');
 		var text_base_offset = 10;
 		var text_offset = 10;
-		var text_size
+		var prop_name = prop_id.slice(prop_id.indexOf("_")+1);
+		var item = prop_id.slice(0,prop_id.indexOf("_"));		
 		if(d3.select("#"+prop_id).property("checked")){
-			nodes_data = graph_viz.nodes_data();
-			console.log(nodes_data)
-			console.log(d3.selectAll('.prop_details')._groups[0])
-			if (d3.selectAll('.prop_details')._groups[0][0]){
-				console.log(d3.selectAll('.prop_details')._groups[0][0].getComputedTextLength());
-			}
-			if (d3.selectAll('.node')._groups[0].length>0){
-				var prop_nb = d3.selectAll('.prop_details')._groups[0].length/d3.selectAll('.node')._groups[0].length;
-
-			
-			console.log(prop_id)
-			prop_name= prop_id.slice(5)
-			console.log(prop_name)
-			d3.selectAll('.node')//.select('text')
-				//.data(nodes_data).enter()
-				//.append('text')
-				.append("text").classed("prop_details",true).classed(prop_id,true)
-		  		//.attr("x", 12)
-		  		.attr("y",function(d){return graphShapes.node_size(d)+text_base_offset+text_offset*prop_nb;})
-		  		//.attr("y", ".31em")
-				.text(function(d){return get_prop_value(d,prop_name);});
-				//.each();
-			}
+			if (item=='nodes'){
+			var elements_text = d3.selectAll('.node');
+		}
+		else if (item=='edges'){
+			var elements_text = d3.selectAll('.edgelabel');
+		}
+			attach_property(elements_text,prop_name,prop_id_nb,item)
 		}
 		else{
-			d3.selectAll('.node').select('.'+prop_id).remove();
+			if (item=='nodes'){
+				d3.selectAll('.node').select('.'+prop_id).remove();
+			}
+			else if (item=='edges'){
+				d3.selectAll('.edgelabel').select('.'+prop_id).remove();
+			}
+
 		}
 	}
 
-	function get_prop_value(d,prop_name){
+
+	function attach_property(graph_objects,prop_name,prop_id_nb,item){
+		var text_base_offset = 10;
+		var text_offset = 10;
+		var prop_id = item+"_"+prop_name;
+		if (item=='nodes'){
+			elements_text = graph_objects.append("text").style("pointer-events", "none");
+		}
+		else if (item=='edges'){
+			var elements_text = graph_objects.append("textPath")
+			.attr('class','edge_text')
+			.attr('href', function (d, i) {return '#edgepath' + d.id})
+			.style("text-anchor", "middle")
+			.style("pointer-events", "none")
+			.attr("startOffset", "70%");
+			//.text(function (d) {return d.label});
+			prop_id_nb = prop_id_nb + 1;
+		}
+		else { console.log('Bad item name.'); return 1;}
+		elements_text.classed("prop_details",true).classed(prop_id,true)
+	  		//.attr("x", 12)
+	  		.attr("dy",function(d){return graphShapes.node_size(d)+text_base_offset+text_offset*parseInt(prop_id_nb);})
+	  		//.attr("y", ".31em")
+			.text(function(d){return get_prop_value(d,prop_name,item);});
+		}
+
+
+	function get_prop_value(d,prop_name,item){
 		if (prop_name in d.properties){
-			return d.properties[prop_name][0].value;
+			if (item=='nodes'){
+				return d.properties[prop_name][0].value;
+			}
+			else if (item=='edges'){
+				console.log(d.properties[prop_name])
+				return d.properties[prop_name];
+			}
 		}
 		else {
 			return "";

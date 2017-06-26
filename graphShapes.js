@@ -10,6 +10,9 @@ var graphShapes = (function(){
 	var default_edge_stroke_width = 3;
 	var default_edge_color = '#CCC';
 	var edge_label_color = '#111';
+	var color_palette = d3.scaleOrdinal(d3.schemeCategory20);
+	var colored_prop = "none";
+	var node_code_color = [];
 
 	function node_size(d){
 		if ('size' in d) {return d.size;}
@@ -22,7 +25,17 @@ var graphShapes = (function(){
 	}
 
 	function node_color(d){
-		if ('color' in d) {return d.color;}
+		if (colored_prop!="none"){
+			if (colored_prop == "label"){
+				return color_palette(node_code_color(d.label));	
+			}
+			else if (typeof d.properties[colored_prop] !=="undefined"){
+				return color_palette(node_code_color(d.properties[colored_prop][0].value));	
+			}
+			else if ('color' in d.properties) {return d.properties.color[0].value;}
+			else {return default_node_color;}
+		}
+		else if ('color' in d.properties) {return d.properties.color[0].value;}
 		else {return default_node_color;}
 	}
 
@@ -56,7 +69,7 @@ var graphShapes = (function(){
 		else {return default_edge_color;}
 	}
 
-	var color = d3.scaleOrdinal(d3.schemeCategory20);
+
 
 
 	/////////////////////////////////////////////////////////////
@@ -258,26 +271,34 @@ var graphShapes = (function(){
 			//edges_to_push.style("fill-opacity",function(){console.log(0.9*(1-k/nb_layers));return 0.9*(1-k/nb_layers)});
 	
 			d3.selectAll(".old_node"+k)
-				.style("opacity",function(){console.log(0.8*(1-k/nb_layers));return 0.8*(1-k/nb_layers)});
+				.style("opacity",function(){return 0.8*(1-k/nb_layers)});
 			d3.selectAll(".old_edgelabel"+k)
-				.style("opacity",function(){console.log(0.8*(1-k/nb_layers));return 0.8*(1-k/nb_layers)});
+				.style("opacity",function(){return 0.8*(1-k/nb_layers)});
 
 		};
 	}
 
 	function colorize(prop_name){
-
+		colored_prop = prop_name;
 		var value_list = d3.selectAll(".node").data();
 
 
-		if (prop_name=="label"){
-			var value_set = new Set(value_list.map(function(d){	return d.label;}));
-			var code_color = d3.scaleOrdinal().domain(value_set).range(d3.range(0,value_set.size));
+		if (prop_name =="none"){
 			d3.selectAll(".base_circle").style("fill",function(d){
-				return color(code_color(d.label));	
+				return node_color(d);	
 			});
 			d3.selectAll(".Pin").style("fill",function(d){
-				return color(code_color(d.label));	
+				return node_color(d);	
+			});
+		}
+		else if (prop_name=="label"){
+			var value_set = new Set(value_list.map(function(d){	return d.label;}));
+			node_code_color = d3.scaleOrdinal().domain(value_set).range(d3.range(0,value_set.size));
+			d3.selectAll(".base_circle").style("fill",function(d){
+				return color_palette(node_code_color(d.label));	
+			});
+			d3.selectAll(".Pin").style("fill",function(d){
+				return color_palette(node_code_color(d.label));	
 			});
 		}
 
@@ -289,17 +310,17 @@ var graphShapes = (function(){
 				}
 			}));
 
-			var code_color = d3.scaleOrdinal().domain(value_set).range(d3.range(0,value_set.size))//value_set.length])
+			node_code_color = d3.scaleOrdinal().domain(value_set).range(d3.range(0,value_set.size))//value_set.length])
 
 			d3.selectAll(".base_circle").style("fill",function(d){
 				if (typeof d.properties[prop_name] !=="undefined"){
-					return color(code_color(d.properties[prop_name][0].value));	
+					return color_palette(node_code_color(d.properties[prop_name][0].value));	
 				}
 				return node_color(d);
 			});
 			d3.selectAll(".Pin").style("fill",function(d){
 				if (typeof d.properties[prop_name] !=="undefined"){
-					return color(code_color(d.properties[prop_name][0].value));	
+					return color_palette(node_code_color(d.properties[prop_name][0].value));	
 				}
 				return node_color(d);
 			});

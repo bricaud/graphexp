@@ -8,23 +8,6 @@
   stroke-opacity: 0.6;
 }
 
-.old_edge1 {
-  stroke: #999;
-  stroke-opacity: 0.4;
-}
-.old_edge2 {
-  stroke: #999;
-  stroke-opacity: 0.3;
-}
-.old_edge3 {
-  stroke: #999;
-  stroke-opacity: 0.2;
-}
-.old_edge4 {
-  stroke: #999;
-  stroke-opacity: 0.1;
-}
-
 .node circle {
   stroke: #000;
   stroke-width: 1.5px;
@@ -37,7 +20,6 @@
 .node:hover circle {
   stroke-opacity: 0.6;
 }
-
 
 .pinned circle {
   stroke: #000;
@@ -53,64 +35,14 @@
 }
 
 .old_node0 circle {
-  fill: #fff;
+  stroke-opacity: 0.9;
 }
-
 
 .old_node0 text {
   font: 10px sans-serif;
+  opacity: 0.9;
   color: #000;/* Fallback for older browsers */
   color: rgba(0,0,0,0.5);
-}
-
-.old_node1 circle {
-  fill: #fff;
-  stroke-opacity: 0.6;
-}
-
-.old_node1 text {
-  font: 10px sans-serif;
-  opacity: 0.6;
-  color: #000;/* Fallback for older browsers */
-  color: rgba(0,0,0,0.6);
-}
-
-.old_node2 circle {
-  fill: #fff;
-  stroke-opacity: 0.3;
-}
-
-
-.old_node2 text {
-  font: 10px sans-serif;
-  opacity: 0.3;
-  color: #000;/* Fallback for older browsers */
-  color: rgba(0,0,0,0.3);
-}
-
-.old_node3 circle {
-  fill: #fff;
-  stroke-opacity: 0.1;
-}
-
-
-.old_node3 text {
-  font: 10px sans-serif;
-  opacity: 0.1;
-  color: #000;/* Fallback for older browsers */
-  color: rgba(0,0,0,0.1);
-}
-
-.old_node4 circle {
-  fill: #fff;
-  stroke-opacity: 0.1;
-}
-
-.old_node4 text {
-  font: 10px sans-serif;
-  opacity: 0.1;
-  color: #000;/* Fallback for older browsers */
-  color: rgba(0,0,0,0.1);
 }
 
 .cell {

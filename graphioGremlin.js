@@ -116,6 +116,7 @@ var graphioGremlin = (function(){
 					change_nav_bar(_node_properties,_edge_properties);
 					display_properties_bar(_node_properties,'nodes','Node properties:');
 					display_properties_bar(_edge_properties,'edges','Edge properties:');
+					display_color_choice(_node_properties,'nodes','Node color by:');
 				}
             $('#outputArea').html(message);
 			$('#messageArea').html('');

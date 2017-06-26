@@ -4,7 +4,7 @@ var graph_viz = (function(){
 	var _svg = {};
 	var _nodes = {};
 	var _links = {};
-	var simulation = {};
+	var _simulation = {};
 	var _Nodes = [];
 	var _Links = [];
 
@@ -20,24 +20,11 @@ var graph_viz = (function(){
 			//width = +svg.attr("width");
 			//height = +svg.attr("height");
 
-		// definition of the arrow for links.
-		/*_svg.append("svg:defs").selectAll("marker")
-			.data(["end"])      // Different link/path types can be defined here
-			.enter().append("svg:marker")    // This section adds in the arrows
-			.attr("id", String)
-			.attr("viewBox", "0 -5 10 10")
-			.attr("refX", graphShapes.default_node_size)//+graphShapes.default_node_width)
-			.attr("refY", 0)
-			.attr("markerWidth", 6)
-			.attr("markerHeight", 6)
-			.attr("orient", "auto")
-			.append("svg:path")
-			.attr("d", "M0,-5L10,0L0,5");*/
-
-		
+	}
 
 
-
+	function get_simulation_handle(){
+		return _simulation;
 	}
 
 	function svg_handle(){
@@ -96,15 +83,18 @@ var graph_viz = (function(){
 	///////////////////////////////////////
 	// Remove force layout and data
 	function clear(){
-		simulation.stop();
-		simulation.nodes([]);
-		simulation.force("link").links([]);
+		console.log(_simulation)
+		if (Object.keys(_simulation).length != 0){
+			_simulation.stop();
+			_simulation.nodes([]);
+			_simulation.force("link").links([]);
+		}
 		//var svg = d3.select("svg");
 		//var svg_graph = d3.select("#main").select("svg").select("g");
 		_svg.selectAll("*").remove();
 		_Nodes = [],_Links =[];
 		layers.clear_old();
-		simulation = {};
+		_simulation = {};
 	}
 
 
@@ -142,7 +132,7 @@ var graph_viz = (function(){
 			for (var k=nb_layers;k>0;k--) {
 				var kp=k-1;
 				_svg.selectAll(".old_edge"+kp).classed("old_edge"+k,true);
-				_svg.selectAll(".old_node"+kp).classed("old_node"+k,true);//attr("class","old_node"+k);
+				_svg.selectAll(".old_node"+kp).classed("old_node"+k,true);
 				_svg.selectAll(".old_edgepath"+kp).classed("old_edgepath"+k,true);
 				_svg.selectAll(".old_edgelabel"+kp).classed("old_edgelabel"+k,true);
 			};
@@ -321,26 +311,26 @@ var graph_viz = (function(){
 	////////////////////////////////////////////////////////////////////////////////////
 	function simulation_start(center_f){
 		// Define the force applied to the nodes
-		simulation = d3.forceSimulation()
+		_simulation = d3.forceSimulation()
 			.force("charge", d3.forceManyBody().strength(-600))
 			.force("link", d3.forceLink().strength(0.5).id(function(d) { return d.id; }));
 
 		if (center_f == 1){
 			var force_y=0.1;
 			var force_x=0.1;
-			simulation.force("center", d3.forceCenter(width / 2, height / 2));
+			_simulation.force("center", d3.forceCenter(width / 2, height / 2));
 		}
 		else {
 			var force_y=0;
 			var force_x=0;
 		}
-		simulation.force("y",d3.forceY().strength(function(d){
+		_simulation.force("y",d3.forceY().strength(function(d){
 			return force_y;
 		}))
 		.force("x",d3.forceX().strength(function(d){
 			return force_x;
 		}));
-		return simulation;
+		return _simulation;
 	}
 
 
@@ -367,8 +357,6 @@ var graph_viz = (function(){
 		all_links.exit().classed("old_edge0",true).classed("active_edge",false);
 		all_edgepaths.exit().classed("old_edgepath0",true).classed("active_edgepath",false);
 		all_edgelabels.exit().classed("old_edgelabel0",true).classed("active_edgelabel",false);
-		//var edgesp_toremove = data_edgepaths.exit().remove();
-		//var edgesl_toremove = data_edgelabels.exit().remove();
 
 		
 		// handling active links associated to the data
@@ -397,7 +385,7 @@ var graph_viz = (function(){
 		//console.log(data_node);
 		// old nodes not active any more are tagged
 		all_nodes.exit().classed("old_node0",true).classed("active_node",false);//;attr("class","old_node0");
-		all_nodes.exit().selectAll(".Active").remove();// ???
+
 
 		// nodes associated to the data are constructed
 		_nodes = all_nodes.enter();
@@ -412,6 +400,7 @@ var graph_viz = (function(){
 
 		//////////////////////////////////
 		// Additional clean up
+		graphShapes.decorate_old_elements(layers.depth());
 		svg_graph.selectAll("g").filter(".pinned").moveToFront();
 
 
@@ -426,11 +415,11 @@ var graph_viz = (function(){
 		// simulation model and parameters
 	
 	
-		var simulation = simulation_start(center_f);
+		_simulation = simulation_start(center_f);
 		// Associate the simulation with the data
-		simulation.nodes(_Nodes).on("tick", ticked);
-		simulation.force("link").links(_Links);
-		simulation.alphaTarget(0);
+		_simulation.nodes(_Nodes).on("tick", ticked);
+		_simulation.force("link").links(_Links);
+		_simulation.alphaTarget(0);
 
 		////////////////////////
 		// handling simulation steps
@@ -484,7 +473,7 @@ var graph_viz = (function(){
 		// Handling mouse events
 
 		function dragstarted(d) {
-			if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+			if (!d3.event.active) _simulation.alphaTarget(0.3).restart();
 			d.fx = d.x;
 			d.fy = d.y;
 		/*
@@ -515,7 +504,7 @@ var graph_viz = (function(){
 		}
 
 		function dragended(d) {
-			if (!d3.event.active) simulation.alphaTarget(0);
+			if (!d3.event.active) _simulation.alphaTarget(0);
 			d3.selectAll(".blocking")
 				.style("stroke-width",function(){return d3.select(this).attr("stroke-width");})
 				.style("stroke-opacity",function(){return d3.select(this).attr("stroke-opacity");})
@@ -525,7 +514,7 @@ var graph_viz = (function(){
 		}
 
 		function clicked(d) {
-			d3.select(".Active").remove();
+			d3.select(".focus_node").remove();
 			//d3.select(this)
 			//  .append("circle").classed("Active",true)
 			//  .attr("r", 4)
@@ -535,12 +524,13 @@ var graph_viz = (function(){
 			var isChecked = input.checked;
 			if (isChecked) infobox.display_info(d);
 			else {
-				simulation.stop();
+				_simulation.stop();
 				// remove the oldest links and nodes
-				_svg.selectAll(".old_node"+layers.depth()).remove();
-				_svg.selectAll(".old_edge"+layers.depth()).remove();
-				_svg.selectAll(".old_edgepath"+layers.depth()).remove();
-				_svg.selectAll(".old_edgelabel"+layers.depth()).remove();
+				var stop_layer = layers.depth()-1;
+				_svg.selectAll(".old_node"+stop_layer).remove();
+				_svg.selectAll(".old_edge"+stop_layer).remove();
+				_svg.selectAll(".old_edgepath"+stop_layer).remove();
+				_svg.selectAll(".old_edgelabel"+stop_layer).remove();
 				infobox.display_info(d);
 				graphioGremlin.click_query(d);              
 				//d3.select(this).attr("class","active_node");
@@ -595,7 +585,7 @@ var graph_viz = (function(){
 		create_arrows : create_arrows,
 		addzoom : addzoom,
 		clear : clear,
-		simulation : simulation,
+		get_simulation_handle : get_simulation_handle,
 		simulation_start : simulation_start,
 		refresh_data : refresh_data,
 		layers : layers,

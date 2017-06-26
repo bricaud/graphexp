@@ -105,7 +105,8 @@ Layout styles
 .main, .aside
 {
 	margin-bottom: 1em;
-	padding: 0;
+	padding: 0em;
+	font: 12px sans-serif;
 }
 
 .footer
@@ -162,6 +163,19 @@ Nav
 	background-color: red;
 }
 
+/* -----------------------
+Side styles
+------------------------*/
+.aside li
+{
+	padding-left: 0;
+	margin-left: -5px;
+	list-style: none;	
+}
+.aside div
+{
+	margin: 1em 0 1em 0;
+}
 /* -----------------------
 Single styles
 ------------------------*/
@@ -245,7 +259,7 @@ Wide styles
 	.main
 	{
 		float: left;
-		width: 75%;
+		width: 60%;
 		margin-right: 0%;
 		margin-bottom: 1em;
 	}
@@ -253,8 +267,9 @@ Wide styles
 	.aside
 	{
 		float: left;
-		width: 25%;
+		width: 20%;
 		margin-bottom: 1em;
+		margin-top: 1em;
 	}
 
 	.footer { padding: 2em 3em; }

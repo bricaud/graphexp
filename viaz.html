@@ -58,23 +58,29 @@
 					<li>
 						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show names
 					</li>
-					<li><button name="graphInfo" onclick="get_graph_info();">Get graph info</button></li>
+					<li><input type="number" id="nbLayers" value="1" min="1" max="128" onclick="set_nb_layers()"> Nb of layers.
+					</li>
 				</ul>
 			</div>
 		</div>
 		<div class="content">
 			<div class="container">
+				<div class="aside" style="background-color:transparent;">
+					<div  id="graphInfoBar" style="background-color:transparent;">
+						<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
+					</div>
+					<div  id="graphInfo" style="background-color:transparent;">	
+					</div>
+				</div>
+
 				<div class="main" id="main">
-					<!--<svg width="800" height="800"></svg>-->
 					<svg width="900" height="900"></svg>
 				</div>
 
-				<div class="aside" id="details" style="background-color:transparent;">
+				<div class="aside" id="details" style="background-color:transparent;pointer-events:none;">
 					<div id="messageArea"></div><div id="outputArea"></div>
-				</div>
-				<div  class="aside" id="nodeInfo" style="background-color:transparent;">
-				</div>				
-				<div  class="aside" id="graphInfo" style="background-color:transparent;">
+					<div  class="aside" id="nodeInfo" style="background-color:transparent;pointer-events:none;">
+					</div>				
 				</div>
 				<!--
 				<div  class="aside" id="ImageInfo" style="background-color:transparent;">
@@ -101,7 +107,7 @@
 			// Add the zoom layer to the graph
 			//var svg_graph = 
 			graph_viz.addzoom();
-			graph_viz.layers.set_nb_layers = 4;
+			//graph_viz.layers.set_nb_layers(4);
 
 			// Create the info box for node details
 			infobox.create("#graphInfo","#nodeInfo"); // from module in infobox.js
@@ -137,23 +143,45 @@
 
 	}
 
-	function display_properties_bar(node_prop_list,item,text){
-		var nav_bar = d3.select("#nav_bar");
+	function display_properties_bar(prop_list,item,text){
+		var nav_bar = d3.select("#graphInfoBar");
 		var property_bar = nav_bar.append("div").attr("id","property_bar_"+item);
-		property_bar.append('text').text(text)
+		property_bar.append('text').text(text).style("font-weight","bold");
 		//d3.select('#property_bar').append('text').text('hello')
-		property_bar.selectAll('input')
-			.data(node_prop_list).enter()
-			.append('label')
-			.text(function (d) { return d; })
-			.append('input').attr('type','checkbox').attr('id',function (d) { return item+"_"+d; })
-			.attr('id_nb',function (d) { console.log(node_prop_list.indexOf(d)); return node_prop_list.indexOf(d); })
+		var property_label = property_bar.selectAll('input').append("ul")
+			.data(prop_list).enter().append("li");
+			//.append('label');
+
+			
+		property_label.append('input').attr('type','checkbox').attr('id',function (d) { return item+"_"+d; })
+			.attr('id_nb',function (d) { return prop_list.indexOf(d); })
 			//.attr('onchange',function(d){display_prop(d);});
 			.attr('onchange','display_prop(this)');
+
+		property_label.append('label').text(function (d) { return d; });
 		
 
 	}
 
+	function display_color_choice(prop_list,item,text){
+		prop_list = ['none','label'].concat(prop_list);
+		var nav_bar = d3.select("#graphInfoBar");
+		var color_bar = nav_bar.append("div").attr("id","color_choice_"+item);
+		color_bar.append("text").text(text).style("font-weight","bold");
+		color_bar.append("select").attr("class","select").attr("id","color_select_"+item)
+			.attr("onchange","colorize(this)")
+			.selectAll("option")
+			.data(prop_list).enter()
+			.append("option")
+			.text(function (d) { return d; });
+	}
+
+	function colorize(selection){
+		var value = selection.value;
+		console.log(value);
+		graphShapes.colorize(value);
+
+	}
 
 	function display_prop(prop){
 		var prop_id = prop.id;
@@ -224,7 +252,13 @@
 		}
 	}
 
+	function set_nb_layers(){
+		var nb_layers = parseInt(document.getElementById('nbLayers').value);
+		//var nb_layers = parseInt(layer_input.getAttribute("value"));
+		console.log(nb_layers)
+		graph_viz.layers.set_nb_layers(nb_layers);
 
+	}
 
 
 

@@ -55,6 +55,10 @@ var graphShapes = (function(){
 		if ('color' in d){return d.color;}
 		else {return default_edge_color;}
 	}
+
+	var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+
 	/////////////////////////////////////////////////////////////
 	// decorate the node
 	function decorate_node(node,with_active_node){
@@ -113,20 +117,12 @@ var graphShapes = (function(){
 			d3.selectAll(".active_node").each(function(d){
 				if(d.id==with_active_node){
 					var n_radius = Number(d3.select(this).select(".base_circle").attr("r"))+active_node_width;
-					//console.log(d3.select(this).select("circle").attr("r"))
-					//console.log(n_radius)
 					d3.select(this)
-						.append("circle").classed("Active",true)
+						.append("circle").classed("focus_node",true)
 						.attr("r", n_radius)
 						.attr("fill", node_color)
 						.attr("opacity",0.3)
 						.moveToBack();
-						//.attr("transform", function(d) { return "translate(-12,-12)"; })
-						//.attr("fill", function(d) { return color(d.labelV); });
-						//.append("circle").classed("Active",true)
-						//.attr("r", 4)
-						//.attr("transform", function(d) { return "translate(-12,-12)"; })
-						//.attr("fill", function(d) { return color(d.labelV); });
 				}
 			});
 		}
@@ -253,6 +249,70 @@ var graphShapes = (function(){
 
 
 
+	function decorate_old_elements(nb_layers){
+		// old links and nodes become older
+		// and move to the next layer
+		for (var k=0;k<nb_layers;k++) {
+			d3.selectAll(".old_edge"+k)
+			 	.style("opacity",function(){return 0.8*(1-k/nb_layers)});
+			//edges_to_push.style("fill-opacity",function(){console.log(0.9*(1-k/nb_layers));return 0.9*(1-k/nb_layers)});
+	
+			d3.selectAll(".old_node"+k)
+				.style("opacity",function(){console.log(0.8*(1-k/nb_layers));return 0.8*(1-k/nb_layers)});
+			d3.selectAll(".old_edgelabel"+k)
+				.style("opacity",function(){console.log(0.8*(1-k/nb_layers));return 0.8*(1-k/nb_layers)});
+
+		};
+	}
+
+	function colorize(prop_name){
+
+		var value_list = d3.selectAll(".node").data();
+
+
+		if (prop_name=="label"){
+			var value_set = new Set(value_list.map(function(d){	return d.label;}));
+			var code_color = d3.scaleOrdinal().domain(value_set).range(d3.range(0,value_set.size));
+			d3.selectAll(".base_circle").style("fill",function(d){
+				return color(code_color(d.label));	
+			});
+			d3.selectAll(".Pin").style("fill",function(d){
+				return color(code_color(d.label));	
+			});
+		}
+
+		else{
+
+			var value_set = new Set(value_list.map(function(d){
+				if (typeof d.properties[prop_name]!=="undefined"){
+					return d.properties[prop_name][0].value;
+				}
+			}));
+
+			var code_color = d3.scaleOrdinal().domain(value_set).range(d3.range(0,value_set.size))//value_set.length])
+
+			d3.selectAll(".base_circle").style("fill",function(d){
+				if (typeof d.properties[prop_name] !=="undefined"){
+					return color(code_color(d.properties[prop_name][0].value));	
+				}
+				return node_color(d);
+			});
+			d3.selectAll(".Pin").style("fill",function(d){
+				if (typeof d.properties[prop_name] !=="undefined"){
+					return color(code_color(d.properties[prop_name][0].value));	
+				}
+				return node_color(d);
+			});
+		}
+		
+
+		//console.log(value_set.map(function(d){return d.label;}))
+		//d3.selectAll(".node").style("fill",function(d){
+		//	console.log('hello')
+		//	console.log(d.properties[prop_name][0].value);
+		//	return color(d.properties[prop_name][0].value);
+		//})
+	}
 	///////////////////////////////////////
 	// https://github.com/wbkd/d3-extended
 	d3.selection.prototype.moveToFront = function() {
@@ -289,7 +349,9 @@ var graphShapes = (function(){
 		node_size : node_size,
 		edge_color : edge_color,
 		node_stroke_width : node_stroke_width,
-		create_edge_label :create_edge_label
+		create_edge_label : create_edge_label,
+		decorate_old_elements : decorate_old_elements,
+		colorize : colorize
 	};
 
 })();

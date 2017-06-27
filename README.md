@@ -8,7 +8,7 @@ Graphexp is a javascript interface to explore and display a graph stored in the 
 
 ## Configuration
 
-To use graph Explorer, you need a [Gremlin server](http://tinkerpop.apache.org/) running with REST protocol and a *recent* web browser to display the visualization.
+To use Graph Explorer, you need a [Gremlin server](http://tinkerpop.apache.org/) running with REST protocol and a *recent* web browser to display the visualization.
 On your web browser, just access the file `graphexp.html`.
 
 If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`.
@@ -18,7 +18,15 @@ If the access to the Gremlin server is not `localhost:8182`, the address can be 
 
 ## Getting started
 
-If you do not have your own Gremlin server, you may use a docker container with a server ready to use.
+If do nothave already installed a gremlin server, download the last release of the [Gremlin server](http://tinkerpop.apache.org/) and follow the [documentation](http://tinkerpop.apache.org/docs/current/reference/#gremlin-server). In the server folder just run
+```
+bin/gremlin-server.sh conf/gremlin-server-rest-modern.yaml
+```
+or on windows
+```
+bin/gremlin-server.bat conf/gremlin-server-rest-modern.yaml
+```
+The server shoud start on port `8182`.
 
 To display a node, type in a property name and value, then click on the search button.
 Leaving a blank field and keyword will display the full graph.

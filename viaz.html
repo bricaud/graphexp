@@ -42,21 +42,23 @@
 	<body>
 		<div class="header">
 			<div class="container">
-				<h1 class="header-heading">Graph Explorer v 0.3</h1>
+				<h1 class="header-heading">Graph Explorer v 0.4</h1>
 			</div>
 		</div>
 		<div class="nav-bar">
 			<div class="container" id="nav_bar">
 				<ul class="nav">
 					<li>
-						Enter a field: <div id="prop_choice"><input name="search_field" id="search_field" value="" /></div>
-						Enter a Keyword/value to search for: <input name="search_value" id="search_value" value="" />
+						Enter a field: <span id="prop_choice"><input name="search_field" id="search_field" value="" /></span>
+					</li>
+					<li>
+						Enter a Keyword/value: <input name="search_value" id="search_value" value="" />
 					</li>
 					<li><button name="search query" onclick="search_query();">Search</button></li>
 					<li><button name="clear" onclick="graph_viz.clear();">Clear</button></li>
 					<li><input type="checkbox" name="Freeze" id="freeze-in" />Freeze exploration</li>
 					<li>
-						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show names
+						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show labels
 					</li>
 					<li><input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()"> Nb of layers.
 					</li>

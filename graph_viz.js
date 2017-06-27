@@ -158,7 +158,7 @@ var graph_viz = (function(){
 			var pinned_nodes_data = pinned_Nodes.data(); 
 			// get the node data and merge it with the pinned nodes
 			_Nodes = d.nodes;
-			_Nodes = updateAdd2(_Nodes,pinned_nodes_data);
+			_Nodes = updateAdd(_Nodes,pinned_nodes_data);
 			// add coordinates to the new active nodes that already existed in the previous step
 			_Nodes = transfer_coordinates(_Nodes,old_Nodes);
 			// retrieve the links between nodes and pinned nodes
@@ -313,12 +313,12 @@ var graph_viz = (function(){
 	function simulation_start(center_f){
 		// Define the force applied to the nodes
 		_simulation = d3.forceSimulation()
-			.force("charge", d3.forceManyBody().strength(-600))
-			.force("link", d3.forceLink().strength(0.5).id(function(d) { return d.id; }));
+			.force("charge", d3.forceManyBody().strength(force_strength))
+			.force("link", d3.forceLink().strength(link_strength).id(function(d) { return d.id; }));
 
 		if (center_f == 1){
-			var force_y=0.1;
-			var force_x=0.1;
+			var force_y=force_x_strength;
+			var force_x=force_y_strength;
 			_simulation.force("center", d3.forceCenter(_svg_width / 2, _svg_height / 2));
 		}
 		else {

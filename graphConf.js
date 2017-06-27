@@ -6,7 +6,12 @@ const GRAPH_DATABASE_URL = "http://localhost:8182";
 // Graph configuration
 //svg_width = 900;
 //svg_height = 900;
-default_nb_of_layers = 3;
+const default_nb_of_layers = 3;
+// Simulation
+const force_strength = -600;
+const link_strength = 0.2;
+const force_x_strength = 0.1;
+const force_y_strength = 0.1;
 // Nodes
 const default_node_size = 15;
 const default_stroke_width = 2;

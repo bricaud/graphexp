@@ -190,33 +190,6 @@ var graph_viz = (function(){
 		  return array1.concat(arraytmp);
 		}
 
-		////////////////////////////////////////////////////////////////////////////
-		//update lines of array1 with the ones of array2 when the elements' id match
-		// and add elements of array2 to array1 when they do not exist in array1
-		function updateAdd2(array1,array2){
-		  var arraytmp = array2.slice(0);
-		  var removeValFromIndex = [];
-		  array1.forEach(function(d,index,thearray){ 
-			for(var i=0;i<arraytmp.length;i++){
-			  if (d.id == arraytmp[i].id){
-				//console.log(d.id);
-				thearray[index] = arraytmp[i];
-				removeValFromIndex.push(i);
-				//console.log('Found existing one!')
-			  }
-			}
-		  });
-		  // remove the already updated values (in reverse order, not to mess up the indices)
-		  removeValFromIndex.sort();
-		  //console.log('nb to remove: '+removeValFromIndex.length);
-		  //console.log(removeValFromIndex);
-		  for (var i = removeValFromIndex.length -1; i >= 0; i--){
-			arraytmp.splice(removeValFromIndex[i],1);
-			//console.log(i,removeValFromIndex[i]);
-			}
-		  //console.log('nb of new nodes: '+ arraytmp.length)
-		  return array1.concat(arraytmp);
-		}
 
 		///////////////////////////////////////////////////////////////////
 		function find_active_links(list_of_links,active_nodes){

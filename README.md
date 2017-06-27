@@ -13,6 +13,9 @@ On your web browser, just access the file `graphexp.html`.
 
 If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`.
 
+![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
+
+
 ## Getting started
 
 If you do not have your own Gremlin server, you may use a docker container with a server ready to use.

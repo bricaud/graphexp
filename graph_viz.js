@@ -2,6 +2,8 @@ var graph_viz = (function(){
 	"use strict";
 
 	var _svg = {};
+	var _svg_width = 0;
+	var _svg_height = 0;
 	var _nodes = {};
 	var _links = {};
 	var _simulation = {};
@@ -12,13 +14,12 @@ var graph_viz = (function(){
 
 
 
-	function init(label,width,height){
-		if (!d3.select(label).select("svg"))
-			_svg = d3.select(label).append("svg").attr("width",width).attr("height",height);
-		else 
-			_svg = d3.select(label).select("svg");
-			//width = +svg.attr("width");
-			//height = +svg.attr("height");
+	function init(label){
+		_svg = d3.select(label).select("svg");
+		_svg_width = +d3.select(label).node().getBoundingClientRect().width
+		_svg_height = +d3.select(label).node().getBoundingClientRect().height;
+		_svg.attr("width",_svg_width).attr("height",_svg_height);
+		console.log([_svg_width,_svg_height])
 
 	}
 
@@ -100,7 +101,7 @@ var graph_viz = (function(){
 
 	function addzoom (){
 		_svg.append("rect")
-			.attr("width", width).attr("height", height)
+			.attr("width", _svg_width).attr("height", _svg_height)
 			.style("fill", "none").style("pointer-events", "all")
 			.call(d3.zoom().scaleExtent([1 / 2, 4]).on("zoom", zoomed));
 		_svg = _svg.append("g");
@@ -114,7 +115,7 @@ var graph_viz = (function(){
 	//////////////////////////////////////////////////////////////
 	var layers = (function(){
 
-		var nb_layers = 1;
+		var nb_layers = default_nb_of_layers;
 		var old_Nodes = [];
 		var old_Links = [];
 
@@ -318,7 +319,7 @@ var graph_viz = (function(){
 		if (center_f == 1){
 			var force_y=0.1;
 			var force_x=0.1;
-			_simulation.force("center", d3.forceCenter(width / 2, height / 2));
+			_simulation.force("center", d3.forceCenter(_svg_width / 2, _svg_height / 2));
 		}
 		else {
 			var force_y=0;

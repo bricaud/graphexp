@@ -2,14 +2,14 @@
 var graphShapes = (function(){
 	"use strict";
 
-	var default_node_size = 15;
-	var default_stroke_width = 2;
-	var default_node_color = "#80E810";
-	var active_node_width = 6;
+	//var default_node_size = graphConf.default_node_size;
+	//var default_stroke_width = graphConf.default_stroke_width;
+	//var default_node_color = graphConf.default_node_color;
+	//var active_node_width = graphConf.active_node_width;
 
-	var default_edge_stroke_width = 3;
-	var default_edge_color = '#CCC';
-	var edge_label_color = '#111';
+	//var default_edge_stroke_width = graphConf.default_edge_stroke_width;
+	//var default_edge_color = graphConf.default_edge_color;
+	//var edge_label_color = graphConf.edge_label_color;
 	var color_palette = d3.scaleOrdinal(d3.schemeCategory20);
 	var colored_prop = "none";
 	var node_code_color = [];
@@ -129,12 +129,12 @@ var graphShapes = (function(){
 		if(with_active_node){
 			d3.selectAll(".active_node").each(function(d){
 				if(d.id==with_active_node){
-					var n_radius = Number(d3.select(this).select(".base_circle").attr("r"))+active_node_width;
+					var n_radius = Number(d3.select(this).select(".base_circle").attr("r"))+active_node_margin;
 					d3.select(this)
 						.append("circle").classed("focus_node",true)
 						.attr("r", n_radius)
 						.attr("fill", node_color)
-						.attr("opacity",0.3)
+						.attr("opacity",active_node_margin_opacity)
 						.moveToBack();
 				}
 			});

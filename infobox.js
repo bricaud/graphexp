@@ -6,7 +6,7 @@ var infobox = (function(){
 	var _table_DBinfo = {};
 	var _table_Graphinfo = {};
 	var _side_image = {};
-	//console.log("infobox loaded.");
+	var _font_size = "12px";
 
 	////////////////////////
 	// Public function
@@ -22,7 +22,7 @@ var infobox = (function(){
 		_table_IDinfo = graphElem_bar.append("table").attr("id","tableIdDetails");
 		init_table(_table_IDinfo,["Key","Value"]);
 		_table_DBinfo = graphElem_bar.append("table").attr("id","tableDBDetails");
-		init_table(_table_DBinfo,["Key","Value","VertexProperty"]);
+		init_table(_table_DBinfo,["Key","Value","Id"]);
 
 	}
 
@@ -59,8 +59,8 @@ var infobox = (function(){
 	function append_keysvalues(table_body,data,type){
 		for (var key in data){
 			var info_row = table_body.append("tr");
-	 		var key_text = info_row.append("td").text(key).style("font-size",'12px');
-	 		var value_text = info_row.append("td").text(data[key]).style("font-size",'12px');
+	 		var key_text = info_row.append("td").text(key).style("font-size",_font_size);
+	 		var value_text = info_row.append("td").text(data[key]).style("font-size",_font_size);
 	 		if (type=="bold") {
 	 			key_text.style('font-weight','bolder');}
 		}
@@ -99,9 +99,9 @@ var infobox = (function(){
 		 			//console.log(d.properties[key])
 		 			//console.log(d.properties[key][subkey])
 		 			var new_info_row = info_table.append("tr");
-		 			new_info_row.append("td").text(key).style("font-size",'12px');
-		 			new_info_row.append("td").text(d.properties[key][subkey].value).style("font-size",'12px');
-		 			new_info_row.append("td").text(d.properties[key][subkey].id).style("font-size",'12px');// TODO: handle VertexProperty
+		 			new_info_row.append("td").text(key).style("font-size",_font_size);
+		 			new_info_row.append("td").text(d.properties[key][subkey].value).style("font-size",_font_size);
+		 			new_info_row.append("td").text(d.properties[key][subkey].id).style("font-size",_font_size);// TODO: handle VertexProperty
 		 		}
 		 	}
 		}

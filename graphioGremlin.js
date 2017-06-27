@@ -35,7 +35,7 @@ var graphioGremlin = (function(){
 		var input_string = $('#search_value').val();
 		var input_field = $('#search_field').val();
 		console.log(input_field)
-	 	var filtered_string = input_string; //input_string.replace(/[^a-zA-Z]+/g, ''); //refuse any character not in the alphabet
+	 	var filtered_string = input_string;//.replace(/\W+/g, ''); //refuse any character not in the alphabet
 	 	if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // shorten long strings
 		// Translate to Gremlin query
 	  	if (input_string==""){
@@ -196,8 +196,8 @@ var graphioGremlin = (function(){
 				data_dic.properties[key] = prop_dic[key]}
 		}
 		if (data.type=="edge"){
-			data_dic.source = data.inV
-			data_dic.target = data.outV
+			data_dic.source = data.outV
+			data_dic.target = data.inV
 		}
 		return data_dic
 	}

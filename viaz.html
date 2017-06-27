@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>VIAZ graph explorer</title>
+		<title>Graphexp, graph explorer</title>
 <head>
 <link rel="stylesheet" href="css/graphStyle.css">
 <link rel="stylesheet" href="css/styles.css">
@@ -42,7 +42,7 @@
 	<body>
 		<div class="header">
 			<div class="container">
-				<h1 class="header-heading">Graph Explorer v 0.2</h1>
+				<h1 class="header-heading">Graph Explorer v 0.3</h1>
 			</div>
 		</div>
 		<div class="nav-bar">
@@ -58,28 +58,27 @@
 					<li>
 						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show names
 					</li>
-					<li><input type="number" id="nbLayers" value="1" min="1" max="128" onclick="set_nb_layers()"> Nb of layers.
+					<li><input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()"> Nb of layers.
 					</li>
 				</ul>
 			</div>
 		</div>
 		<div class="content">
-			<div class="container">
-				<div class="aside" style="background-color:transparent;">
-					<div  id="graphInfoBar" style="background-color:transparent;">
+				<div class="main" id="main">
+					<svg></svg>
+				</div>
+
+				<div class="aside left_bar" style="background-color:transparent;pointer-events:none;">
+					<div  id="graphInfoBar" style="background-color:transparent;pointer-events:auto;">
 						<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
 					</div>
-					<div  id="graphInfo" style="background-color:transparent;">	
+					<div  id="graphInfo" style="background-color:transparent;pointer-events:none;">	
 					</div>
 				</div>
 
-				<div class="main" id="main">
-					<svg width="900" height="900"></svg>
-				</div>
-
-				<div class="aside" id="details" style="background-color:transparent;pointer-events:none;">
+				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:none;">
 					<div id="messageArea"></div><div id="outputArea"></div>
-					<div  class="aside" id="nodeInfo" style="background-color:transparent;pointer-events:none;">
+					<div id="nodeInfo" style="background-color:transparent;pointer-events:none;">
 					</div>				
 				</div>
 				<!--
@@ -87,10 +86,6 @@
 					<center><svg width="100" height="100"></svg></center>
 				</div>
 				-->
-
-
-
-			</div>
 		</div>
 		<div class="footer">
 			<div class="container">
@@ -99,11 +94,10 @@
 		</div>
 		<!-- INITIALIZATION -->
 		<script type="text/javascript">
-			var width = 960,
-				height = 500;
 
+			init_property_bar();
 			// Create the graph canvas in the chosen div element
-			graph_viz.init("#main",width,height);
+			graph_viz.init("#main");
 			// Add the zoom layer to the graph
 			//var svg_graph = 
 			graph_viz.addzoom();
@@ -115,6 +109,10 @@
 			//console.log(graph_viz.graph_events.ev);
 			//graph_viz.graph_events.test();
 
+
+	function init_property_bar(){
+		document.getElementById('nbLayers').value = default_nb_of_layers;
+	}
 
 	function change_nav_bar(node_data,edge_data){
 		var nav_bar = d3.select("#prop_choice");

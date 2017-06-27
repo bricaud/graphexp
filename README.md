@@ -2,6 +2,10 @@
 
 Graphexp is a javascript interface to explore and display a graph stored in the Gremlin graphdatabase via the Gremlin server. Graphexp is under the Apache 2.0 licence.
 
+![graphexp](https://github.com/bricaud/graphexp/graphexp2.png "Graph exploration")
+
+
+
 ## Configuration
 
 To use graph Explorer, you need a [Gremlin server](http://tinkerpop.apache.org/) running with REST protocol and a *recent* web browser to display the visualization.

@@ -32,6 +32,8 @@
 
 	function get_graph_info(){
 		graphioGremlin.get_graph_info();
+		infobox.show_element("#graphInfo");
+		document.getElementById ("showgraphinfo").checked = true;
 	}
 </script>
 <!-- ------------------------------------------------- -->
@@ -73,6 +75,7 @@
 				<div class="aside left_bar" style="background-color:transparent;pointer-events:none;">
 					<div  id="graphInfoBar" style="background-color:transparent;pointer-events:auto;">
 						<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
+						<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>Show/hide graph info
 					</div>
 					<div  id="graphInfo" style="background-color:transparent;pointer-events:none;">	
 					</div>
@@ -119,6 +122,7 @@
 	function change_nav_bar(node_data,edge_data){
 		var nav_bar = d3.select("#prop_choice");
 		nav_bar.select("input").remove();
+		nav_bar.select("select").remove();
 		//nav_choices = nav_bar.append("ul");
 		//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
 		var select = d3.select('#prop_choice')
@@ -145,6 +149,7 @@
 
 	function display_properties_bar(prop_list,item,text){
 		var nav_bar = d3.select("#graphInfoBar");
+		nav_bar.select("#property_bar_"+item).remove();
 		var property_bar = nav_bar.append("div").attr("id","property_bar_"+item);
 		property_bar.append('text').text(text).style("font-weight","bold");
 		//d3.select('#property_bar').append('text').text('hello')
@@ -166,6 +171,7 @@
 	function display_color_choice(prop_list,item,text){
 		prop_list = ['none','label'].concat(prop_list);
 		var nav_bar = d3.select("#graphInfoBar");
+		nav_bar.select("#color_choice_"+item).remove();
 		var color_bar = nav_bar.append("div").attr("id","color_choice_"+item);
 		color_bar.append("text").text(text).style("font-weight","bold");
 		color_bar.append("select").attr("class","select").attr("id","color_select_"+item)
@@ -260,7 +266,13 @@
 
 	}
 
-
+	function show_hide_element(element_label){
+		element = d3.select(element_label);
+		var input = document.getElementById ("showgraphinfo");
+		var isChecked = input.checked;
+		if (isChecked) element.style("display", "inline");
+		else {element.style("display", "none");}
+	}
 
 
 		</script>

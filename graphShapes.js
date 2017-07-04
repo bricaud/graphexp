@@ -177,7 +177,7 @@ var graphShapes = (function(){
 			.attr("ID",function(d) { return d.id;});
 	 
 
-		graph_viz.create_arrows();
+		graph_viz.create_arrows(edges_deco);
 		// Attach the arrows
 		edges_deco.attr("marker-end", function(d) {return "url(#marker_" + d.id + ")"})
 		.attr('stroke-width', edge_stroke_width)

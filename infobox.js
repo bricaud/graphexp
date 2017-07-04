@@ -23,6 +23,7 @@ var infobox = (function(){
 		init_table(_table_IDinfo,["Key","Value"]);
 		_table_DBinfo = graphElem_bar.append("table").attr("id","tableDBDetails");
 		init_table(_table_DBinfo,["Key","Value","Id"]);
+		hide_element(label_graph);
 
 	}
 
@@ -64,6 +65,19 @@ var infobox = (function(){
 	 		if (type=="bold") {
 	 			key_text.style('font-weight','bolder');}
 		}
+	}
+
+	function hide_element(element_label){
+		var element = d3.select(element_label);
+		element.style('display','none');
+	}
+	function show_element(element_label){
+		var element = d3.select(element_label);
+		element.style('display','inline');
+	}
+
+	function show_graph_info(){
+		show_element(_)
 	}
 
 	function display_info(node_data){
@@ -120,7 +134,9 @@ var infobox = (function(){
 	return {
 		create : create,
 		display_info : display_info,
-		display_graph_info : display_graph_info
+		display_graph_info : display_graph_info,
+		hide_element : hide_element,
+		show_element : show_element
 	};
 
 })();

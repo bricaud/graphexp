@@ -1,6 +1,6 @@
 # Graphexp: graph explorer with D3.js
 
-Graphexp is a javascript interface to explore and display a graph stored in the Gremlin graphdatabase via the Gremlin server. Graphexp is under the Apache 2.0 licence.
+Graphexp is a web interface to explore and display a graph stored in the Gremlin graph database via the Gremlin server. Graphexp is under the Apache 2.0 licence.
 
 ![graphexp](https://github.com/bricaud/graphexp/blob/master/graphexp2.png "Graph exploration")
 
@@ -18,7 +18,9 @@ If the access to the Gremlin server is not `localhost:8182`, the address can be 
 
 ## Getting started
 
-If do nothave already installed a gremlin server, download the last release of the [Gremlin server](http://tinkerpop.apache.org/) and follow the [documentation](http://tinkerpop.apache.org/docs/current/reference/#gremlin-server). In the server folder just run
+### Intalling a Gremlin server
+
+If have not yet installed a gremlin server, download the last release of the [Gremlin server](http://tinkerpop.apache.org/) and follow the [documentation](http://tinkerpop.apache.org/docs/current/reference/#gremlin-server). In the server folder just run
 ```
 bin/gremlin-server.sh conf/gremlin-server-rest-modern.yaml
 ```
@@ -26,10 +28,19 @@ or on windows
 ```
 bin/gremlin-server.bat conf/gremlin-server-rest-modern.yaml
 ```
+This default server comes with a small graph database of 6 nodes.
 The server shoud start on port `8182`.
 
+
+Alternatively, if you have Docker installed on your machine, you may run a Docker container with an already configured Gremlin server. You can find one on [this page](https://hub.docker.com/r/bricaud/gremlin-server-REST/). This server have a graph database containing a demo graph: the tree of life, with 35960 nodes and 35959 edges. You can download it and run it using
+```
+docker pull bricaud/gremlin-server-rest
+docker run -p 8182:8182 -it --name gremlin-server-rest bricaud/gremlin-server-rest
+```
+
+### Graphexp guidelines
 To display a node, type in a property name and value, then click on the search button.
-Leaving a blank field and keyword will display the full graph.
+Leaving a blank field and keyword will display the full graph (do not display the full graph if the graph is large!).
 The node and edge properties can be automatically retrieved using the `get graph info` button. Pushing this button will also display some graph properties on the left side of the page.
 
 When a node of the visualization is clicked, it will become 'active' with a circle surround it and its information will be display on the right side of the page. Moreover, this action will trigger the display of its neighbors.
@@ -58,4 +69,10 @@ If a node property called 'color' exists in the node properties with an hexadeci
 The program uses:
 * the D3.js library to visualize a graph in an interactive manner, [API Reference](https://github.com/d3/d3/blob/master/API.md),
 * an ajax request (with Jquery) that query the graph database (Gremlin Tinkerpop via REST).
+
+## Tutorial with the tree of life
+Once your gremlin server is up and running (from the [Docker repository](https://hub.docker.com/r/bricaud/gremlin-server-REST/)), click on the `get graph info` button. Information should appear on the left side of the page, like on the following image.
+![graphexp](https://github.com/bricaud/graphexp/blob/master/graphexp2.png "Graph exploration")
+
+
 

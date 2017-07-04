@@ -19,7 +19,7 @@ var graph_viz = (function(){
 		_svg_width = +d3.select(label).node().getBoundingClientRect().width
 		_svg_height = +d3.select(label).node().getBoundingClientRect().height;
 		_svg.attr("width",_svg_width).attr("height",_svg_height);
-		console.log([_svg_width,_svg_height])
+		//console.log([_svg_width,_svg_height])
 
 	}
 
@@ -60,12 +60,17 @@ var graph_viz = (function(){
 		return _Links;
 	}
 	
-	function create_arrows(){
-		_svg.selectAll("marker")
-			.data(_Links)
+	function create_arrows(edge_in){
+		var edge_data = edge_in.data();
+		var arrow_data = _svg.selectAll('.arrow').data();
+		var data = arrow_data.concat(edge_data);
+
+		_svg.selectAll('.arrow')
+			.data(data)
 			.enter()
-			.append('svg:marker')
-			.attr('id', function(d){ return 'marker_' + d.id})
+			.append('marker')			
+			.attr('class','arrow')
+			.attr('id', function(d){return 'marker_' + d.id})
 			.attr('markerHeight', 5)
 			.attr('markerWidth', 5)
 			.attr('markerUnits', 'strokeWidth')

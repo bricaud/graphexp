@@ -72,7 +72,24 @@ The program uses:
 
 ## Tutorial with the tree of life
 Once your gremlin server is up and running (from the [Docker repository](https://hub.docker.com/r/bricaud/gremlin-server-REST/)), click on the `get graph info` button. Information should appear on the left side of the page, like on the following image.
-![graphexp](https://github.com/bricaud/graphexp/blob/master/graphexp2.png "Graph exploration")
+![graphexptol1](https://github.com/bricaud/graphexp/blob/master/graphexptol1.png "Graph exploration Tree of life")
 
+This graph has a single type of nodes (label 'vertex') and a single type of edges (label 'edge'). Each node is a species (taxon) of the earth, and directed edges represent the link ancestor-descendant.
+The different node properties are displayed on the left. 
+* `CHILDCOUNT` the number of descendent nodes
+* `name` the name of the species
+* `HASPAGE` whether there is an page of information on the [Tree Of Life Project website](http://tolweb.org/tree/home.pages/downloadtree.html)
+* `ID` Tree of Life Project unique id
+* `CONFIDENCE` confidence in classification, from confident (0) to less confident (1) and (2)
+* `EXTINCT` wether the node is extinct (2) or not (0)
+* `LEAF` the node is a leaf of the tree (1) or the node does not represent a leaf (it has or will have descendent nodes on the Tree of Life) (0)
+* `PHYLESIS` (0) monophylectic, (1) uncertain, (2) not monophylectic
+
+On the top navigation bar, choose the field `name`, enter 'Dinosauria' as name in the input and click on the `Search` button. A single node, corresponding to the Dinosaurs group, should appear in the middle of the page. Click on the node to display node details on the right and its ancestors and descendants on the graph. 
+Check the box `name` on the left bar to display the node names.
+You should see appearing the two orders of dinosaurs `Sauriscia` and `Ornithischia`, as in the [Wikipedia dinosaur page](https://en.wikipedia.org/wiki/Dinosaur_classification) and an additional `none` node. This latter node is a taxon that have ancestors and descendants but do not have a name. Note that there are different version of the tree of life and it is always evolving as researchers find new species.
+![graphexptol2](https://github.com/bricaud/graphexp/blob/master/graphexptol2.png "Graph exploration Tree of life")
+
+If you want to explore the world of insects, you may start with the taxon 'Insecta' and follow the links.
 
 

@@ -2,7 +2,7 @@
 
 Graphexp is a web interface to explore and display a graph stored in the Gremlin graph database via the Gremlin server. Graphexp is under the Apache 2.0 licence.
 
-![graphexp](https://github.com/bricaud/graphexp/blob/master/graphexp2.png "Graph exploration")
+![graphexp](https://github.com/bricaud/graphexp/blob/master/images/graphexp2.png "Graph exploration")
 
 
 
@@ -13,7 +13,7 @@ On your web browser, just access the file `graphexp.html`.
 
 If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`.
 
-![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
+![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 
 
 ## Getting started
@@ -72,7 +72,7 @@ The program uses:
 
 ## Tutorial with the tree of life
 Once your gremlin server is up and running (from the [Docker repository](https://hub.docker.com/r/bricaud/gremlin-server-REST/)), click on the `get graph info` button. Information should appear on the left side of the page, like on the following image.
-![graphexptol1](https://github.com/bricaud/graphexp/blob/master/graphexptol1.png "Graph exploration Tree of life")
+![graphexptol1](https://github.com/bricaud/graphexp/blob/master/images/graphexptol1.png "Graph exploration Tree of life")
 
 This graph has a single type of nodes (label 'vertex') and a single type of edges (label 'edge'). Each node is a species (taxon) of the earth, and directed edges represent the link ancestor-descendant.
 The different node properties are displayed on the left. 
@@ -88,12 +88,12 @@ The different node properties are displayed on the left.
 On the top navigation bar, choose the field `name`, enter 'Dinosauria' as name in the input and click on the `Search` button. A single node, corresponding to the Dinosaurs group, should appear in the middle of the page. Click on the node to display node details on the right and its ancestors and descendants on the graph. 
 Check the box `name` on the left bar to display the node names.
 You should see appearing the two orders of dinosaurs `Sauriscia` and `Ornithischia`, as in the [Wikipedia dinosaur page](https://en.wikipedia.org/wiki/Dinosaur_classification) and an additional `none` node which is the ancestor. This latter node is a taxon that have ancestors and descendants but do not have a name. Note that there are different version of the tree of life and it is always evolving as researchers find new species.
-![graphexptol2](https://github.com/bricaud/graphexp/blob/master/graphexptol2.png "Graph exploration Tree of life")
+![graphexptol2](https://github.com/bricaud/graphexp/blob/master/images/graphexptol2.png "Graph exploration Tree of life")
 You may now enjoy the exploration of the dinosaur order by clicking on nodes and following ascendant and descendant lines. The oldest nodes will vanish as you explore the data and if you want more nodes to be displayed, just increase the number of layers on the top navigation bar.
 
 You may also color the nodes according to the values of some of their properties by clicking on the color tab on the left side. The color scale is computed using the range of values of the nodes already displayed and a palette of 20 colors. You should refresh the color after a few steps of exploration.
 
-![graphexptol3](https://github.com/bricaud/graphexp/blob/master/graphexptol3.png "Graph exploration Tree of life")
+![graphexptol3](https://github.com/bricaud/graphexp/blob/master/images/graphexptol3.png "Graph exploration Tree of life")
 
 If you want to explore the world of insects, you may start with the taxon 'Insecta' and follow the links.
 

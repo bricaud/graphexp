@@ -87,8 +87,13 @@ The different node properties are displayed on the left.
 
 On the top navigation bar, choose the field `name`, enter 'Dinosauria' as name in the input and click on the `Search` button. A single node, corresponding to the Dinosaurs group, should appear in the middle of the page. Click on the node to display node details on the right and its ancestors and descendants on the graph. 
 Check the box `name` on the left bar to display the node names.
-You should see appearing the two orders of dinosaurs `Sauriscia` and `Ornithischia`, as in the [Wikipedia dinosaur page](https://en.wikipedia.org/wiki/Dinosaur_classification) and an additional `none` node. This latter node is a taxon that have ancestors and descendants but do not have a name. Note that there are different version of the tree of life and it is always evolving as researchers find new species.
+You should see appearing the two orders of dinosaurs `Sauriscia` and `Ornithischia`, as in the [Wikipedia dinosaur page](https://en.wikipedia.org/wiki/Dinosaur_classification) and an additional `none` node which is the ancestor. This latter node is a taxon that have ancestors and descendants but do not have a name. Note that there are different version of the tree of life and it is always evolving as researchers find new species.
 ![graphexptol2](https://github.com/bricaud/graphexp/blob/master/graphexptol2.png "Graph exploration Tree of life")
+You may now enjoy the exploration of the dinosaur order by clicking on nodes and following ascendant and descendant lines. The oldest nodes will vanish as you explore the data and if you want more nodes to be displayed, just increase the number of layers on the top navigation bar.
+
+You may also color the nodes according to the values of some of their properties by clicking on the color tab on the left side. The color scale is computed using the range of values of the nodes already displayed and a palette of 20 colors. You should refresh the color after a few steps of exploration.
+
+![graphexptol3](https://github.com/bricaud/graphexp/blob/master/graphexptol3.png "Graph exploration Tree of life")
 
 If you want to explore the world of insects, you may start with the taxon 'Insecta' and follow the links.
 

@@ -32,7 +32,7 @@ This default server comes with a small graph database of 6 nodes.
 The server shoud start on port `8182`.
 
 
-Alternatively, if you have Docker installed on your machine, you may run a Docker container with an already configured Gremlin server. You can find one on [this page](https://hub.docker.com/r/bricaud/gremlin-server-REST/). This server have a graph database containing a demo graph: the tree of life, with 35960 nodes and 35959 edges. You can download it and run it using
+Alternatively, if you have Docker installed on your machine, you may run a Docker container with an already configured Gremlin server. You can find one on [this page](https://hub.docker.com/r/bricaud/gremlin-server-rest/). This server have a graph database containing a demo graph: the tree of life, with 35960 nodes and 35959 edges. You can download it and run it using
 ```
 docker pull bricaud/gremlin-server-rest
 docker run -p 8182:8182 -it --name gremlin-server-rest bricaud/gremlin-server-rest

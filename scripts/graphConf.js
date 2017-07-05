@@ -1,11 +1,13 @@
 
-// configuration for the graph database access (ajax)
-const GRAPH_DATABASE_URL = "http://localhost:8182";
-//const GRAPH_DATABASE_AUTH = {"Authorization":"Basic bmVvNGo6bmVvNWo="};
+// configuration for the graph database access
+const HOST = "localhost"
+const PORT = "8182"
+// The communication protocol with the server can be "REST" or "websocket"
+//const COMMUNICATION_PROTOCOL = "REST";
+const COMMUNICATION_PROTOCOL = "websocket";
+// TODO: configuration for the secure server
 
 // Graph configuration
-//svg_width = 900;
-//svg_height = 900;
 const default_nb_of_layers = 3;
 // Simulation
 const force_strength = -600;

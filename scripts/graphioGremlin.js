@@ -25,7 +25,7 @@ var graphioGremlin = (function(){
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p> Graph info</p>"
-		run_ajax_request(gremlin_query,'graphInfo',null,message)
+		send_to_server(gremlin_query,'graphInfo',null,message)
 	}
 
 
@@ -60,7 +60,7 @@ var graphioGremlin = (function(){
 	  	// while busy, show we're doing something in the messageArea.
 	  	$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p>Query: '"+ filtered_string +"'</p>"
-		run_ajax_request(gremlin_query,'search',null,message)	  	
+		send_to_server(gremlin_query,'search',null,message)	  	
 	}
 
 	function isInt(value) {
@@ -74,10 +74,24 @@ var graphioGremlin = (function(){
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p>Query ID: "+ d.id +"</p>"
-		run_ajax_request(gremlin_query,'click',d.id,message)
+		send_to_server(gremlin_query,'click',d.id,message)
 	}
 
+	function send_to_server(gremlin_query,query_type,active_node,message){
+		if (COMMUNICATION_PROTOCOL == 'REST'){
+			run_ajax_request(gremlin_query,query_type,active_node,message);
+		}
+		else if (COMMUNICATION_PROTOCOL == 'websocket'){
+			run_websocket_request(gremlin_query,query_type,active_node,message);
+		}
+		else {
+			console.log('Bad communication protocol. Check configuration file. Accept "REST" or "websocket" .')
+		}
+	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// AJAX request for the REST API
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	function run_ajax_request(gremlin_query,query_type,active_node,message){
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
@@ -87,49 +101,100 @@ var graphioGremlin = (function(){
 			type: "POST",
 			accept: "application/json",
 			//contentType:"application/json; charset=utf-8",
-			url: GRAPH_DATABASE_URL,
+			url: "http://"+HOST+":"+PORT,
 			//headers: GRAPH_DATABASE_AUTH,
 			Timeout:2000,
 			data: JSON.stringify({"gremlin" : gremlin_query}),
 			success: function(data, textStatus, jqXHR){
 				var Data = data.result.data;
 				//console.log(Data)
-				if (query_type=='click'){
-					var graph = arrange_data_path(Data);
-					//console.log(graph)
-					var center_f = 0;
-					graph_viz.refresh_data(graph,center_f,active_node); //center_f=0 mean no attraction to the center for the nodes  
-				}
-				else if (query_type=='search'){
-					var graph = arrange_data(Data);
-					//console.log(graph)
-					var center_f = 1;
-					graph_viz.refresh_data(graph,center_f,active_node);
-				}
-				else if (query_type=='graphInfo'){
-					//console.log(Data);
-					infobox.display_graph_info(Data);
-					_node_properties = make_properties_list(Data[1][0]);
-					//console.log(node_properties);
-					_edge_properties = make_properties_list(Data[3][0]);
-					//console.log(edge_properties);
-					change_nav_bar(_node_properties,_edge_properties);
-					display_properties_bar(_node_properties,'nodes','Node properties:');
-					display_properties_bar(_edge_properties,'edges','Edge properties:');
-					display_color_choice(_node_properties,'nodes','Node color by:');
-				}
-            $('#outputArea').html(message);
-			$('#messageArea').html('');
+				handle_server_answer(Data,query_type,active_node,message);
 			},
 			failure: function(msg){
-			console.log("failed");
-			$('#outputArea').html("<p> Can't access database </p>");
-			$('#messageArea').html('');
+				console.log("failed");
+				$('#outputArea').html("<p> Can't access database </p>");
+				$('#messageArea').html('');
 			}
 		});
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Websocket connection
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	function run_websocket_request(gremlin_query,query_type,active_node,message){
+		$('#messageArea').html('<h3>(loading)</h3>');
 
+		var msg = { "requestId": uuidv4(),
+  			"op":"eval",
+  			"processor":"",
+  			"args":{"gremlin": gremlin_query,
+  				"bindings":{},
+          		"language":"gremlin-groovy"}}
+
+		var data = JSON.stringify(msg);
+
+		var ws = new WebSocket("ws://"+HOST+":"+PORT+"/gremlin");
+		ws.onopen = function (event){
+			ws.send(data,{ mask: true});	
+		};
+		ws.onerror = function (err){
+			console.log('Connection error');
+			console.log(err);
+			$('#outputArea').html("<p> Connection error </p>");
+			$('#messageArea').html('');
+
+		};
+		ws.onmessage = function (event){
+			var response = JSON.parse(event.data);
+			var data = response.result.data;
+			if (data == null){
+				$('#outputArea').html(response.status.message);
+				$('#messageArea').html('Server error');
+				return 1;}
+			//console.log(data)
+			handle_server_answer(data,query_type,active_node,message);
+		};		
+	}
+
+	// Generate uuid for websocket requestId. Code found here
+	// https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+	function uuidv4() {
+	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+	    return v.toString(16);
+	  });
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	function handle_server_answer(data,query_type,active_node,message){
+		if (query_type=='click'){
+			var graph = arrange_data_path(data);
+			//console.log(graph)
+			var center_f = 0;
+			graph_viz.refresh_data(graph,center_f,active_node); //center_f=0 mean no attraction to the center for the nodes  
+		}
+		else if (query_type=='search'){
+			var graph = arrange_data(data);
+			//console.log(graph)
+			var center_f = 1;
+			graph_viz.refresh_data(graph,center_f,active_node);
+		}
+		else if (query_type=='graphInfo'){
+			infobox.display_graph_info(data);
+			_node_properties = make_properties_list(data[1][0]);
+			_edge_properties = make_properties_list(data[3][0]);
+			change_nav_bar(_node_properties,_edge_properties);
+			display_properties_bar(_node_properties,'nodes','Node properties:');
+			display_properties_bar(_edge_properties,'edges','Edge properties:');
+			display_color_choice(_node_properties,'nodes','Node color by:');
+		}
+		$('#outputArea').html(message);
+		$('#messageArea').html('');
+	}
+
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 	function make_properties_list(data){
 		var prop_dic = {};
 		for (var prop_str in data){

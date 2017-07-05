@@ -3,8 +3,8 @@
 const HOST = "localhost"
 const PORT = "8182"
 // The communication protocol with the server can be "REST" or "websocket"
-//const COMMUNICATION_PROTOCOL = "REST";
-const COMMUNICATION_PROTOCOL = "websocket";
+const COMMUNICATION_PROTOCOL = "REST";
+//const COMMUNICATION_PROTOCOL = "websocket";
 // TODO: configuration for the secure server
 
 // Graph configuration
@@ -23,5 +23,5 @@ const active_node_margin_opacity = 0.3;
 
 // Edges
 const default_edge_stroke_width = 3;
-const default_edge_color = '#CCC';
-const edge_label_color = '#111';
+const default_edge_color = "#CCC";
+const edge_label_color = "#111";

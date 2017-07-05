@@ -8,10 +8,10 @@ Graphexp is a web interface to explore and display a graph stored in the Gremlin
 
 ## Configuration
 
-To use Graph Explorer, you need a [Gremlin server](http://tinkerpop.apache.org/) running with REST protocol and a *recent* web browser to display the visualization.
+To use Graph Explorer, you need a [Gremlin server](http://tinkerpop.apache.org/) running with REST or websocket protocol and a *recent* web browser to display the visualization.
 On your web browser, just access the file `graphexp.html`.
 
-If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`.
+If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`. Use this latter file to configure the communication protocol `REST` (default) or `websocket`.
 
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 
@@ -20,7 +20,7 @@ If the access to the Gremlin server is not `localhost:8182`, the address can be 
 
 ### Intalling a Gremlin server
 
-If have not yet installed a gremlin server, download the last release of the [Gremlin server](http://tinkerpop.apache.org/) and follow the [documentation](http://tinkerpop.apache.org/docs/current/reference/#gremlin-server). In the server folder just run
+If you have not yet installed a gremlin server, download the last release of the [Gremlin server](http://tinkerpop.apache.org/) and follow the [documentation](http://tinkerpop.apache.org/docs/current/reference/#gremlin-server). In the server folder just run
 ```
 bin/gremlin-server.sh conf/gremlin-server-rest-modern.yaml
 ```
@@ -29,7 +29,7 @@ or on windows
 bin/gremlin-server.bat conf/gremlin-server-rest-modern.yaml
 ```
 This default server comes with a small graph database of 6 nodes.
-The server shoud start on port `8182`.
+The server shoud start on port `8182`. Replace `gremlin-server-rest-modern.yaml` by `gremlin-server-modern.yaml` if you want to use websocket.
 
 
 Alternatively, if you have Docker installed on your machine, you may run a Docker container with an already configured Gremlin server. You can find one on [this page](https://hub.docker.com/r/bricaud/gremlin-server-rest/). This server have a graph database containing a demo graph: the tree of life, with 35960 nodes and 35959 edges. You can download it and run it using
@@ -37,6 +37,8 @@ Alternatively, if you have Docker installed on your machine, you may run a Docke
 docker pull bricaud/gremlin-server-rest
 docker run -p 8182:8182 -it --name gremlin-server-rest bricaud/gremlin-server-rest
 ```
+
+
 
 ### Graphexp guidelines
 To display a node, type in a property name and value, then click on the search button.

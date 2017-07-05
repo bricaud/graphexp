@@ -37,7 +37,11 @@ Alternatively, if you have Docker installed on your machine, you may run a Docke
 docker pull bricaud/gremlin-server-rest
 docker run -p 8182:8182 -it --name gremlin-server-rest bricaud/gremlin-server-rest
 ```
-
+or for the websocket version:
+```
+docker pull bricaud/gremlin-server-rest:websocket
+docker run -p 8182:8182 -it --name gremlin-server-websocket bricaud/gremlin-server-rest:websocket
+```
 
 
 ### Graphexp guidelines

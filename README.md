@@ -4,7 +4,7 @@ Graphexp is a web interface to explore and display a graph stored in the Gremlin
 
 ![graphexp](https://github.com/bricaud/graphexp/blob/master/images/graphexp2.png "Graph exploration")
 
-A live demo of Graphexp is available on the [project Github page](https://bricaud.github.io/graphexp/)
+A live demo of Graphexp is available on the [project Github page](https://bricaud.github.io/graphexp/). See the [Tutorial](#tutorial-with-the-tree-of-life) section below.
 
 ## Configuration
 

@@ -1,6 +1,6 @@
 
 // configuration for the graph database access
-const HOST = "ec2-52-59-243-58.eu-central-1.compute.amazonaws.com"
+const HOST = "evia.eviacybernetics.com"
 const PORT = "8182"
 // The communication protocol with the server can be "REST" or "websocket"
 const COMMUNICATION_PROTOCOL = "REST";

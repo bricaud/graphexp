@@ -4,7 +4,7 @@ Graphexp is a web interface to explore and display a graph stored in the Gremlin
 
 ![graphexp](https://github.com/bricaud/graphexp/blob/master/images/graphexp2.png "Graph exploration")
 
-
+A live demo of Graphexp is available on the [project Github page](https://bricaud.github.io/graphexp/)
 
 ## Configuration
 
@@ -102,5 +102,8 @@ You may also color the nodes according to the values of some of their properties
 ![graphexptol3](https://github.com/bricaud/graphexp/blob/master/images/graphexptol3.png "Graph exploration Tree of life")
 
 If you want to explore the world of insects, you may start with the taxon 'Insecta' and follow the links.
+
+Have a try on the live demo of Graphexp on the [project Github page](https://bricaud.github.io/graphexp/).
+
 
 

@@ -41,11 +41,13 @@
 
 	</head>
 	<body>
+		<!--
 		<div class="header">
 			<div class="container">
 				<h1 class="header-heading">Graph Explorer v 0.6</h1>
 			</div>
 		</div>
+		-->
 		<div class="nav-bar">
 			<div class="container" id="nav_bar">
 				<ul class="nav">
@@ -93,7 +95,7 @@
 		</div>
 		<div class="footer">
 			<div class="container">
-				<a href="http://www.github.com/bricaud/graphexp">About</a>
+				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.6</a>
 			</div>
 		</div>
 		<!-- INITIALIZATION -->
@@ -172,8 +174,8 @@
 		var nav_bar = d3.select("#graphInfoBar");
 		nav_bar.select("#color_choice_"+item).remove();
 		var color_bar = nav_bar.append("div").attr("id","color_choice_"+item);
-		color_bar.append("text").text(text).style("font-weight","bold");
-		color_bar.append("select").attr("class","select").attr("id","color_select_"+item)
+		color_bar.append("div").append("text").text(text).style("font-weight","bold");
+		color_bar.append("div").append("select").attr("class","select").attr("id","color_select_"+item)
 			.attr("onchange","colorize(this)")
 			.selectAll("option")
 			.data(prop_list).enter()

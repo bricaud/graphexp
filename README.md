@@ -45,8 +45,8 @@ docker run -p 8182:8182 -it --name gremlin-server-websocket bricaud/gremlin-serv
 
 
 ### Graphexp guidelines
-To display a node, type in a property name and value, then click on the search button.
-Leaving a blank field and keyword will display the full graph (do not display the full graph if the graph is large!).
+To display a node, type in a property name and value, then click on the search button. The input is case-sensitive.
+Leaving a blank value will display a part of the graph limited to the first 50 nodes found (with their connections).
 The node and edge properties can be automatically retrieved using the `get graph info` button. Pushing this button will also display some graph properties on the left side of the page.
 
 When a node of the visualization is clicked, it will become 'active' with a circle surround it and its information will be display on the right side of the page. Moreover, this action will trigger the display of its neighbors.
@@ -80,7 +80,7 @@ The program uses:
 Once your gremlin server is up and running (from the [Docker repository](https://hub.docker.com/r/bricaud/gremlin-server-REST/)), click on the `get graph info` button. Information should appear on the left side of the page, like on the following image.
 ![graphexptol1](https://github.com/bricaud/graphexp/blob/master/images/graphexptol1.png "Graph exploration Tree of life")
 
-This graph has a single type of nodes (label 'vertex') and a single type of edges (label 'edge'). Each node is a species (taxon) of the earth, and directed edges represent the link ancestor-descendant.
+This graph has a single type of nodes (label 'vertex') and a single type of edges (label 'edge'). Each node is a species (taxon) living on earth or extinct, and directed edges represent the link ancestor-descendant.
 The different node properties are displayed on the left. 
 * `CHILDCOUNT` the number of descendent nodes
 * `name` the name of the species
@@ -91,9 +91,9 @@ The different node properties are displayed on the left.
 * `LEAF` the node is a leaf of the tree (1) or the node does not represent a leaf (it has or will have descendent nodes on the Tree of Life) (0)
 * `PHYLESIS` (0) monophylectic, (1) uncertain, (2) not monophylectic
 
-On the top navigation bar, choose the field `name`, enter 'Dinosauria' as name in the input and click on the `Search` button. A single node, corresponding to the Dinosaurs group, should appear in the middle of the page. Click on the node to display node details on the right and its ancestors and descendants on the graph. 
+On the top navigation bar, choose the field `name`, enter 'Dinosauria' as value in the input and click on the `Search` button. Do not forget the capital letter, as the search is case-sensitive. A single node, corresponding to the Dinosaurs clade, should appear in the middle of the page. Click on the node to display node details on the right as well as its ancestors and descendants on the graph. 
 Check the box `name` on the left bar to display the node names.
-You should see appearing the two orders of dinosaurs `Sauriscia` and `Ornithischia`, as in the [Wikipedia dinosaur page](https://en.wikipedia.org/wiki/Dinosaur_classification) and an additional `none` node which is the ancestor. This latter node is a taxon that have ancestors and descendants but do not have a name. Note that there are different version of the tree of life and it is always evolving as researchers find new species.
+You should see appearing the two subgroups of dinosaurs `Sauriscia` and `Ornithischia`, as in the [Wikipedia dinosaur page](https://en.wikipedia.org/wiki/Dinosaur_classification) and an additional `none` node which is the ancestor. This latter node is a taxon that has ancestors and descendants but does not have a name. Note that there are different version of the tree of life and it is always evolving as researchers find new species.
 ![graphexptol2](https://github.com/bricaud/graphexp/blob/master/images/graphexptol2.png "Graph exploration Tree of life")
 You may now enjoy the exploration of the dinosaur order by clicking on nodes and following ascendant and descendant lines. The oldest nodes will vanish as you explore the data and if you want more nodes to be displayed, just increase the number of layers on the top navigation bar.
 

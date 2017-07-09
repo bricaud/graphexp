@@ -1,6 +1,6 @@
 
 // configuration for the graph database access
-const HOST = "localhost"
+const HOST = "evia.eviacybernetics.com"
 const PORT = "8182"
 // The communication protocol with the server can be "REST" or "websocket"
 const COMMUNICATION_PROTOCOL = "REST";

@@ -105,7 +105,7 @@ var graphioGremlin = (function(){
 			type: "POST",
 			accept: "application/json",
 			//contentType:"application/json; charset=utf-8",
-			url: "http://"+HOST+":"+PORT,
+			url: "https://"+HOST+":"+PORT,
 			//headers: GRAPH_DATABASE_AUTH,
 			Timeout:2000,
 			data: JSON.stringify({"gremlin" : gremlin_query}),

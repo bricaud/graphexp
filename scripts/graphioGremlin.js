@@ -39,9 +39,13 @@ var graphioGremlin = (function(){
 	 	if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // shorten long strings
 		// Translate to Gremlin query
 	  	if (input_string==""){
-	  		var gremlin_query_nodes = "nodes = g.V()"
-	  		var gremlin_query_edges = "edges = g.V().aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
+	  		//var gremlin_query_nodes = "nodes = g.V().limit(100)"
+	  		//var gremlin_query_edges = "edges = g.V().limit(100).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
+	  		//var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
+	  		var gremlin_query_nodes = "nodes = g.V().limit("+node_limit_per_request+")"
+	  		var gremlin_query_edges = "edges = g.V().limit("+node_limit_per_request+").aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
 	  		var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
+
 	  			  	}
 	  	else{
 	  		if (isInt(input_string)){

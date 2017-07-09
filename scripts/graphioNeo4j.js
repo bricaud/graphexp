@@ -1,6 +1,24 @@
+/*
+Copyright 2017 Benjamin RICAUD
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+// Attempt to generate an interface between the visualization and a Neo4j database.
+// This is not working. It is kept only in the hypothesis of a future development.
 
 var graphioNeo4j = (function(){
-	
+	// NOT WORKING
 	function post_cypherquery() {
 	  // Neo4j CYPHER query
 	  var input_string = $('#cypher-in').val();

@@ -100,7 +100,6 @@ var graphShapes = (function(){
 
 		// Create the circle shape
 		var node_base_circle = node_deco.append("circle").classed("base_circle",true)
-			//.attr("r", 12)
 			.attr("r",node_size)
 			.style("stroke-width",node_stroke_width)
 			.style("stroke","black")
@@ -109,15 +108,11 @@ var graphShapes = (function(){
 
 		// Add the text to the nodes
 		node_deco.append("text").classed("text_details",true)
-		  //.attr("x", 12)
 		  .attr("x",function(d){return node_size(d)+2;})
-		  //.attr("y", ".31em")
 		  .text(node_text)
 		  .style("visibility", "hidden");
 
 		node_deco.append("text").classed("text_details",true)
-		  //.attr("x", 12)
-		  //.attr("y", 15)
 		  .attr("x",function(d){return node_size(d)+2;})
 		  .attr("y",node_size)
 		  .text(node_subtext)
@@ -208,7 +203,7 @@ var graphShapes = (function(){
 		// Attach the edge actions
 		attach_edge_actions(edges_deco)
 
-		// add property info if checkbox checked
+		// Add property info if checkbox checked
 		add_checkbox_prop('edges',edgelabels_deco)
 
 		return [edges_deco,edgepaths_deco,edgelabels_deco]
@@ -216,6 +211,7 @@ var graphShapes = (function(){
 	}
 
 	function add_checkbox_prop(item,selected_items){
+		// Add text from a property if the checkbox is checked on the sidebar
 		if (item=='edges'){
 			var item_properties = graphioGremlin.get_edge_properties();
 		} else if (item=='nodes'){
@@ -232,18 +228,15 @@ var graphShapes = (function(){
 	}
 
 	function create_edge_label(edgepaths,edgelabels){
-
 		var edgepaths_deco = edgepaths.append('path')
 			.attr('class','edgepath').classed("active_edgepath",true)
 			.attr('fill-opacity',0)
 			.attr('stroke-opacity',0)
-			//.attr('stroke-width',10)
 			.attr('id',function (d, i) {return 'edgepath' + d.id;})
 			.attr("ID",function(d) { return d.id;})
 			.style("pointer-events", "none");
 
 		var edgelabels_deco = edgelabels.append('text')
-			//.attr('x',10)
 			.attr('dy',-3)
 			.style("pointer-events", "none")
 			.attr('class','edgelabel').classed("active_edgelabel",true)
@@ -272,13 +265,10 @@ var graphShapes = (function(){
 
 
 	function decorate_old_elements(nb_layers){
-		// old links and nodes become older
-		// and move to the next layer
+		// Decrease the opacity of nodes and edges when they get old
 		for (var k=0;k<nb_layers;k++) {
 			d3.selectAll(".old_edge"+k)
 			 	.style("opacity",function(){return 0.8*(1-k/nb_layers)});
-			//edges_to_push.style("fill-opacity",function(){console.log(0.9*(1-k/nb_layers));return 0.9*(1-k/nb_layers)});
-	
 			d3.selectAll(".old_node"+k)
 				.style("opacity",function(){return 0.8*(1-k/nb_layers)});
 			d3.selectAll(".old_edgelabel"+k)
@@ -288,10 +278,9 @@ var graphShapes = (function(){
 	}
 
 	function colorize(prop_name){
+		// Color the nodes according the value of the property 'prop_name'
 		colored_prop = prop_name;
 		var value_list = d3.selectAll(".node").data();
-
-
 		if (prop_name =="none"){
 			d3.selectAll(".base_circle").style("fill",function(d){
 				return node_color(d);	
@@ -310,17 +299,13 @@ var graphShapes = (function(){
 				return color_palette(node_code_color(d.label));	
 			});
 		}
-
 		else{
-
 			var value_set = new Set(value_list.map(function(d){
 				if (typeof d.properties[prop_name]!=="undefined"){
 					return d.properties[prop_name][0].value;
 				}
 			}));
-
 			node_code_color = d3.scaleOrdinal().domain(value_set).range(d3.range(0,value_set.size))//value_set.length])
-
 			d3.selectAll(".base_circle").style("fill",function(d){
 				if (typeof d.properties[prop_name] !=="undefined"){
 					return color_palette(node_code_color(d.properties[prop_name][0].value));	
@@ -334,14 +319,6 @@ var graphShapes = (function(){
 				return node_color(d);
 			});
 		}
-		
-
-		//console.log(value_set.map(function(d){return d.label;}))
-		//d3.selectAll(".node").style("fill",function(d){
-		//	console.log('hello')
-		//	console.log(d.properties[prop_name][0].value);
-		//	return color(d.properties[prop_name][0].value);
-		//})
 	}
 	///////////////////////////////////////
 	// https://github.com/wbkd/d3-extended

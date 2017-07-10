@@ -100,7 +100,7 @@ Layout styles
 {
 	padding: 0em 0em;
 	background-color: #fff;
-	height: 70vh;
+	height: 80vh;
 }
 
 .main, .aside
@@ -115,7 +115,7 @@ Layout styles
 	position: absolute;
 	left: 0;
 	width: 100%;
-	height: 70vh;
+	height: 80vh;
 }
 
 .left_bar

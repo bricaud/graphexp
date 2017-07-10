@@ -34,7 +34,6 @@ var infobox = (function(){
 		_table_Graphinfo = graph_bar.append("table").attr("id","tableGraph");
 		init_table(_table_Graphinfo,["Type","Count"]);
 
-		//side_bar.append("p").text("")
 		var graphElem_bar = d3.select(label_graphElem);
 		graphElem_bar.append("h2").text("Item Info")
 		_table_IDinfo = graphElem_bar.append("table").attr("id","tableIdDetails");
@@ -102,8 +101,6 @@ var infobox = (function(){
 		// remove previous info		
 		_display_IDinfo(node_data)
 		_display_DBinfo(node_data);
-		//_display_WIKIinfo(node_data,_side_summary,_side_image,_bottom_info);
-	    //console.log('Node ID: '+node_data.id);
 	}
 
 	//////////////////////
@@ -127,9 +124,6 @@ var infobox = (function(){
 	 	if (d.type=='vertex'){
 		 	for (var key in d.properties){
 		 		for (var subkey in d.properties[key]){
-		 			//console.log(subkey)
-		 			//console.log(d.properties[key])
-		 			//console.log(d.properties[key][subkey])
 		 			var new_info_row = info_table.append("tr");
 		 			new_info_row.append("td").text(key).style("font-size",_font_size);
 		 			new_info_row.append("td").text(d.properties[key][subkey].value).style("font-size",_font_size);
@@ -147,8 +141,6 @@ var infobox = (function(){
 		}
 	}
 
-
-
 	return {
 		create : create,
 		display_info : display_info,
@@ -156,5 +148,4 @@ var infobox = (function(){
 		hide_element : hide_element,
 		show_element : show_element
 	};
-
 })();

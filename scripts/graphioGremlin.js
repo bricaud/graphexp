@@ -52,13 +52,10 @@ var graphioGremlin = (function(){
 		var input_string = $('#search_value').val();
 		var input_field = $('#search_field').val();
 		console.log(input_field)
-	 	var filtered_string = input_string;//.replace(/\W+/g, ''); //refuse any character not in the alphabet
-	 	if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // shorten long strings
+	 	var filtered_string = input_string;//You may add .replace(/\W+/g, ''); to refuse any character not in the alphabet
+	 	if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // limit string length
 		// Translate to Gremlin query
 	  	if (input_string==""){
-	  		//var gremlin_query_nodes = "nodes = g.V().limit(100)"
-	  		//var gremlin_query_edges = "edges = g.V().limit(100).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
-	  		//var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
 	  		var gremlin_query_nodes = "nodes = g.V().limit("+node_limit_per_request+")"
 	  		var gremlin_query_edges = "edges = g.V().limit("+node_limit_per_request+").aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
 	  		var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
@@ -117,7 +114,7 @@ var graphioGremlin = (function(){
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 
-		// get the data from the server
+		// Get the data from the server
 		$.ajax({
 			type: "POST",
 			accept: "application/json",
@@ -177,7 +174,7 @@ var graphioGremlin = (function(){
 		};		
 	}
 
-	// Generate uuid for websocket requestId. Code found here
+	// Generate uuid for websocket requestId. Code found here:
 	// https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
 	function uuidv4() {
 	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -245,8 +242,8 @@ var graphioGremlin = (function(){
 
 	/////////////////////////////////////////////////////////////
 	function arrange_data(data) {
-	  	// Extracting node and edges from the data
-	  	// to create the graph object
+	  	// Extract node and edges from the data returned for 'search' request
+	  	// Create the graph object
 	  	var nodes=[], links=[];
 	  	for (var key in data){
 	  		data[key].forEach(function (item) {
@@ -260,8 +257,8 @@ var graphioGremlin = (function(){
 	}
 
 	function arrange_data_path(data) {
-	  	// Extracting node and edges from the data
-	  	// to create the graph object
+	  	// Extract node and edges from the data returned for 'click' request
+	  	// Create the graph object
 	  	var nodes=[], links=[];
 	  	for (var key in data){
 	  		data[key].objects.forEach(function (item) {

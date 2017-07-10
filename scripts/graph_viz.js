@@ -113,8 +113,6 @@ var graph_viz = (function(){
 			_simulation.nodes([]);
 			_simulation.force("link").links([]);
 		}
-		//var svg = d3.select("svg");
-		//var svg_graph = d3.select("#main").select("svg").select("g");
 		_svg.selectAll("*").remove();
 		_Nodes = [],_Links =[];
 		layers.clear_old();
@@ -123,6 +121,7 @@ var graph_viz = (function(){
 
 
 	function addzoom (){
+		// Add zoom to the svg object
 		_svg.append("rect")
 			.attr("width", _svg_width).attr("height", _svg_height)
 			.style("fill", "none").style("pointer-events", "all")
@@ -137,6 +136,7 @@ var graph_viz = (function(){
 
 	//////////////////////////////////////////////////////////////
 	var layers = (function(){
+		// Submodule that handles layers of visualization
 
 		var nb_layers = default_nb_of_layers;
 		var old_Nodes = [];
@@ -152,7 +152,7 @@ var graph_viz = (function(){
 
 		function push_layers(){
 			// old links and nodes become older
-			// and move to the next layer
+			// and are moved to the next deeper layer
 			for (var k=nb_layers;k>0;k--) {
 				var kp=k-1;
 				_svg.selectAll(".old_edge"+kp).classed("old_edge"+k,true);
@@ -190,95 +190,79 @@ var graph_viz = (function(){
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////
-		//update lines of array1 with the ones of array2 when the elements' id match
-		// and add elements of array2 to array1 when they do not exist in array1
 		function updateAdd(array1,array2){
-		  var arraytmp = array2.slice(0);
-		  var removeValFromIndex = [];
-		  array1.forEach(function(d,index,thearray){ 
-			for(var i=0;i<arraytmp.length;i++){
-			  if (d.id == arraytmp[i].id){
-				//console.log(d.id);
-				thearray[index] = arraytmp[i];
-				removeValFromIndex.push(i);
-				//console.log('Found existing one!')
-			  }
-			}
-		  });
-		  // remove the already updated values (in reverse order, not to mess up the indices)
-		  removeValFromIndex.sort();
-		  for (var i = removeValFromIndex.length -1; i >= 0; i--)
-			arraytmp.splice(removeValFromIndex[i],1);
-		  return array1.concat(arraytmp);
+			// Update lines of array1 with the ones of array2 when the elements' id match
+			// and add elements of array2 to array1 when they do not exist in array1
+			var arraytmp = array2.slice(0);
+			var removeValFromIndex = [];
+			array1.forEach(function(d,index,thearray){ 
+				for(var i=0;i<arraytmp.length;i++){
+					if (d.id == arraytmp[i].id){
+						thearray[index] = arraytmp[i];
+						removeValFromIndex.push(i);
+					}
+				}
+			});
+			// remove the already updated values (in reverse order, not to mess up the indices)
+			removeValFromIndex.sort();
+			for (var i = removeValFromIndex.length -1; i >= 0; i--)
+				arraytmp.splice(removeValFromIndex[i],1);
+			return array1.concat(arraytmp);
 		}
 
-
-		///////////////////////////////////////////////////////////////////
 		function find_active_links(list_of_links,active_nodes){
-		  // find the links in the list_of_links that are between the active nodes and discard the others
-		  var active_links = [];
-		  list_of_links.forEach(function (row) {
-			//console.log('search for:')
-			//console.log(row)
-			//console.log(row.source,row.target)
-			for(var i=0; i < active_nodes.length; i++ ) {
-			  for(var j=0; j < active_nodes.length; j++ ) {
-				if (active_nodes[i].id==row.source.id && active_nodes[j].id==row.target.id) {
-				  //console.log('found match!',active_nodes[i].id,active_nodes[j].id);
-				  //console.log(row)
-				  var L_data={source:row.source.id, target:row.target.id, type:row.type, value:row.value, id:row.id};
-				  var L_data = row;
-				  L_data['source'] = row.source.id;
-				  L_data['target'] = row.target.id;
-				  active_links=active_links.concat(L_data);
+			// find the links in the list_of_links that are between the active nodes and discard the others
+			var active_links = [];
+			list_of_links.forEach(function (row) {
+				for(var i=0; i < active_nodes.length; i++ ) {
+					for(var j=0; j < active_nodes.length; j++ ) {
+						if (active_nodes[i].id==row.source.id && active_nodes[j].id==row.target.id) {
+							var L_data={source:row.source.id, target:row.target.id, type:row.type, value:row.value, id:row.id};
+							var L_data = row;
+							L_data['source'] = row.source.id;
+							L_data['target'] = row.target.id;
+							active_links=active_links.concat(L_data);
+						}
+						else if (active_nodes[i].id==row.source && active_nodes[j].id==row.target) {
+							var L_data=row;
+							active_links=active_links.concat(L_data);
+						}
+					}
 				}
-				else if (active_nodes[i].id==row.source && active_nodes[j].id==row.target) {
-				  //console.log('found match type 2!',active_nodes[i].id,active_nodes[j].id);
-				  //console.log(row)
-				  var L_data=row;
-				  active_links=active_links.concat(L_data);
-				}
-			  }
-			}
-		  });
-		  // the active links are in active_links but there can be some duplicates
-		  // remove duplicates links
-		  var dic = {};
-		  for ( var i=0; i < active_links.length; i++ )
-			dic[active_links[i].id]=active_links[i]; // this will remove the duplicate links (with same id)
-		  var list_of_active_links = [];
-		  for (var key in dic)
-			list_of_active_links.push(dic[key]);
-		  return list_of_active_links;
+			});
+			// the active links are in active_links but there can be some duplicates
+			// remove duplicates links
+			var dic = {};
+			for ( var i=0; i < active_links.length; i++ )
+				dic[active_links[i].id]=active_links[i]; // this will remove the duplicate links (with same id)
+			var list_of_active_links = [];
+			for (var key in dic)
+				list_of_active_links.push(dic[key]);
+			return list_of_active_links;
 		} 
 
-		//////////////////////////////////////////////////////////////////
-		// transfer coordinates from old_nodes to the nodes, for the nodes 
-		// that already existed in old_nodes
+	
 		function transfer_coordinates(Nodes, old_Nodes){
-		  for ( var i=0; i < old_Nodes.length; i++ ) {
-			var exists = 0;
-			for(var j=0; j < Nodes.length; j++ ) {
-			  if (Nodes[j].id==old_Nodes[i].id) {
-				Nodes[j].x = old_Nodes[i].x;
-				Nodes[j].y = old_Nodes[i].y;
-				Nodes[j].fx = old_Nodes[i].x;
-				Nodes[j].fy = old_Nodes[i].y;
-				Nodes[j].vx = old_Nodes[i].vx;
-				Nodes[j].vy = old_Nodes[i].vy;
-				//console.log(old_Nodes[i].x,old_Nodes[i].y);
-				//console.log(Nodes[j].x,Nodes[j].y);
-			  }
+			// Transfer coordinates from old_nodes to the new nodes with the same id
+			for ( var i=0; i < old_Nodes.length; i++ ) {
+				var exists = 0;
+				for(var j=0; j < Nodes.length; j++ ) {
+					if (Nodes[j].id==old_Nodes[i].id) {
+						Nodes[j].x = old_Nodes[i].x;
+						Nodes[j].y = old_Nodes[i].y;
+						Nodes[j].fx = old_Nodes[i].x;
+						Nodes[j].fy = old_Nodes[i].y;
+						Nodes[j].vx = old_Nodes[i].vx;
+						Nodes[j].vy = old_Nodes[i].vy;
+					}
+				}
 			}
-		  }
-		  return Nodes;
+			return Nodes;
 		}
 
-
-//		function remove_duplicates(){
-			// remove all the duplicate nodes and links among the old_nodes and old_links
 		function remove_duplicates(elem_class,elem_class_old){
+			// Remove all the duplicate nodes and edges among the old_nodes and old_edges.
+			// A node or an edge can not be on several layers at the same time.
 			d3.selectAll(elem_class).each(function(d){
 				var ID=d.id;
 				for(var n=0;n<nb_layers;n++){
@@ -293,7 +277,6 @@ var graph_viz = (function(){
 				}
 			});
 		}
-//		}
 
 		return{
 			set_nb_layers : set_nb_layers,
@@ -334,7 +317,7 @@ var graph_viz = (function(){
 
 	//////////////////////////////////////
 	function refresh_data(d,center_f,with_active_node){
-
+		// Main visualization function
 		var svg_graph = svg_handle();
 		layers.push_layers();
 		layers.update_data(d);
@@ -452,6 +435,7 @@ var graph_viz = (function(){
 
 
 	function get_node_edges(node_id){
+		// Return the in and out edges of node with id 'node_id'
 		var connected_edges = d3.selectAll(".edge").filter(
 			function(item){
 				if (item.source==node_id || item.source.id==node_id){
@@ -473,16 +457,6 @@ var graph_viz = (function(){
 			if (!d3.event.active) _simulation.alphaTarget(0.3).restart();
 			d.fx = d.x;
 			d.fy = d.y;
-		/*
-		svg.selectAll(".old_node").each(function(d){
-		  if (d3.select(this).attr("ID")== +d.id) {d3.select(this).remove(); console.log('removed!')};
-		});
-		svg.selectAll(".old_links").each(function(d){
-		  if (d3.select(this).attr("target_ID")== +d.id) {d3.select(this).remove(); console.log('removed!')};
-		});
-		svg.selectAll(".old_links").each(function(d){
-		  if (d3.select(this).attr("source_ID")== +d.id) {d3.select(this).remove(); console.log('removed!')};
-		});*/
 		}
 
 		function dragged(d) {
@@ -512,11 +486,6 @@ var graph_viz = (function(){
 
 		function clicked(d) {
 			d3.select(".focus_node").remove();
-			//d3.select(this)
-			//  .append("circle").classed("Active",true)
-			//  .attr("r", 4)
-			//  .attr("transform", function(d) { return "translate(-12,-12)"; })
-			//  .attr("fill", function(d) { return color(d.labelV); });
 			var input = document.getElementById ("freeze-in");
 			var isChecked = input.checked;
 			if (isChecked) infobox.display_info(d);
@@ -530,7 +499,6 @@ var graph_viz = (function(){
 				_svg.selectAll(".old_edgelabel"+stop_layer).remove();
 				infobox.display_info(d);
 				graphioGremlin.click_query(d);              
-				//d3.select(this).attr("class","active_node");
 				console.log('event!!')
 			}
 		}
@@ -567,10 +535,6 @@ var graph_viz = (function(){
 
 	})();
 
-	
-
-
-
 	return {
 		svg_handle : svg_handle,
 		nodes : nodes,
@@ -588,7 +552,5 @@ var graph_viz = (function(){
 		layers : layers,
 		graph_events : graph_events
 	};
-
-
 
 })();

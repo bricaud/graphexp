@@ -34,15 +34,15 @@ This default server comes with a small graph database of 6 nodes.
 The server should start on port `8182`. Replace `gremlin-server-rest-modern.yaml` by `gremlin-server-modern.yaml` if you want to use websocket.
 
 
-Alternatively, if you have Docker installed on your machine, you may run a Docker container with an already configured Gremlin server. You can find one on [this page](https://hub.docker.com/r/bricaud/gremlin-server-rest/). This server has a graph database containing a demo graph: the tree of life, with 35960 nodes and 35959 edges. You can download it and run it using
+Alternatively, if you have Docker installed on your machine, you may run a Docker container with an already configured Gremlin server. You can find one on [this page](https://hub.docker.com/r/bricaud/gremlin-server-with-demo-graph/). This server has a graph database containing a demo graph: the tree of life, with 35960 nodes and 35959 edges. You can download it and run it using
 ```
-docker pull bricaud/gremlin-server-rest
-docker run -p 8182:8182 -it --name gremlin-server-rest bricaud/gremlin-server-rest
+docker pull bricaud/gremlin-server-with-demo-graph
+docker run -p 8182:8182 -it --name gremlin-server-rest bricaud/gremlin-server-with-demo-graph
 ```
 or for the websocket version:
 ```
-docker pull bricaud/gremlin-server-rest:websocket
-docker run -p 8182:8182 -it --name gremlin-server-websocket bricaud/gremlin-server-rest:websocket
+docker pull bricaud/gremlin-with-demo-graph:websocket
+docker run -p 8182:8182 -it --name gremlin-server-websocket bricaud/gremlin-server-with-demo-graph:websocket
 ```
 
 

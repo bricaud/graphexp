@@ -80,7 +80,7 @@ The program uses:
 * an ajax request (with Jquery) that query the graph database (Gremlin Tinkerpop via REST).
 
 ## Tutorial with the tree of life
-Once your gremlin server is up and running (from the [Docker repository](https://hub.docker.com/r/bricaud/gremlin-server-REST/)), click on the `get graph info` button. Information should appear on the left side of the page, like on the following image.
+Once your gremlin server is up and running (from the [Docker repository](https://hub.docker.com/r/bricaud/gremlin-server-with-demo-graph/)), click on the `get graph info` button. Information should appear on the left side of the page, like on the following image.
 ![graphexptol1](https://github.com/bricaud/graphexp/blob/master/images/graphexptol1.png "Graph exploration Tree of life")
 
 This graph has a single type of nodes (label 'vertex') and a single type of edges (label 'edge'). Each node is a species (taxon) living on earth or extinct, and directed edges represent the link ancestor-descendant.

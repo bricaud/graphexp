@@ -95,7 +95,7 @@
 		</div>
 		<div class="footer">
 			<div class="container">
-				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.6</a>
+				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.7</a>
 			</div>
 		</div>
 		<!-- INITIALIZATION -->
@@ -196,14 +196,14 @@
 		var text_base_offset = 10;
 		var text_offset = 10;
 		var prop_name = prop_id.slice(prop_id.indexOf("_")+1);
-		var item = prop_id.slice(0,prop_id.indexOf("_"));		
+		var item = prop_id.slice(0,prop_id.indexOf("_"));
+		console.log(prop_id,item)		
 		if(d3.select("#"+prop_id).property("checked")){
 			if (item=='nodes'){
-			var elements_text = d3.selectAll('.node');
-		}
-		else if (item=='edges'){
-			var elements_text = d3.selectAll('.edgelabel');
-		}
+				var elements_text = d3.selectAll('.node');
+			} else if (item=='edges'){
+				var elements_text = d3.selectAll('.edgelabel');
+			}
 			attach_property(elements_text,prop_name,prop_id_nb,item)
 		}
 		else{
@@ -235,7 +235,9 @@
 			//.text(function (d) {return d.label});
 			prop_id_nb = prop_id_nb + 1;
 		}
-		else { console.log('Bad item name.'); return 1;}
+		else { 
+			console.log('Bad item name.'); return 1;
+		}
 		elements_text.classed("prop_details",true).classed(prop_id,true)
 	  		//.attr("x", 12)
 	  		.attr("dy",function(d){return graphShapes.node_size(d)+text_base_offset+text_offset*parseInt(prop_id_nb);})
@@ -247,7 +249,11 @@
 	function get_prop_value(d,prop_name,item){
 		if (prop_name in d.properties){
 			if (item=='nodes'){
-				return d.properties[prop_name][0].value;
+				if (COMMUNICATION_METHOD == 'GraphSON3') {
+					return d.properties[prop_name];
+				} else if (COMMUNICATION_METHOD == 'GraphSON2') {
+					return d.properties[prop_name][0].value;
+				}
 			}
 			else if (item=='edges'){
 				console.log(d.properties[prop_name])
@@ -258,6 +264,7 @@
 			return "";
 		}
 	}
+
 
 	function set_nb_layers(){
 		var nb_layers = parseInt(document.getElementById('nbLayers').value);

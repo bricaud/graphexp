@@ -123,12 +123,7 @@ var infobox = (function(){
 	 	var info_table = _table_DBinfo.append("tbody");
 	 	if (d.type=='vertex'){
 		 	for (var key in d.properties){
-		 		for (var subkey in d.properties[key]){
-		 			var new_info_row = info_table.append("tr");
-		 			new_info_row.append("td").text(key).style("font-size",_font_size);
-		 			new_info_row.append("td").text(d.properties[key][subkey].value).style("font-size",_font_size);
-		 			new_info_row.append("td").text(d.properties[key][subkey].id).style("font-size",_font_size);// TODO: handle VertexProperty
-		 		}
+		 		_display_vertex_properties(key,d.properties[key],info_table)
 		 	}
 		}
 		else {
@@ -140,6 +135,44 @@ var infobox = (function(){
 			}
 		}
 	}
+
+	function _display_vertex_properties(key,value,info_table) {// TODO: truely handle VertexProperty
+		if (COMMUNICATION_METHOD == 'GraphSON2'){
+	 		for (var subkey in value){
+	 			var new_info_row = info_table.append("tr");
+	 			new_info_row.append("td").text(key).style("font-size",_font_size);
+	 			new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+	 			new_info_row.append("td").text(value[subkey].id).style("font-size",_font_size);
+			}
+		} else {
+			var new_info_row = info_table.append("tr");
+			new_info_row.append("td").text(key);
+		 	new_info_row.append("td").text(value).style("font-size",_font_size);
+		 	new_info_row.append("td").text("");
+		}
+	}
+/*
+	function _display_DBinfo(d){
+		_table_DBinfo.select("tbody").remove();
+	 	var info_table = _table_DBinfo.append("tbody");
+	 	if (d.type=='vertex'){
+		 	for (var key in d.properties){
+		 		var new_info_row = info_table.append("tr");
+		 		new_info_row.append("td").text(key).style("font-size",_font_size);
+		 		new_info_row.append("td").text(d.properties[key]).style("font-size",_font_size);
+		 		new_info_row.append("td").text("");
+		 	}
+		}
+		else {
+		 	for (var key in d.properties){
+		 		var new_info_row = info_table.append("tr");
+	 			new_info_row.append("td").text(key);
+	 			new_info_row.append("td").text(d.properties[key]);
+	 			new_info_row.append("td").text("");
+			}
+		}
+	}
+*/
 
 	return {
 		create : create,

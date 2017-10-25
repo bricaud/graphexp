@@ -7,6 +7,11 @@ const COMMUNICATION_PROTOCOL = "REST";
 //const COMMUNICATION_PROTOCOL = "websocket";
 // TODO: configuration for the secure server
 
+// The communication method can be GraphSON 2.0 (used by Gremlin 3.2)
+// or GraphSON 3.0 (used by Gremlin 3.3)
+const COMMUNICATION_METHOD = "GraphSON2"
+//const COMMUNICATION_METHOD = "GraphSON3"
+
 // Graph configuration
 const default_nb_of_layers = 3;
 const node_limit_per_request = 50;

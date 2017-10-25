@@ -51,7 +51,7 @@ var graphioGremlin = (function(){
 		// Preprocess query
 		var input_string = $('#search_value').val();
 		var input_field = $('#search_field').val();
-		console.log(input_field)
+		//console.log(input_field)
 	 	var filtered_string = input_string;//You may add .replace(/\W+/g, ''); to refuse any character not in the alphabet
 	 	if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // limit string length
 		// Translate to Gremlin query
@@ -88,7 +88,10 @@ var graphioGremlin = (function(){
 	}
 	function click_query(d) {
 		// Gremlin query
-		var gremlin_query = "g.V("+d.id+").bothE().bothV().path()"
+		//var gremlin_query = "g.V("+d.id+").bothE().bothV().path()"
+		var gremlin_query_nodes = "nodes = g.V("+d.id+").as('node').both().as('node').select(all,'node').unfold()"
+	  	var gremlin_query_edges = "edges = g.V("+d.id+").bothE()"
+	  	var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p>Query ID: "+ d.id +"</p>"
@@ -185,19 +188,13 @@ var graphioGremlin = (function(){
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	function handle_server_answer(data,query_type,active_node,message){
-		if (query_type=='click'){
-			var graph = arrange_data_path(data);
-			//console.log(graph)
-			var center_f = 0;
-			graph_viz.refresh_data(graph,center_f,active_node); //center_f=0 mean no attraction to the center for the nodes  
+		if (COMMUNICATION_METHOD == 'GraphSON3'){
+			data = graphson3to2(data);
+			var arrange_data = arrange_datav3;
+		} else{
+			var arrange_data = arrange_datav2;
 		}
-		else if (query_type=='search'){
-			var graph = arrange_data(data);
-			//console.log(graph)
-			var center_f = 1;
-			graph_viz.refresh_data(graph,center_f,active_node);
-		}
-		else if (query_type=='graphInfo'){
+		if (query_type=='graphInfo'){
 			infobox.display_graph_info(data);
 			_node_properties = make_properties_list(data[1][0]);
 			_edge_properties = make_properties_list(data[3][0]);
@@ -205,7 +202,17 @@ var graphioGremlin = (function(){
 			display_properties_bar(_node_properties,'nodes','Node properties:');
 			display_properties_bar(_edge_properties,'edges','Edge properties:');
 			display_color_choice(_node_properties,'nodes','Node color by:');
+		} else {
+			console.log(data);
+			var graph = arrange_data(data);
+			console.log(graph)
+			if (query_type=='click') var center_f = 0; //center_f=0 mean no attraction to the center for the nodes 
+			else if (query_type=='search') var center_f = 1;
+			else return;
+			graph_viz.refresh_data(graph,center_f,active_node);
 		}
+
+
 		$('#outputArea').html(message);
 		$('#messageArea').html('');
 	}
@@ -216,9 +223,9 @@ var graphioGremlin = (function(){
 	function make_properties_list(data){
 		var prop_dic = {};
 		for (var prop_str in data){
-			prop_str = prop_str.slice(0,-1);
+			prop_str = prop_str.replace(/[\[\ \"\'\]]/g,''); // get rid of symbols [,",',] and spaces
 			var prop_list = prop_str.split(',');
-			prop_list = prop_list.map(function (e){e=e.slice(1); return e;});
+			//prop_list = prop_list.map(function (e){e=e.slice(1); return e;});
 			for (var prop_idx in prop_list){
 				prop_dic[prop_list[prop_idx]] = 0;
 			}
@@ -241,7 +248,7 @@ var graphioGremlin = (function(){
 	}  
 
 	/////////////////////////////////////////////////////////////
-	function arrange_data(data) {
+	function arrange_datav2(data) {
 	  	// Extract node and edges from the data returned for 'search' request
 	  	// Create the graph object
 	  	var nodes=[], links=[];
@@ -256,6 +263,43 @@ var graphioGremlin = (function(){
 	  return {nodes:nodes, links:links};
 	}
 
+	function arrange_datav3(data) {
+	  	// Extract node and edges from the data returned for 'search' request
+	  	// Create the graph object
+	  	var nodes=[], links=[];
+	  	for (var key in data){
+	  		data[key].forEach(function (item) {
+	  			if (!("inV" in item) && idIndex(nodes,item.id) == null){ // if vertex and not already in the list
+	  				item.type = "vertex";
+	  				nodes.push(extract_infov3(item));
+	  			}
+	  			if (("inV" in item) && idIndex(links,item.id) == null){
+	  				item.type = "edge";
+	  				links.push(extract_infov3(item));
+	  			}
+			});
+	  	}
+	  return {nodes:nodes, links:links};
+	}
+	/*
+	function arrange_datav3(data) {
+	  	// Extract node and edges from the data returned for 'search' request
+	  	// Create the graph object
+	  	var nodes=[], links=[];
+	  	data[0].forEach(function (item) {
+	  		item.type = "vertex";
+	  		//console.log(item);
+	  		if (idIndex(nodes,item.id) == null) // if vertex and not already in the list
+	  			nodes.push(extract_infov3(item));
+	  	});
+	  	data[1].forEach(function (item) {
+	  		item.type = "edge";	  	
+	  		if (idIndex(links,item.id) == null)
+	  			links.push(extract_infov3(item));
+		});
+	  return {nodes:nodes, links:links};
+	}
+	*/
 	function arrange_data_path(data) {
 	  	// Extract node and edges from the data returned for 'click' request
 	  	// Create the graph object
@@ -271,12 +315,32 @@ var graphioGremlin = (function(){
 	  return {nodes:nodes, links:links};
 	}
 
+	function arrange_data_pathv3(data) {
+	  	// Extract node and edges from the data returned for 'search' request
+	  	// Create the graph object
+	  	var nodes=[], links=[];
+	  	for (var key in data){
+	  		data[key].objects.forEach(function (item) {
+	  			if (!("inV" in item) && idIndex(nodes,item.id) == null){ // if vertex and not already in the list
+	  				item.type = "vertex";
+	  				nodes.push(extract_infov3(item));
+	  			}
+	  			if (("inV" in item) && idIndex(links,item.id) == null){
+	  				item.type = "edge";
+	  				links.push(extract_infov3(item));
+	  			}
+			});
+	  	}
+	  return {nodes:nodes, links:links};
+	}
+
 	function extract_info(data) {
 		var data_dic = {id:data.id, label:data.label, type:data.type, properties:{}}
 		var prop_dic = data.properties
 		for (var key in prop_dic) {
   			if (prop_dic.hasOwnProperty(key)) {
-				data_dic.properties[key] = prop_dic[key]}
+				data_dic.properties[key] = prop_dic[key]
+			}
 		}
 		if (data.type=="edge"){
 			data_dic.source = data.outV
@@ -285,7 +349,70 @@ var graphioGremlin = (function(){
 		return data_dic
 	}
 
+	function extract_infov3(data) {
+	var data_dic = {id:data.id, label:data.label, type:data.type, properties:{}}
+	var prop_dic = data.properties
+	console.log(prop_dic)
+	for (var key in prop_dic) {
+		if (prop_dic.hasOwnProperty(key)) {
+			if (data.type == 'vertex'){
+				var property = get_vertex_prop_in_list(prop_dic[key]);
+			} else {
+				var property = prop_dic[key]['value'];
+			}
+			property = property.toString();
+			data_dic.properties[key] = property;
+		}
+	}
+	if (data.type=="edge"){
+		data_dic.source = data.outV
+		data_dic.target = data.inV
+	}
+	return data_dic
+}
 
+function get_vertex_prop_in_list(property){
+	var prop_value_list = [];
+	for (var vertexprop in property){
+		//console.log(vertexprop);
+		prop_value_list.push(property[vertexprop]['value']);
+	}
+	return prop_value_list;
+}
+
+	function graphson3to2(data){
+		if (!(Array.isArray(data) || ((typeof data === "object") && (data !== null)) )) return data;
+		if ('@type' in data) {
+			if (data['@type']=='g:List'){
+				data = data['@value'];
+				return graphson3to2(data);
+			} else if (data['@type']=='g:Set'){
+				data = data['@value'];
+				return data;
+			} else if(data['@type']=='g:Map'){
+				var data_tmp = {}
+				for (var i=0;i<data['@value'].length;i+=2){
+					var data_key = data['@value'][i];
+					if( (typeof data_key === "object") && (data_key !== null) ) data_key = graphson3to2(data_key);
+					//console.log(data_key);
+					if (Array.isArray(data_key)) data_key = JSON.stringify(data_key).replace(/\"/g,' ');//.toString();
+					data_tmp[data_key] = graphson3to2(data['@value'][i+1]);
+				}
+				data = data_tmp;
+				return data;
+			} else {
+				data = data['@value'];
+				if ( (typeof data === "object") && (data !== null) ) data = graphson3to2(data);
+				return data;
+			}
+		} else if (Array.isArray(data) || ((typeof data === "object") && (data !== null)) ){
+			for (var key in data){
+				data[key] = graphson3to2(data[key]);
+			}
+			return data;
+		}
+		return data;
+	}
 
 	return {
 		get_node_properties : get_node_properties,

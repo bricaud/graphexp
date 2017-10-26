@@ -39,7 +39,7 @@ var infobox = (function(){
 		_table_IDinfo = graphElem_bar.append("table").attr("id","tableIdDetails");
 		init_table(_table_IDinfo,["Key","Value"]);
 		_table_DBinfo = graphElem_bar.append("table").attr("id","tableDBDetails");
-		init_table(_table_DBinfo,["Key","Value","Id"]);
+		init_table(_table_DBinfo,["Key","Value","Property"]);
 		hide_element(label_graph);
 
 	}
@@ -136,43 +136,24 @@ var infobox = (function(){
 		}
 	}
 
-	function _display_vertex_properties(key,value,info_table) {// TODO: truely handle VertexProperty
-		if (COMMUNICATION_METHOD == 'GraphSON1'){
-	 		for (var subkey in value){
-	 			var new_info_row = info_table.append("tr");
-	 			new_info_row.append("td").text(key).style("font-size",_font_size);
-	 			new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
-	 			new_info_row.append("td").text(value[subkey].id).style("font-size",_font_size);
-			}
-		} else {
-			var new_info_row = info_table.append("tr");
-			new_info_row.append("td").text(key);
-		 	new_info_row.append("td").text(value).style("font-size",_font_size);
-		 	new_info_row.append("td").text("");
+	function _display_vertex_properties(key,value,info_table) {
+ 		for (var subkey in value){
+ 			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
+ 				for (var subsubkey in value[subkey].properties){
+ 					var new_info_row = info_table.append("tr");
+ 					new_info_row.append("td").text(key).style("font-size",_font_size);
+ 					new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+ 					new_info_row.append("td").text(subsubkey + ' : '+ value[subkey].properties[subsubkey]).style("font-size",_font_size);
+ 				}
+ 			} else {
+ 				var new_info_row = info_table.append("tr");
+ 				new_info_row.append("td").text(key).style("font-size",_font_size);
+ 				new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+ 				new_info_row.append("td").text('').style("font-size",_font_size);
+ 			}
 		}
 	}
-/*
-	function _display_DBinfo(d){
-		_table_DBinfo.select("tbody").remove();
-	 	var info_table = _table_DBinfo.append("tbody");
-	 	if (d.type=='vertex'){
-		 	for (var key in d.properties){
-		 		var new_info_row = info_table.append("tr");
-		 		new_info_row.append("td").text(key).style("font-size",_font_size);
-		 		new_info_row.append("td").text(d.properties[key]).style("font-size",_font_size);
-		 		new_info_row.append("td").text("");
-		 	}
-		}
-		else {
-		 	for (var key in d.properties){
-		 		var new_info_row = info_table.append("tr");
-	 			new_info_row.append("td").text(key);
-	 			new_info_row.append("td").text(d.properties[key]);
-	 			new_info_row.append("td").text("");
-			}
-		}
-	}
-*/
+
 
 	return {
 		create : create,

@@ -89,7 +89,8 @@ var graphioGremlin = (function(){
 	function click_query(d) {
 		// Gremlin query
 		//var gremlin_query = "g.V("+d.id+").bothE().bothV().path()"
-		var gremlin_query_nodes = "nodes = g.V("+d.id+").as('node').both().as('node').select(all,'node').unfold()"
+		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
+		var gremlin_query_nodes = "nodes = g.V("+d.id+").as('node').both().as('node').select(all,'node').inject(g.V("+d.id+")).unfold()"
 	  	var gremlin_query_edges = "edges = g.V("+d.id+").bothE()"
 	  	var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
 		// while busy, show we're doing something in the messageArea.
@@ -189,6 +190,7 @@ var graphioGremlin = (function(){
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	function handle_server_answer(data,query_type,active_node,message){
 		if (COMMUNICATION_METHOD == 'GraphSON3'){
+			//console.log(data)
 			data = graphson3to1(data);
 			var arrange_data = arrange_datav3;
 		} else{
@@ -203,9 +205,9 @@ var graphioGremlin = (function(){
 			display_properties_bar(_edge_properties,'edges','Edge properties:');
 			display_color_choice(_node_properties,'nodes','Node color by:');
 		} else {
-			console.log(data);
+			//console.log(data);
 			var graph = arrange_data(data);
-			console.log(graph)
+			//console.log(graph)
 			if (query_type=='click') var center_f = 0; //center_f=0 mean no attraction to the center for the nodes 
 			else if (query_type=='search') var center_f = 1;
 			else return;
@@ -301,15 +303,16 @@ var graphioGremlin = (function(){
 	function extract_infov3(data) {
 	var data_dic = {id:data.id, label:data.label, type:data.type, properties:{}}
 	var prop_dic = data.properties
-	console.log(prop_dic)
-	for (var key in prop_dic) {
+	//console.log(prop_dic)
+	for (var key in prop_dic) { 
 		if (prop_dic.hasOwnProperty(key)) {
-			if (data.type == 'vertex'){
-				var property = get_vertex_prop_in_list(prop_dic[key]);
+			if (data.type == 'vertex'){// Extracting the Vertexproperties (properties of properties for vertices)
+				var property = prop_dic[key];
+				property['summary'] = get_vertex_prop_in_list(prop_dic[key]).toString();
 			} else {
 				var property = prop_dic[key]['value'];
 			}
-			property = property.toString();
+			//property = property.toString();
 			data_dic.properties[key] = property;
 		}
 	}
@@ -320,11 +323,11 @@ var graphioGremlin = (function(){
 	return data_dic
 }
 
-function get_vertex_prop_in_list(property){
+function get_vertex_prop_in_list(vertexProperty){
 	var prop_value_list = [];
-	for (var vertexprop in property){
+	for (var key in vertexProperty){
 		//console.log(vertexprop);
-		prop_value_list.push(property[vertexprop]['value']);
+		prop_value_list.push(vertexProperty[key]['value']);
 	}
 	return prop_value_list;
 }

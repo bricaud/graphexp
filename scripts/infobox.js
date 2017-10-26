@@ -137,7 +137,7 @@ var infobox = (function(){
 	}
 
 	function _display_vertex_properties(key,value,info_table) {// TODO: truely handle VertexProperty
-		if (COMMUNICATION_METHOD == 'GraphSON2'){
+		if (COMMUNICATION_METHOD == 'GraphSON1'){
 	 		for (var subkey in value){
 	 			var new_info_row = info_table.append("tr");
 	 			new_info_row.append("td").text(key).style("font-size",_font_size);

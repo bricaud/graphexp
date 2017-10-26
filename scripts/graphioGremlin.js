@@ -189,7 +189,7 @@ var graphioGremlin = (function(){
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	function handle_server_answer(data,query_type,active_node,message){
 		if (COMMUNICATION_METHOD == 'GraphSON3'){
-			data = graphson3to2(data);
+			data = graphson3to1(data);
 			var arrange_data = arrange_datav3;
 		} else{
 			var arrange_data = arrange_datav2;
@@ -249,22 +249,22 @@ var graphioGremlin = (function(){
 
 	/////////////////////////////////////////////////////////////
 	function arrange_datav2(data) {
-	  	// Extract node and edges from the data returned for 'search' request
+	  	// Extract node and edges from the data returned for 'search' and 'click' request
 	  	// Create the graph object
 	  	var nodes=[], links=[];
 	  	for (var key in data){
 	  		data[key].forEach(function (item) {
 	  		if (item.type=="vertex" && idIndex(nodes,item.id) == null) // if vertex and not already in the list
-	  			nodes.push(extract_info(item));
+	  			nodes.push(extract_infov2(item));
 	  		if (item.type=="edge" && idIndex(links,item.id) == null)
-	  			links.push(extract_info(item));
+	  			links.push(extract_infov2(item));
 			});
 	  	}
 	  return {nodes:nodes, links:links};
 	}
 
 	function arrange_datav3(data) {
-	  	// Extract node and edges from the data returned for 'search' request
+	  	// Extract node and edges from the data returned for 'search' and 'click' request
 	  	// Create the graph object
 	  	var nodes=[], links=[];
 	  	for (var key in data){
@@ -281,60 +281,9 @@ var graphioGremlin = (function(){
 	  	}
 	  return {nodes:nodes, links:links};
 	}
-	/*
-	function arrange_datav3(data) {
-	  	// Extract node and edges from the data returned for 'search' request
-	  	// Create the graph object
-	  	var nodes=[], links=[];
-	  	data[0].forEach(function (item) {
-	  		item.type = "vertex";
-	  		//console.log(item);
-	  		if (idIndex(nodes,item.id) == null) // if vertex and not already in the list
-	  			nodes.push(extract_infov3(item));
-	  	});
-	  	data[1].forEach(function (item) {
-	  		item.type = "edge";	  	
-	  		if (idIndex(links,item.id) == null)
-	  			links.push(extract_infov3(item));
-		});
-	  return {nodes:nodes, links:links};
-	}
-	*/
-	function arrange_data_path(data) {
-	  	// Extract node and edges from the data returned for 'click' request
-	  	// Create the graph object
-	  	var nodes=[], links=[];
-	  	for (var key in data){
-	  		data[key].objects.forEach(function (item) {
-	  		if (item.type=="vertex" && idIndex(nodes,item.id) == null) // if vertex and not already in the list
-	  			nodes.push(extract_info(item));
-	  		if (item.type=="edge" && idIndex(links,item.id) == null)
-	  			links.push(extract_info(item));
-			});
-	  	}
-	  return {nodes:nodes, links:links};
-	}
 
-	function arrange_data_pathv3(data) {
-	  	// Extract node and edges from the data returned for 'search' request
-	  	// Create the graph object
-	  	var nodes=[], links=[];
-	  	for (var key in data){
-	  		data[key].objects.forEach(function (item) {
-	  			if (!("inV" in item) && idIndex(nodes,item.id) == null){ // if vertex and not already in the list
-	  				item.type = "vertex";
-	  				nodes.push(extract_infov3(item));
-	  			}
-	  			if (("inV" in item) && idIndex(links,item.id) == null){
-	  				item.type = "edge";
-	  				links.push(extract_infov3(item));
-	  			}
-			});
-	  	}
-	  return {nodes:nodes, links:links};
-	}
 
-	function extract_info(data) {
+	function extract_infov2(data) {
 		var data_dic = {id:data.id, label:data.label, type:data.type, properties:{}}
 		var prop_dic = data.properties
 		for (var key in prop_dic) {
@@ -380,12 +329,13 @@ function get_vertex_prop_in_list(property){
 	return prop_value_list;
 }
 
-	function graphson3to2(data){
+	function graphson3to1(data){
+		// Convert data from graphSON v2 format to graphSON v1
 		if (!(Array.isArray(data) || ((typeof data === "object") && (data !== null)) )) return data;
 		if ('@type' in data) {
 			if (data['@type']=='g:List'){
 				data = data['@value'];
-				return graphson3to2(data);
+				return graphson3to1(data);
 			} else if (data['@type']=='g:Set'){
 				data = data['@value'];
 				return data;
@@ -393,21 +343,21 @@ function get_vertex_prop_in_list(property){
 				var data_tmp = {}
 				for (var i=0;i<data['@value'].length;i+=2){
 					var data_key = data['@value'][i];
-					if( (typeof data_key === "object") && (data_key !== null) ) data_key = graphson3to2(data_key);
+					if( (typeof data_key === "object") && (data_key !== null) ) data_key = graphson3to1(data_key);
 					//console.log(data_key);
 					if (Array.isArray(data_key)) data_key = JSON.stringify(data_key).replace(/\"/g,' ');//.toString();
-					data_tmp[data_key] = graphson3to2(data['@value'][i+1]);
+					data_tmp[data_key] = graphson3to1(data['@value'][i+1]);
 				}
 				data = data_tmp;
 				return data;
 			} else {
 				data = data['@value'];
-				if ( (typeof data === "object") && (data !== null) ) data = graphson3to2(data);
+				if ( (typeof data === "object") && (data !== null) ) data = graphson3to1(data);
 				return data;
 			}
 		} else if (Array.isArray(data) || ((typeof data === "object") && (data !== null)) ){
 			for (var key in data){
-				data[key] = graphson3to2(data[key]);
+				data[key] = graphson3to1(data[key]);
 			}
 			return data;
 		}

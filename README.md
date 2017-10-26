@@ -13,7 +13,7 @@ A live demo of Graphexp is available on the [project Github page](https://bricau
 To use Graph Explorer, you need a [Gremlin server](http://tinkerpop.apache.org/) running with REST or websocket protocol and a *recent* web browser to display the visualization.
 On your web browser, just access the file `graphexp.html`.
 
-If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`. Use this latter file to configure the communication protocol `REST` (default) or `websocket`. Depending on the version of your Gremlin server you also need to configure the `COMMUNICATION_METHOD`, `GraphSON2` for Gremlin server version 3.2.x or `GraphSON3` for versions 3.3.x.
+If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`. Use this latter file to configure the communication protocol `REST` (default) or `websocket`. Depending on the version of your Gremlin server you also need to configure the `COMMUNICATION_METHOD`, `GraphSON1` for Gremlin server version 3.2.x or `GraphSON3` for versions 3.3.x.
 
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 

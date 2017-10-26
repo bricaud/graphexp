@@ -251,7 +251,7 @@
 			if (item=='nodes'){
 				if (COMMUNICATION_METHOD == 'GraphSON3') {
 					return d.properties[prop_name];
-				} else if (COMMUNICATION_METHOD == 'GraphSON2') {
+				} else if (COMMUNICATION_METHOD == 'GraphSON1') {
 					return d.properties[prop_name][0].value;
 				}
 			}

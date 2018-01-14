@@ -15,6 +15,8 @@ On your web browser, just access the file `graphexp.html`.
 
 If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`. Use this latter file to configure the communication protocol `REST` (default) or `websocket`. Depending on the version of your Gremlin server you also need to configure the `COMMUNICATION_METHOD`, `GraphSON1` for Gremlin server version 3.2.x or `GraphSON3` for versions 3.3.x.
 
+Graphexp now works with Amazon Neptune thanks to a pull request of [jwalton922](https://github.com/jwalton922). With this database, set `SINGLE_COMMANDS_AND_NO_VARS = true` in `graphConf.js`.
+
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 
 

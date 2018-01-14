@@ -29,6 +29,20 @@ var graphioGremlin = (function(){
 	function get_edge_properties(){
 		return _edge_properties;
 	}
+        
+        function create_single_command(query){
+            var equalIndex = query.indexOf("=");
+            var semiColonIndex = query.indexOf(";");
+            if( equalIndex >= 0){
+                if(semiColonIndex < 0){
+                    query = query.substring(equalIndex+1);
+                } else {
+                    query = query.substring(equalIndex+1,semiColonIndex);
+                }
+            }
+            var returnQuery = query.trim()+".toList();";
+            return returnQuery;
+        }
 
 	function get_graph_info(){
 		var gremlin_query_nodes = "nodes = g.V().groupCount().by(label);"
@@ -42,7 +56,25 @@ var graphioGremlin = (function(){
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p> Graph info</p>"
-		send_to_server(gremlin_query,'graphInfo',null,message)
+                if(SINGLE_COMMANDS_AND_NO_VARS){
+                    var node_label_query = create_single_command(gremlin_query_nodes);
+                    var edge_label_query = create_single_command(gremlin_query_edges);
+                    var node_prop_query = create_single_command(gremlin_query_nodes_prop);
+                    var edge_prop_query = create_single_command(gremlin_query_edges_prop);
+                    send_to_server(node_label_query, null, null, null, function(nodeLabels){
+                       send_to_server(edge_label_query, null, null, null, function(edgeLabels){
+                           send_to_server(node_prop_query, null, null, null, function(nodeProps){
+                               send_to_server(edge_prop_query, null, null, null, function(edgeProps){
+                                   var combinedData = [nodeLabels, nodeProps, edgeLabels, edgeProps];
+                                   console.log("Combined data", combinedData);                                   
+                                   handle_server_answer(combinedData,'graphInfo',null,message);
+                               });
+                           });
+                       }); 
+                    });
+                } else {
+                    send_to_server(gremlin_query,'graphInfo',null,message)
+                }
 	}
 
 
@@ -55,9 +87,11 @@ var graphioGremlin = (function(){
 	 	var filtered_string = input_string;//You may add .replace(/\W+/g, ''); to refuse any character not in the alphabet
 	 	if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // limit string length
 		// Translate to Gremlin query
+                var gremlin_query_nodes = null;
+                var gremlin_query_edges = null;
 	  	if (input_string==""){
-	  		var gremlin_query_nodes = "nodes = g.V().limit("+node_limit_per_request+")"
-	  		var gremlin_query_edges = "edges = g.V().limit("+node_limit_per_request+").aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
+	  		gremlin_query_nodes = "nodes = g.V().limit("+node_limit_per_request+")"
+                        gremlin_query_edges = "edges = g.V().limit("+node_limit_per_request+").aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
 	  		var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
 
 	  			  	}
@@ -68,8 +102,8 @@ var graphioGremlin = (function(){
 	  			var has_str = "has('"+input_field+"','"+filtered_string+"')"
 	  		}
 			var gremlin_query = "g.V()."+has_str
-	  		var gremlin_query_nodes = "nodes = g.V()."+has_str
-	  		var gremlin_query_edges = "edges = g.V()."+has_str
+	  		gremlin_query_nodes = "nodes = g.V()."+has_str
+	  		gremlin_query_edges = "edges = g.V()."+has_str
 	  			+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
 	  		var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
 	  		console.log(gremlin_query)
@@ -78,7 +112,20 @@ var graphioGremlin = (function(){
 	  	// while busy, show we're doing something in the messageArea.
 	  	$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p>Query: '"+ filtered_string +"'</p>"
-		send_to_server(gremlin_query,'search',null,message)	  	
+                if(SINGLE_COMMANDS_AND_NO_VARS){
+                    var nodeQuery = create_single_command(gremlin_query_nodes);                    
+                    var edgeQuery = create_single_command(gremlin_query_edges);
+                    console.log("Node query: "+nodeQuery);
+                    console.log("Edge query: "+edgeQuery);
+                    send_to_server(nodeQuery, null, null, null, function(nodeData){
+                        send_to_server(edgeQuery, null, null, null, function(edgeData){
+                            var combinedData = [nodeData,edgeData];
+                            handle_server_answer(combinedData, 'search', null, message);
+                        });
+                    });
+                } else {
+                    send_to_server(gremlin_query,'search',null,message)	  	
+                }
 	}
 
 	function isInt(value) {
@@ -90,31 +137,48 @@ var graphioGremlin = (function(){
 		// Gremlin query
 		//var gremlin_query = "g.V("+d.id+").bothE().bothV().path()"
 		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
-		var gremlin_query_nodes = "nodes = g.V("+d.id+").as('node').both().as('node').select(all,'node').inject(g.V("+d.id+")).unfold()"
-	  	var gremlin_query_edges = "edges = g.V("+d.id+").bothE()"
+                var id = d.id;
+                if(isNaN(id)){
+                    id = "'"+id+"'";
+                }
+		var gremlin_query_nodes = "nodes = g.V("+id+").as('node').both().as('node').select(all,'node').inject(g.V("+id+")).unfold()"
+	  	var gremlin_query_edges = "edges = g.V("+id+").bothE()"
 	  	var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p>Query ID: "+ d.id +"</p>"
-		send_to_server(gremlin_query,'click',d.id,message)
+                if(SINGLE_COMMANDS_AND_NO_VARS){
+                    var nodeQuery = create_single_command(gremlin_query_nodes);
+                    var edgeQuery = create_single_command(gremlin_query_edges);
+                    send_to_server(nodeQuery, null, null, null, function(nodeData){
+                        send_to_server(edgeQuery, null, null, null, function(edgeData){
+                            var combinedData = [nodeData,edgeData];
+                            handle_server_answer(combinedData, 'click', d.id, message);
+                        });
+                    });
+                } else {
+                    send_to_server(gremlin_query,'click',d.id,message);
+                }
 	}
 
-	function send_to_server(gremlin_query,query_type,active_node,message){
-		if (COMMUNICATION_PROTOCOL == 'REST'){
-			run_ajax_request(gremlin_query,query_type,active_node,message);
-		}
-		else if (COMMUNICATION_PROTOCOL == 'websocket'){
-			run_websocket_request(gremlin_query,query_type,active_node,message);
-		}
-		else {
-			console.log('Bad communication protocol. Check configuration file. Accept "REST" or "websocket" .')
-		}
+	function send_to_server(gremlin_query,query_type,active_node,message, callback){
+
+            if (COMMUNICATION_PROTOCOL == 'REST'){
+                    run_ajax_request(gremlin_query,query_type,active_node,message,callback);
+            }
+            else if (COMMUNICATION_PROTOCOL == 'websocket'){
+                    run_websocket_request(gremlin_query,query_type,active_node,message,callback);
+            }
+            else {
+                    console.log('Bad communication protocol. Check configuration file. Accept "REST" or "websocket" .')
+            }
+                
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// AJAX request for the REST API
 	////////////////////////////////////////////////////////////////////////////////////////////////
-	function run_ajax_request(gremlin_query,query_type,active_node,message){
+	function run_ajax_request(gremlin_query,query_type,active_node,message, callback){
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 
@@ -128,9 +192,13 @@ var graphioGremlin = (function(){
 			Timeout:2000,
 			data: JSON.stringify({"gremlin" : gremlin_query}),
 			success: function(data, textStatus, jqXHR){
-				var Data = data.result.data;
-				//console.log(Data)
-				handle_server_answer(Data,query_type,active_node,message);
+                            var Data = data.result.data;
+                            //console.log(Data)
+                            if(callback){
+                                callback(Data);
+                            } else {				
+                                handle_server_answer(Data,query_type,active_node,message);
+                            }
 			},
 			failure: function(msg){
 				console.log("failed");
@@ -143,7 +211,7 @@ var graphioGremlin = (function(){
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Websocket connection
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	function run_websocket_request(gremlin_query,query_type,active_node,message){
+	function run_websocket_request(gremlin_query,query_type,active_node,message,callback){
 		$('#messageArea').html('<h3>(loading)</h3>');
 
 		var msg = { "requestId": uuidv4(),
@@ -174,7 +242,11 @@ var graphioGremlin = (function(){
 				$('#messageArea').html('Server error');
 				return 1;}
 			//console.log(data)
-			handle_server_answer(data,query_type,active_node,message);
+                        if(callback){
+                            callback(data);
+                        } else {
+                            handle_server_answer(data,query_type,active_node,message);
+                        }
 		};		
 	}
 

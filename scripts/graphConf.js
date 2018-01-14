@@ -2,6 +2,12 @@
 // configuration for the graph database access
 const HOST = "localhost"
 const PORT = "8182"
+
+// for implementations like Neptune where only single commands are allowed per request
+// set to true
+const SINGLE_COMMANDS_AND_NO_VARS = false;
+
+
 // The communication protocol with the server can be "REST" or "websocket"
 const COMMUNICATION_PROTOCOL = "REST";
 //const COMMUNICATION_PROTOCOL = "websocket";

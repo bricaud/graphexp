@@ -6,7 +6,6 @@ Graphexp is under the Apache 2.0 license.
 
 ![graphexp](https://github.com/bricaud/graphexp/blob/master/images/graphexp2.png "Graph exploration")
 
-A live demo of Graphexp is available on the [project Github page](https://bricaud.github.io/graphexp/). See the [Tutorial](#tutorial-with-the-tree-of-life) section below.
 
 ## Configuration
 

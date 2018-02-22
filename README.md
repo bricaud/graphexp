@@ -45,7 +45,9 @@ or for the websocket version:
 docker pull bricaud/gremlin-with-demo-graph:websocket
 docker run -p 8182:8182 -it --name gremlin-server-websocket bricaud/gremlin-server-with-demo-graph:websocket
 ```
+### Running a graphexp Demo with Docker
 
+You may also try out a Graphexp demo on [joov's Github repository](https://github.com/joov/gremlin-demo). It uses Docker compose and can work on Windows.  
 
 ### Graphexp guidelines
 To display a node, type in a property name and value, then click on the search button. The input is case-sensitive.

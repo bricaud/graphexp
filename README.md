@@ -42,7 +42,7 @@ docker run -p 8182:8182 -it --name gremlin-server-rest bricaud/gremlin-server-wi
 ```
 or for the websocket version:
 ```
-docker pull bricaud/gremlin-with-demo-graph:websocket
+docker pull bricaud/gremlin-server-with-demo-graph:websocket
 docker run -p 8182:8182 -it --name gremlin-server-websocket bricaud/gremlin-server-with-demo-graph:websocket
 ```
 ### Running a graphexp Demo with Docker
@@ -114,6 +114,3 @@ If you want to explore the world of insects, you may start with the taxon `Insec
 You may also be interested in the `Homo` group. 
 
 Have a try on the live demo of Graphexp on the [project Github page](https://bricaud.github.io/graphexp/).
-
-
-

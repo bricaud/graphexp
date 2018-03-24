@@ -139,11 +139,11 @@ var graphioGremlin = (function(){
 		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
                 var id = d.id;
                 if(isNaN(id)){
-                    id = "'"+id+"'";
+                    id = '"'+id+'"';
                 }
-		var gremlin_query_nodes = "nodes = g.V("+id+").as('node').both().as('node').select(all,'node').inject(g.V("+id+")).unfold()"
-	  	var gremlin_query_edges = "edges = g.V("+id+").bothE()"
-	  	var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
+		var gremlin_query_nodes = 'nodes = g.V('+id+').as("node").both().as("node").select(all,"node").inject(g.V('+id+')).unfold()'
+		var gremlin_query_edges = 'edges = g.V('+id+').bothE()'
+		var gremlin_query = gremlin_query_nodes+'\n'+gremlin_query_edges+'\n'+'[nodes.toList(),edges.toList()]'
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p>Query ID: "+ d.id +"</p>"

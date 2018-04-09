@@ -134,7 +134,7 @@ var graphioGremlin = (function(){
 	         !isNaN(parseInt(value, 10));
 	}
 	function click_query(d) {
-        var edge_filter = $('#edge_filter').val();
+		var edge_filter = $('#edge_filter').val();
 		// Gremlin query
 		//var gremlin_query = "g.V("+d.id+").bothE().bothV().path()"
 		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
@@ -143,7 +143,7 @@ var graphioGremlin = (function(){
                     id = '"'+id+'"';
                 }
 		var gremlin_query_nodes = 'nodes = g.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").inject(g.V('+id+')).unfold()'
-        var gremlin_query_edges = "edges = g.V("+id+").bothE("+(edge_filter?"'"+edge_filter+"'":"")+")";
+		var gremlin_query_edges = "edges = g.V("+id+").bothE("+(edge_filter?"'"+edge_filter+"'":"")+")";
 		var gremlin_query = gremlin_query_nodes+'\n'+gremlin_query_edges+'\n'+'[nodes.toList(),edges.toList()]'
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');

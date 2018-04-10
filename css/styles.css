@@ -80,6 +80,14 @@ Layout styles
 	margin: 0 auto;
 }
 
+.container table {
+	border: none;
+}
+
+.container td {
+	border: none;
+}
+
 .header
 {
 	color: #000;
@@ -130,6 +138,7 @@ Layout styles
 	position: absolute;
 	right: 0;
 	margin-right: 1em;
+	max-width: 25%;
 }
 
 .footer

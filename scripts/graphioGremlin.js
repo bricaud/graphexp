@@ -81,33 +81,46 @@ var graphioGremlin = (function(){
 
 	function search_query() {
 		// Preprocess query
-		var input_string = $('#search_value').val();
-		var input_field = $('#search_field').val();
+		let input_string = $('#search_value').val();
+		let input_field = $('#search_field').val();
+        let label_field = $('#label_field').val();
+        let limit_field = $('#limit_field').val();
+        let search_type = $('#search_type').val();
 		//console.log(input_field)
 	 	var filtered_string = input_string;//You may add .replace(/\W+/g, ''); to refuse any character not in the alphabet
 	 	if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // limit string length
 		// Translate to Gremlin query
-                var gremlin_query_nodes = null;
-                var gremlin_query_edges = null;
-	  	if (input_string==""){
-	  		gremlin_query_nodes = "nodes = g.V().limit("+node_limit_per_request+")"
-                        gremlin_query_edges = "edges = g.V().limit("+node_limit_per_request+").aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
-	  		var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
-
-	  			  	}
-	  	else{
-	  		if (isInt(input_string)){
-	  			var has_str = "has('"+input_field+"',"+filtered_string+")"
-	  		} else {
-	  			var has_str = "has('"+input_field+"','"+filtered_string+"')"
-	  		}
-			var gremlin_query = "g.V()."+has_str
-	  		gremlin_query_nodes = "nodes = g.V()."+has_str
-	  		gremlin_query_edges = "edges = g.V()."+has_str
-	  			+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge')"
-	  		var gremlin_query = gremlin_query_nodes+"\n"+gremlin_query_edges+"\n"+"[nodes.toList(),edges.toList()]"
-	  		console.log(gremlin_query)
+        let has_str = "";
+        if (label_field !== "") {
+            has_str = ".hasLabel('" + label_field + "')";
+        }
+        if (input_field !== "" && input_string !== "") {
+            has_str += ".has('" + input_field + "',";
+            switch (search_type) {
+                case "eq":
+                    if (isInt(input_string)){
+                        has_str += filtered_string + ")"
+                    } else {
+                        has_str += "'" + filtered_string + "')"
+                    }
+                    break;
+                case "contains":
+                    has_str += "textContains('" + filtered_string + "'))";
+                    break;
+            }
+        } else if (limit_field === "" || limit_field < 0) {
+                limit_field = node_limit_per_request;
 		}
+
+        let gremlin_query_nodes = "nodes = g.V()" + has_str;
+        if (limit_field !== "" && isInt(limit_field) && limit_field > 0) {
+            gremlin_query_nodes += ".limit(" + limit_field + ").toList()";
+		} else {
+        	gremlin_query_nodes += ".toList()";
+		}
+        let gremlin_query_edges = "edges = g.V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList()";
+        let gremlin_query = gremlin_query_nodes + ";" + gremlin_query_edges + ";" + "[nodes,edges]";
+        console.log(gremlin_query);
 
 	  	// while busy, show we're doing something in the messageArea.
 	  	$('#messageArea').html('<h3>(loading)</h3>');

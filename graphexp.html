@@ -50,22 +50,63 @@
 		-->
 		<div class="nav-bar">
 			<div class="container" id="nav_bar">
-				<ul class="nav">
-					<li>
-						Enter a field: <span id="prop_choice"><input name="search_field" id="search_field" value="" /></span>
-					</li>
-					<li>
-						Enter a Keyword/value: <input name="search_value" id="search_value" value="" />
-					</li>
-					<li><button name="search query" onclick="search_query();">Search</button></li>
-					<li><button name="clear" onclick="graph_viz.clear();">Clear</button></li>
-					<li><input type="checkbox" name="Freeze" id="freeze-in" />Freeze exploration</li>
-					<li>
-						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show labels
-					</li>
-					<li><input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()"> Nb of layers.
-					</li>
-				</ul>
+				<table>
+					<tr>
+						<td>
+							<label for="label_field">Enter a label:</label>
+						</td>
+						<td>
+							<input name="label_field" id="label_field" value="" />
+						</td>
+						<td>
+							<label for="limit_field">Results limit:</label>
+						</td>
+						<td>
+							<input name="limit_field" id="limit_field" value="50" min="1" max="1000" type="number" />
+						</td>
+						<td>
+							<label for="nbLayers">Nb of layers.</label>
+						</td>
+						<td>
+							<input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
+						</td>
+						<td>
+							<input type="checkbox" name="Freeze" id="freeze-in" />
+							<label for="freeze-in">Freeze exploration</label>
+						</td>
+						<td>
+							<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>
+							<label for="showName">Show labels</label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="search_field">Enter a field:</label>
+						</td>
+						<td>
+							<input name="search_field" id="search_field" value="" />
+						</td>
+						<td>
+							<label for="search_value">Enter a keyword/value:</label>
+						</td>
+						<td>
+							<input name="search_value" id="search_value" value="" />
+						</td>
+						<td>
+							<label for="search_type">Type of search:</label>
+						</td>
+						<td>
+							<select name="search_type" id="search_type">
+								<option value="eq">Equals</option>
+								<option value="contains">Contains</option>
+							</select>
+						</td>
+						<td colspan="2">
+							<button name="search query" onclick="search_query();">Search</button>
+							<button name="clear" onclick="graph_viz.clear();">Clear</button>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<div class="content">

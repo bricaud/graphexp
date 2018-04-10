@@ -114,12 +114,12 @@ var graphioGremlin = (function(){
 
         let gremlin_query_nodes = "nodes = g.V()" + has_str;
         if (limit_field !== "" && isInt(limit_field) && limit_field > 0) {
-            gremlin_query_nodes += ".limit(" + limit_field + ").toList()";
+            gremlin_query_nodes += ".limit(" + limit_field + ").toList();";
 		} else {
-        	gremlin_query_nodes += ".toList()";
+        	gremlin_query_nodes += ".toList();";
 		}
-        let gremlin_query_edges = "edges = g.V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList()";
-        let gremlin_query = gremlin_query_nodes + ";" + gremlin_query_edges + ";" + "[nodes,edges]";
+        let gremlin_query_edges = "edges = g.V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
+        let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
         console.log(gremlin_query);
 
 	  	// while busy, show we're doing something in the messageArea.

@@ -74,11 +74,7 @@ a:active { color: red; }
 Layout styles
 ------------------------*/
 
-.container
-{
-	padding: 1em 1.25em;
-	margin: 0 auto;
-}
+
 
 .container table {
 	border: none;
@@ -103,6 +99,46 @@ Layout styles
 	background: #000;
 	padding: 0;
 }
+
+.container
+{
+	padding: 1em 1.25em;
+	margin: 0 auto;
+}
+
+.nav.container {
+	display: grid;
+	grid-template-rows: auto 15%;
+}
+
+.nav.inputs_container {
+	grid-row: 1 / 2;
+
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+	grid-auto-flow: row;
+
+}
+
+.nav.input_unit_container {
+	padding: 5px;
+	align-self: center;
+}
+
+input[type="number"] {
+	display:block;
+}
+
+.nav.input_label {
+	white-space:nowrap;
+}
+
+.nav.controls {
+	grid-row: 2 / 3;
+	justify-self: center;
+	padding-top: 5px;
+}
+
 
 .content
 {

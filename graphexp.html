@@ -49,23 +49,38 @@
 		</div>
 		-->
 		<div class="nav-bar">
-			<div class="container" id="nav_bar">
-				<ul class="nav">
-					<li>
-						Enter a field: <span id="prop_choice"><input name="search_field" id="search_field" value="" /></span>
-					</li>
-					<li>
-						Enter a Keyword/value: <input name="search_value" id="search_value" value="" />
-					</li>
-					<li><button name="search query" onclick="search_query();">Search</button></li>
-					<li><button name="clear" onclick="graph_viz.clear();">Clear</button></li>
-					<li><input type="checkbox" name="Freeze" id="freeze-in" />Freeze exploration</li>
-					<li>
-						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show labels
-					</li>
-					<li><input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()"> Nb of layers.
-					</li>
-				</ul>
+			<div class="nav container" id="nav_bar">
+				<div class="nav inputs_container">
+					<div class="nav input_unit_container">
+						<label for="search_field">Enter a field: </label>
+						<input name="search_field" id="search_field" value="" />
+					</div>
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="search_value">Enter a Keyword/value: </label>
+						<input name="search_value" id="search_value" value="" />
+					</div>
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="edge_filter">Traverse by edge: </label>
+						<input name="edge_filter" id="edge_filter" value="" />
+					</div>
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="nbLayers">Nb of layers </label>
+						<input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
+					</div>
+					<div class="nav input_unit_container">
+						<input type="checkbox" name="Freeze" id="freeze-in" />
+						<label class="nav input_label" for="freeze-in">Freeze exploration</label>
+					</div>
+
+					<div class="nav input_unit_container">
+						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>
+						<label class="nav input_label" for="showName">Show labels</label>
+					</div>
+				</div>
+				<div class="nav controls">
+					<button name="search query" onclick="search_query();">Search</button>
+					<button name="clear" onclick="graph_viz.clear();">Clear</button>
+				</div>
 			</div>
 		</div>
 		<div class="content">

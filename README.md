@@ -52,12 +52,24 @@ You may also try out a Graphexp demo on [joov's Github repository](https://githu
 ### Graphexp guidelines
 To display a node, type in a property name and value, then click on the search button. The input is case-sensitive.
 Leaving a blank value will display a part of the graph limited to the first 50 nodes found (with their connections).
-The node and edge properties can be automatically retrieved using the `get graph info` button. Pushing this button will also display some graph properties on the left side of the page.
+The node and edge properties can be automatically retrieved using the `get graph info` button. Pushing this button will also display some graph properties on the left side of the page. If it is not the case, check your configuration, it means Graphexp can not query the graphDB.
 
-When a node of the visualization is clicked, it will become 'active' with a circle surrounding it and its information will be display on the right side of the page. Moreover, this action will trigger the display of its neighbors.
+To get some first visualization of your graph, you may click on the `Search` button, without filling any box. Graphexp will then send a query to the graph DB, asking for the first 50 nodes and their edges.
+
+When a node of the visualization is clicked, it will become 'active' with a circle surrounding it and its information will be displayed on the right side of the page. Moreover, this action will trigger the display of its neighbors.
 Clicking on an edge will show its properties (without highlighting the edge). 
 
 When appearing for the first time the nodes will be positioned following a force layout. Drag and drop can be used to pin them in a particular position. Once dragged the nodes will stay at their position. Drag and drop is allowed only for the nodes on the active layer (most recent layer) with no connection with nodes in other layers. See "Visualization concepts" section for more information on the layers.
+
+### Querying the graphDB
+In the top bar, you can search the graphDB to display particular nodes. 
+
+* The box `Enter a label` allows you to display all the nodes with a particular label. 
+* The box `Enter a field`, in combination with the `Enter a keyword/value` box, allows to find nodes with a particular keyword or value in their properties (fields are node properties). The `Type of search` allows for a perfect (equals) or partial match (Contains). *Note that the 'contains' option will only work with Janusgraph*.
+* The box `Traverse by edge` acts directly in the interactive visualization. If an edge label is entered in the box, clicking on a node will only display its neighbors connected with that type of edge label.
+* The `Results limit` is here to avoid overwhelming the visualization. It fixes the maximal le number of nodes to display per query.
+* If `Freeze exploration` is ticked, the graph displayed will stay the same even if nodes are clicked on. It is useful when you just need to display the node properties.
+* `Number of layers` is explained below in the "Visualization concepts" section.
 
 ## Visualization concept
 

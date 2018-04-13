@@ -74,8 +74,6 @@ a:active { color: red; }
 Layout styles
 ------------------------*/
 
-
-
 .header
 {
 	color: #000;
@@ -105,20 +103,14 @@ Layout styles
 
 .nav.inputs_container {
 	grid-row: 1 / 2;
-
 	display: grid;
-	grid-template-columns: auto auto auto auto;
+	grid-template-columns: auto auto auto auto auto;
 	grid-auto-flow: row;
-
 }
 
 .nav.input_unit_container {
 	padding: 5px;
 	align-self: center;
-}
-
-input[type="number"] {
-	display:block;
 }
 
 .nav.input_label {
@@ -130,7 +122,6 @@ input[type="number"] {
 	justify-self: center;
 	padding-top: 5px;
 }
-
 
 .content
 {
@@ -166,6 +157,7 @@ input[type="number"] {
 	position: absolute;
 	right: 0;
 	margin-right: 1em;
+	max-width: 25%;
 }
 
 .footer

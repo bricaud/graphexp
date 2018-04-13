@@ -1,7 +1,7 @@
 
 // configuration for the graph database access
-const HOST = "localhost"
-const PORT = "8182"
+const HOST = "localhost";
+const PORT = "8182";
 
 // for implementations like Neptune where only single commands are allowed per request
 // set to true
@@ -15,8 +15,8 @@ const COMMUNICATION_PROTOCOL = "REST";
 
 // The communication method can be GraphSON 1.0 (used by Gremlin 3.2)
 // or GraphSON 3.0 (used by Gremlin 3.3)
-const COMMUNICATION_METHOD = "GraphSON1"
-//const COMMUNICATION_METHOD = "GraphSON3"
+const COMMUNICATION_METHOD = "GraphSON1";
+//const COMMUNICATION_METHOD = "GraphSON3";
 
 // Graph configuration
 const default_nb_of_layers = 3;

@@ -70,6 +70,10 @@ a:focus { color: black; }
 a:hover { color: green; }
 a:active { color: red; }
 
+input[type="number"] {
+   width:50px;
+}
+
 /* -----------------------
 Layout styles
 ------------------------*/
@@ -101,13 +105,19 @@ Layout styles
 	grid-template-rows: auto 15%;
 }
 
-.nav.inputs_container {
+.nav.inputs_container_top {
 	grid-row: 1 / 2;
 	display: grid;
 	grid-template-columns: auto auto auto auto auto;
 	grid-auto-flow: row;
 }
 
+.nav.inputs_container_bottom {
+	grid-row: 1 / 2;
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+	grid-auto-flow: row;
+}
 .nav.input_unit_container {
 	padding: 5px;
 	align-self: center;
@@ -118,9 +128,9 @@ Layout styles
 }
 
 .nav.controls {
-	grid-row: 2 / 3;
+	grid-row: 1 / span 3;
 	justify-self: center;
-	padding-top: 5px;
+	align-self: center;
 }
 
 .content

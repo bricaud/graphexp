@@ -49,18 +49,18 @@
 		</div>
 		-->
 		<div class="nav-bar">
-			<div class="nav container" id="nav_bar">
-				<div class="nav inputs_container">
+			<div class="nav container" id="search_bar">
+				<div class="nav inputs_container_top">
 					<div class="nav input_unit_container">
-						<label for="label_field">Enter a label:</label>
+						<label for="label_field">Node label:</label>
 						<input name="label_field" id="label_field" value="" />
 					</div>
 					<div class="nav input_unit_container">
-						<label for="search_field">Enter a field: </label>
+						<label for="search_field">Node property:</label>
 						<input name="search_field" id="search_field" value="" />
 					</div>
 					<div class="nav input_unit_container">
-						<label class="nav input_label" for="search_value">Enter a Keyword/value: </label>
+						<label class="nav input_label" for="search_value">Property value:</label>
 						<input name="search_value" id="search_value" value="" />
 					</div>
 					<div class="nav input_unit_container">
@@ -72,14 +72,21 @@
 					</div>
 					<div class="nav input_unit_container">
 						<label for="limit_field">Results limit:</label>
-						<input name="limit_field" id="limit_field" value="50" min="1" max="1000" type="number" />
+						<input name="limit_field" id="limit_field" value="50" min="1" max="1000" type="number"/>
 					</div>
+				</div>
+				<div class="nav controls">
+					<button name="search query" onclick="search_query();">Search</button>
+				</div>
+			</div>
+			<div class="nav container" id="graph_bar">
+				<div class="nav inputs_container_bottom">
 					<div class="nav input_unit_container">
-						<label class="nav input_label" for="edge_filter">Traverse by edge: </label>
+						<label class="nav input_label" for="edge_filter">Traverse by edge:</label>
 						<input name="edge_filter" id="edge_filter" value="" />
 					</div>
 					<div class="nav input_unit_container">
-						<label class="nav input_label" for="nbLayers">Nb of layers </label>
+						<label class="nav input_label" for="nbLayers">Nb of layers</label>
 						<input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
 					</div>
 					<div class="nav input_unit_container">
@@ -92,7 +99,6 @@
 					</div>
 				</div>
 				<div class="nav controls">
-					<button name="search query" onclick="search_query();">Search</button>
 					<button name="clear" onclick="graph_viz.clear();">Clear</button>
 				</div>
 			</div>
@@ -124,14 +130,14 @@
 		</div>
 		<div class="footer">
 			<div class="container">
-				<div class="nav inputs_container">
+				<div class="nav inputs_container_top">
 					<div class="nav input_unit_container">
 						<label class="nav input_label" for="server_address">Server Address:</label>
 						<input name="server_address" id="server_address" value="localhost" />
 					</div>
 					<div class="nav input_unit_container">
 						<label class="nav input_label" for="server_port">Server port:</label>
-						<input name="server_port" id="server_port" value="8182" />
+						<input name="server_port" id="server_port" type="number" value="8182"/>
 					</div>
 					<div class="nav input_unit_container">
 						<label for="server_protocol">Protocol:</label>

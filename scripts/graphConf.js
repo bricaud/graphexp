@@ -1,23 +1,14 @@
 
 // configuration for the graph database access
-const HOST = "localhost";
-const PORT = "8182";
 
-// for implementations like Neptune where only single commands are allowed per request
+// For implementations like Neptune where only single commands are allowed per request
 // set to true
 const SINGLE_COMMANDS_AND_NO_VARS = false;
 
-
-// The communication protocol with the server can be "REST" or "websocket"
-//const COMMUNICATION_PROTOCOL = "REST";
-//const COMMUNICATION_PROTOCOL = "websocket";
-const REST_TIMEOUT = 2000 // time out for the REST protocol. Increase it if the graphDB is slow.
+// Time out for the REST protocol. Increase it if the graphDB is slow.
+const REST_TIMEOUT = 2000 
 // TODO: configuration for the secure server
 
-// The communication method can be GraphSON 1.0 (used by Gremlin 3.2)
-// or GraphSON 3.0 (used by Gremlin 3.3)
-//const COMMUNICATION_METHOD = "GraphSON1";
-//const COMMUNICATION_METHOD = "GraphSON3";
 
 // Graph configuration
 const default_nb_of_layers = 3;

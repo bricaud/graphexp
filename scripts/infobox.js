@@ -138,6 +138,10 @@ var infobox = (function(){
 
 	function _display_vertex_properties(key,value,info_table) {
  		for (var subkey in value){
+			// Ignore the summary field, which is set in graphioGremlin.extract_infov3()
+			if (subkey === "summary") {
+				continue;
+			}
  			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
  				for (var subsubkey in value[subkey].properties){
  					var new_info_row = info_table.append("tr");

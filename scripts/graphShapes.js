@@ -39,7 +39,7 @@ var graphShapes = (function(){
 				return color_palette(node_code_color(d.label));	
 			}
 			else if (typeof d.properties[colored_prop] !=="undefined"){
-				if (COMMUNICATION_METHOD == 'GraphSON3'){
+				if ('summary' in d.properties[colored_prop]){
 					return color_palette(node_code_color(d.properties[colored_prop]['summary']));
 				}else {
 					return color_palette(node_code_color(d.properties[colored_prop][0].value));

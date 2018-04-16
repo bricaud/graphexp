@@ -124,6 +124,30 @@
 		</div>
 		<div class="footer">
 			<div class="container">
+				<div class="nav inputs_container">
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="server_address">Server Address:</label>
+						<input name="server_address" id="server_address" value="localhost" />
+					</div>
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="server_port">Server port:</label>
+						<input name="server_port" id="server_port" value="8182" />
+					</div>
+					<div class="nav input_unit_container">
+						<label for="server_protocol">Protocol:</label>
+						<select name="server_protocol" id="server_protocol">
+							<option value="websocket">websocket</option>
+							<option value="REST">REST</option>
+						</select>
+					</div>
+					<div class="nav input_unit_container">
+						<label for="communication_method">Gremlin version:</label>
+						<select name="communication_method" id="communication_method">
+							<option value="GraphSON3">3.3.*</option>
+							<option value="GraphSON2">3.2.*</option>
+						</select>
+					</div>
+			</div>
 				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.7</a>
 			</div>
 		</div>
@@ -214,7 +238,7 @@
 
 	function colorize(selection){
 		var value = selection.value;
-		console.log(value);
+		console.log('Color by '+value);
 		graphShapes.colorize(value);
 
 	}
@@ -276,16 +300,17 @@
 
 
 	function get_prop_value(d,prop_name,item){
+		//let COMMUNICATION_METHOD = $('#communication_method').val();
 		if (prop_name in d.properties){
 			if (item=='nodes'){
-				if (COMMUNICATION_METHOD == 'GraphSON3') {
+				if ('summary' in d.properties[prop_name]) {
 					return d.properties[prop_name]['summary'];
 				} else if (COMMUNICATION_METHOD == 'GraphSON1') {
 					return d.properties[prop_name][0].value;
 				}
 			}
 			else if (item=='edges'){
-				console.log(d.properties[prop_name])
+				//console.log(d.properties[prop_name])
 				return d.properties[prop_name];
 			}
 		}

@@ -4,7 +4,7 @@ Graphexp is a lightweight web interface to explore and display a graph stored in
 
 Graphexp is under the Apache 2.0 license.
 
-![graphexp](https://github.com/bricaud/graphexp/blob/master/images/graphexp2.png "Graph exploration")
+![graphexp](https://github.com/bricaud/graphexp/blob/master/images/graphexp2018.png "Graph exploration")
 
 
 ## Configuration
@@ -12,9 +12,9 @@ Graphexp is under the Apache 2.0 license.
 To use Graph Explorer, you need a [Gremlin server](http://tinkerpop.apache.org/) running with REST or websocket protocol and a *recent* web browser to display the visualization.
 On your web browser, just access the file `graphexp.html`.
 
-If the access to the Gremlin server is not `localhost:8182`, the address can be configured in `graphConf.js`. Use this latter file to configure the communication protocol `REST` (default) or `websocket`. Depending on the version of your Gremlin server you also need to configure the `COMMUNICATION_METHOD`, `GraphSON1` for Gremlin server version 3.2.x or `GraphSON3` for versions 3.3.x.
+Next step, configure the server settings on the bottom of the page. The default Gremlin server address is `localhost:8182`. You will have to specify the communication protocol `websocket` or `REST` and the gremlin server version. Graphexp is not able to handle secure connections yet and a contribution on this topic would be welcome.
 
-Graphexp now works with Amazon Neptune thanks to a pull request of [jwalton922](https://github.com/jwalton922). With this database, set `SINGLE_COMMANDS_AND_NO_VARS = true` in `graphConf.js`.
+Graphexp works with Amazon Neptune thanks to a pull request of [jwalton922](https://github.com/jwalton922). With this database, set `SINGLE_COMMANDS_AND_NO_VARS = true` in the file `graphConf.js`.
 
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 
@@ -50,11 +50,9 @@ docker run -p 8182:8182 -it --name gremlin-server-websocket bricaud/gremlin-serv
 You may also try out a Graphexp demo on [joov's Github repository](https://github.com/joov/gremlin-demo). It uses Docker compose and can work on Windows.  
 
 ### Graphexp guidelines
-To display a node, type in a property name and value, then click on the search button. The input is case-sensitive.
-Leaving a blank value will display a part of the graph limited to the first 50 nodes found (with their connections).
-The node and edge properties can be automatically retrieved using the `get graph info` button. Pushing this button will also display some graph properties on the left side of the page. If it is not the case, check your configuration, it means Graphexp can not query the graphDB.
-
 To get some first visualization of your graph, you may click on the `Search` button, without filling any box. Graphexp will then send a query to the graph DB, asking for the first 50 nodes and their edges.
+
+The node and edge properties can be automatically retrieved using the `get graph info` button. Pushing this button will also display some graph properties on the left side of the page. If it is not the case, check your configuration, it means Graphexp can not query the graphDB.
 
 When a node of the visualization is clicked, it will become 'active' with a circle surrounding it and its information will be displayed on the right side of the page. Moreover, this action will trigger the display of its neighbors.
 Clicking on an edge will show its properties (without highlighting the edge). 
@@ -62,14 +60,16 @@ Clicking on an edge will show its properties (without highlighting the edge).
 When appearing for the first time the nodes will be positioned following a force layout. Drag and drop can be used to pin them in a particular position. Once dragged the nodes will stay at their position. Drag and drop is allowed only for the nodes on the active layer (most recent layer) with no connection with nodes in other layers. See "Visualization concepts" section for more information on the layers.
 
 ### Querying the graphDB
-In the top bar, you can search the graphDB to display particular nodes. 
+In the top bar, you can search the graphDB to display a particular node or group of nodes. 
 
-* The box `Enter a label` allows you to display all the nodes with a particular label. 
-* The box `Enter a field`, in combination with the `Enter a keyword/value` box, allows to find nodes with a particular keyword or value in their properties (fields are node properties). The `Type of search` allows for a perfect (equals) or partial match (Contains). *Note that the 'contains' option will only work with Janusgraph*.
+* The box `Node label` allows to filter nodes with a particular label during the search. 
+* The box `Node property`, in combination with the `Property value` box, allows to find nodes with a particular keyword or value in their properties. The `Type of search` allows for a perfect (equals) or partial match (Contains). *Note that the 'contains' option will only work with Janusgraph*.
 * The box `Traverse by edge` acts directly in the interactive visualization. If an edge label is entered in the box, clicking on a node will only display its neighbors connected with that type of edge label.
 * The `Results limit` is here to avoid overwhelming the visualization. It fixes the maximal le number of nodes to display per query.
 * If `Freeze exploration` is ticked, the graph displayed will stay the same even if nodes are clicked on. It is useful when you just need to display the node properties.
-* `Number of layers` is explained below in the "Visualization concepts" section.
+* `Number of layers` is explained below in the "Visualization concept" section.
+
+Note that the input is case-sensitive.
 
 ## Visualization concept
 
@@ -93,6 +93,12 @@ If a node property called 'color' exists in the node properties with a hexadecim
 The program uses:
 * the D3.js library to visualize a graph in an interactive manner, [API Reference](https://github.com/d3/d3/blob/master/API.md),
 * an ajax request (with Jquery) that query the graph database (Gremlin Tinkerpop via REST).
+
+
+## Contributing
+Contribution as pull requests are very welcome.
+If you want to contribute, you may have a look at the [issues](https://github.com/bricaud/graphexp/issues). You can also submit a pull request with a new feature. When contributing, keep in mind that graphexp must stays simple. The idea is to have a simple tool for a quick (and efficient) graph exploration.
+
 
 ## Tutorial with the tree of life
 Once your gremlin server is up and running (from the [Docker repository](https://hub.docker.com/r/bricaud/gremlin-server-with-demo-graph/)), click on the `get graph info` button. Information should appear on the left side of the page, like on the following image.

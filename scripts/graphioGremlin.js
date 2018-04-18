@@ -426,6 +426,12 @@ var graphioGremlin = (function(){
 			}
 			//property = property.toString();
 			data_dic.properties[key] = property;
+			if (key == 'graphexpx') {
+				data_dic.fx = prop_dic['graphexpx']['0']['value'];
+			}
+			if (key == 'graphexpy') {
+				data_dic.fy = prop_dic['graphexpy']['0']['value'];
+			}
 		}
 	}
 	if (data.type=="edge"){

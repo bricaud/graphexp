@@ -88,6 +88,10 @@ The Id and label of each node can be displayed by hovering the cursor over the n
 
 If a node property called 'color' exists in the node properties with a hexadecimal color code (string), it will be displayed automatically on the graph. Otherwise, the default node color can be set in the `graphConf.js` file.  The node color can be set interactively after the `get graph info` button has been pressed. A select tab appears on the left sidebar allowing to set the color according to one of the property values present in the graph.
 
+## Predefined node positions
+
+Graphexp can display nodes at specific positions if they are stored in the DB. For that, modify `node_position_x` and `node_position_y` in `graphConf.js` (by default `graphexpx` and `graphexpy`), to whatever keys are refering to the node positions in the graphDB. Values must be numbers. According to [Sim Bamford](https://github.com/bricaud/graphexp/pull/24), reasonable values should be below 500 to stay within the page limits. Node with predefined positions are not subject to the force layout and will stay at the same position, while the others may move. It may be useful for plotting a hierarchical graph for example.
+
 ## Program description
 
 The program uses:

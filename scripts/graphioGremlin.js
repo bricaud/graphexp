@@ -426,11 +426,13 @@ var graphioGremlin = (function(){
 			}
 			//property = property.toString();
 			data_dic.properties[key] = property;
-			if (key == 'graphexpx') {
-				data_dic.fx = prop_dic['graphexpx']['0']['value'];
+			// If  a node position is defined in the DB, the node will be positioned accordingly
+			// a value in fx and/or fy tells D3js to fix the position at this value in the layout
+			if (key == node_position_x) {
+				data_dic.fx = prop_dic[node_position_x]['0']['value'];
 			}
-			if (key == 'graphexpy') {
-				data_dic.fy = prop_dic['graphexpy']['0']['value'];
+			if (key == node_position_y) {
+				data_dic.fy = prop_dic[node_position_y]['0']['value'];
 			}
 		}
 	}

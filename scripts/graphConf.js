@@ -4,7 +4,7 @@
 //const host = "some_gremlin_server"
 // For implementations like Neptune where only single commands are allowed per request
 // set to true
-const SINGLE_COMMANDS_AND_NO_VARS = true;
+const SINGLE_COMMANDS_AND_NO_VARS = false;
 
 // Time out for the REST protocol. Increase it if the graphDB is slow.
 const REST_TIMEOUT = 2000 

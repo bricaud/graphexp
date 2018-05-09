@@ -40,7 +40,10 @@ var graphioGremlin = (function(){
 					query = query.substring(equalIndex+1,semiColonIndex);
 				}
 			}
-			var returnQuery = query.trim()+".toList();";
+			var returnQuery = query.trim();
+//                        if(returnQuery.endsWith(".toList();")){
+//                            returnQuery = returnQuery+".toList();";                            
+//                        }
 			return returnQuery;
 		}
 
@@ -119,6 +122,8 @@ var graphioGremlin = (function(){
 			gremlin_query_nodes += ".toList();";
 		}
 		let gremlin_query_edges = "edges = g.V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
+                let gremlin_query_edges_no_vars = "edges = g.V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
+                //let gremlin_query_edges_no_vars = "edges = g.V()"+has_str+".bothE();";
 		let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
 		console.log(gremlin_query);
 
@@ -131,11 +136,11 @@ var graphioGremlin = (function(){
 		var message = "";
 		if (SINGLE_COMMANDS_AND_NO_VARS) {
 			var nodeQuery = create_single_command(gremlin_query_nodes);
-			var edgeQuery = create_single_command(gremlin_query_edges);
+			var edgeQuery = create_single_command(gremlin_query_edges_no_vars);
 			console.log("Node query: "+nodeQuery);
 			console.log("Edge query: "+edgeQuery);
-			send_to_server(nodeQuery, null, null, null, function(nodeData){
-				send_to_server(edgeQuery, null, null, null, function(edgeData){
+			send_to_server(nodeQuery, null, null, null, function(nodeData){                            
+				send_to_server(edgeQuery, null, null, null, function(edgeData){                                        
 					var combinedData = [nodeData,edgeData];
 					handle_server_answer(combinedData, 'search', null, message);
 				});

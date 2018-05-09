@@ -159,7 +159,9 @@
 		</div>
 		<!-- INITIALIZATION -->
 		<script type="text/javascript">
-
+                        if(host){
+                            $('#server_address').val(host);
+                        }
 			init_property_bar();
 			// Create the graph canvas in the chosen div element
 			graph_viz.init("#main");

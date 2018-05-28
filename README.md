@@ -71,6 +71,10 @@ In the top bar, you can search the graphDB to display a particular node or group
 
 Note that the input is case-sensitive.
 
+### URL query string parameters
+
+* `ts` specifies [TraversalSource](http://tinkerpop.apache.org/docs/current/reference/#the-graph-process) in case of multiple different graphs. Default is just `g`. For Example `http://localhost:8183/graphexp.html?ts=gTreeOfLife`.
+
 ## Visualization concept
 
 The visualization is based on a concept of layers of visualization. The idea is to progress in the graph as in a jungle. The clicked node immediately shows its neighbors, opening new paths for the exploration. If not clicked, a node vanishes little by little as we progress in the exploration. Coming back during the exploration is allowed. Before it completely disappears, a node can be clicked and will become active again.

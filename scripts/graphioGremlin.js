@@ -16,6 +16,11 @@ limitations under the License.
 
 // Interface between the visualization and the Gremlin server.
 
+var traversal_source = getUrlParameter('ts');
+if (traversal_source == null) {
+    traversal_source = "g"
+}
+
 var graphioGremlin = (function(){
 	"use strict";
 
@@ -29,7 +34,7 @@ var graphioGremlin = (function(){
 	function get_edge_properties(){
 		return _edge_properties;
 	}
-		
+
 		function create_single_command(query){
 			var equalIndex = query.indexOf("=");
 			var semiColonIndex = query.indexOf(";");
@@ -42,17 +47,17 @@ var graphioGremlin = (function(){
 			}
 			var returnQuery = query.trim();
 //                        if(returnQuery.endsWith(".toList();")){
-//                            returnQuery = returnQuery+".toList();";                            
+//                            returnQuery = returnQuery+".toList();";
 //                        }
 			return returnQuery;
 		}
 
 	function get_graph_info(){
-		var gremlin_query_nodes = "nodes = g.V().groupCount().by(label);"
-		var gremlin_query_edges = "edges = g.E().groupCount().by(label);"
-		var gremlin_query_nodes_prop = "nodesprop = g.V().valueMap().select(keys).groupCount();"
-		var gremlin_query_edges_prop = "edgesprop = g.E().valueMap().select(keys).groupCount();"
-		
+		var gremlin_query_nodes = "nodes = " + traversal_source + ".V().groupCount().by(label);"
+		var gremlin_query_edges = "edges = " + traversal_source + ".E().groupCount().by(label);"
+		var gremlin_query_nodes_prop = "nodesprop = " + traversal_source + ".V().valueMap().select(keys).groupCount();"
+		var gremlin_query_edges_prop = "edgesprop = " + traversal_source + ".E().valueMap().select(keys).groupCount();"
+
 		var gremlin_query = gremlin_query_nodes+gremlin_query_nodes_prop
 			+gremlin_query_edges+gremlin_query_edges_prop
 			+ "[nodes.toList(),nodesprop.toList(),edges.toList(),edgesprop.toList()]"
@@ -115,15 +120,15 @@ var graphioGremlin = (function(){
 				limit_field = node_limit_per_request;
 		}
 
-		let gremlin_query_nodes = "nodes = g.V()" + has_str;
+		let gremlin_query_nodes = "nodes = " + traversal_source + ".V()" + has_str;
 		if (limit_field !== "" && isInt(limit_field) && limit_field > 0) {
 			gremlin_query_nodes += ".limit(" + limit_field + ").toList();";
 		} else {
 			gremlin_query_nodes += ".toList();";
 		}
-		let gremlin_query_edges = "edges = g.V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-                let gremlin_query_edges_no_vars = "edges = g.V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-                //let gremlin_query_edges_no_vars = "edges = g.V()"+has_str+".bothE();";
+		let gremlin_query_edges = "edges = " + traversal_source + ".V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
+                let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
+                //let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
 		let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
 		console.log(gremlin_query);
 
@@ -139,8 +144,8 @@ var graphioGremlin = (function(){
 			var edgeQuery = create_single_command(gremlin_query_edges_no_vars);
 			console.log("Node query: "+nodeQuery);
 			console.log("Edge query: "+edgeQuery);
-			send_to_server(nodeQuery, null, null, null, function(nodeData){                            
-				send_to_server(edgeQuery, null, null, null, function(edgeData){                                        
+			send_to_server(nodeQuery, null, null, null, function(nodeData){
+				send_to_server(edgeQuery, null, null, null, function(edgeData){
 					var combinedData = [nodeData,edgeData];
 					handle_server_answer(combinedData, 'search', null, message);
 				});
@@ -151,21 +156,21 @@ var graphioGremlin = (function(){
 	}
 
 	function isInt(value) {
-	  return !isNaN(value) && 
-			 parseInt(Number(value)) == value && 
+	  return !isNaN(value) &&
+			 parseInt(Number(value)) == value &&
 			 !isNaN(parseInt(value, 10));
 	}
 	function click_query(d) {
 		var edge_filter = $('#edge_filter').val();
 		// Gremlin query
-		//var gremlin_query = "g.V("+d.id+").bothE().bothV().path()"
+		//var gremlin_query = traversal_source + ".V("+d.id+").bothE().bothV().path()"
 		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
 		var id = d.id;
 		if(isNaN(id)){ // Add quotes if id is a string (not a number).
 			id = '"'+id+'"';
 		}
-		var gremlin_query_nodes = 'nodes = g.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").inject(g.V('+id+')).unfold()'
-		var gremlin_query_edges = "edges = g.V("+id+").bothE("+(edge_filter?"'"+edge_filter+"'":"")+")";
+		var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").inject(' + traversal_source + '.V('+id+')).unfold()'
+		var gremlin_query_edges = "edges = " + traversal_source + ".V("+id+").bothE("+(edge_filter?"'"+edge_filter+"'":"")+")";
 		var gremlin_query = gremlin_query_nodes+'\n'+gremlin_query_edges+'\n'+'[nodes.toList(),edges.toList()]'
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');

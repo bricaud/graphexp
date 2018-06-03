@@ -1,169 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>Graphexp, graph explorer</title>
 <head>
-<link rel="stylesheet" href="css/graphStyle.css">
-<link rel="stylesheet" href="css/styles.css">
-<!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">-->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Graphexp, graph explorer</title>
+	<head>
+		<link rel="stylesheet" href="css/graphStyle.css">
+		<link rel="stylesheet" href="css/styles.css">
+		<link rel="stylesheet" href="css/bootstrap.css">
 
-<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-<!--<script src="jquery-3.2.1.min.js"></script>-->
+		<script src="scripts/jquery-3.2.1.min.js"></script>
+		<script src="scripts/utils.js"></script>
+		<script src="scripts/d3.v4.min.js"></script>
+		<script src="scripts/graphConf.js"></script>
+		<script src="scripts/graphShapes.js"></script>
+		<script src="scripts/infobox.js"></script>
+		<script src="scripts/graph_viz.js"></script>
+		<script src="scripts/graphioGremlin.js"></script>
+		<script src="scripts/bootstrap.min.js"></script>
 
-<script src="scripts/utils.js"></script>
-<script src="http://d3js.org/d3.v4.min.js"></script>
-<!--<script src="d3/d3.min.js"></script>-->
-<script src="scripts/graphConf.js"></script>
-<script src="scripts/graphShapes.js"></script>
-<script src="scripts/infobox.js"></script>
-<script src="scripts/graph_viz.js"></script>
-<script src="scripts/graphioGremlin.js"></script>
+		<script type="text/javascript">
 
-<script type="text/javascript">
+			function search_query(){
+				graphioGremlin.search_query();
+			}
 
-	///////////////////////////////////////////////
-	function search_query(){
-		//if (typeof graph_viz.simulation!=='undefined') {graph_viz.simulation.stop(); console.log('Simulation stopped!');}
-		graphioGremlin.search_query();
-	}
+			function get_graph_info(){
+				graphioGremlin.get_graph_info();
+				infobox.show_element("#graphInfo");
+				document.getElementById ("showgraphinfo").checked = true;
+			}
 
-	function get_graph_info(){
-		graphioGremlin.get_graph_info();
-		infobox.show_element("#graphInfo");
-		document.getElementById ("showgraphinfo").checked = true;
-	}
-</script>
-<!-- ------------------------------------------------- -->
-
-
+		</script>
 
 	</head>
 	<body>
-		<!--
-		<div class="header">
-			<div class="container">
-				<h1 class="header-heading">Graph Explorer v 0.6</h1>
+		<div class="pos-f-t">
+			<div class="collapse" id="navbarToggleExternalContent">
+				<nav class="navbar navbar-dark bg-dark" style="color:white;">
+					<div class="form-inline my-2 my-lg-0" style="color:white;">
+						<div class="nav input_unit_container form-group">
+							<label for="label_field">Node label :</label>
+							<input type="text" class="form-control"  name="label_field" id="label_field" placeholder="Node label" value="" />
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label for="search_field">Node property:</label>
+							<input name="search_field" class="form-control"  id="search_field" value="" />
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label class="nav input_label" for="search_value">Property value:</label>
+							<input name="search_value" class="form-control"  id="search_value" value="" />
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label for="search_type">Type of search:</label>
+							<select name="search_type" id="search_type">
+								<option value="eq">Equals</option>
+								<option value="contains">Contains</option>
+							</select>
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label for="limit_field">Results limit:</label>
+							<input name="limit_field" class="form-control"  id="limit_field" value="50" min="1" max="1000" type="number"/>
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label class="nav input_label" for="edge_filter">Traverse by edge:</label>
+							<input name="edge_filter" class="form-control"  id="edge_filter" value="" />
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label class="nav input_label" for="nbLayers">Nb of layers</label>
+							<input type="number" class="form-control"  id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
+						</div>
+					</div>
+				</nav>
 			</div>
+			<nav class="navbar navbar-dark bg-dark">
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span><span> Form Queries</span>
+				</button>
+				<div class="form-inline my-2 my-lg-0" style="color:white;">
+					<div class="form-inline my-2 my-lg-0"> 
+						<div class="form-check abc-checkbox" style="margin-right: 15px">
+							<input class="form-check-input" type="checkbox" name="Freeze" id="freeze-in" />
+							<label class="form-check-label" for="freeze-in">Freeze exploration</label>
+						</div>
+						<div class="form-check abc-checkbox" style="margin-right: 15px">
+							<input class="form-check-input" type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>
+							<label class="form-check-label" for="showName">Show labels</label>
+						</div>
+						<button style="margin-right: 8px" name="search query" class="btn btn-outline-default my-2 my-sm-0" onclick="search_query();">Search</button>
+						<button style="margin-right: 8px" name="clear" class="btn btn-outline-danger my-2 my-sm-0"onclick="graph_viz.clear();">Clear</button>
+						<button  type="button"  class="btn btn-outline-info my-2 my-sm-0" data-toggle="modal" data-target="#myModal">Server Settings</button>
+					</div>
+				</div>
+			</nav>
 		</div>
-		-->
-		<div class="nav-bar">
-			<div class="nav container" id="search_bar">
-				<div class="nav inputs_container_top">
-					<div class="nav input_unit_container">
-						<label for="label_field">Node label:</label>
-						<input name="label_field" id="label_field" value="" />
-					</div>
-					<div class="nav input_unit_container">
-						<label for="search_field">Node property:</label>
-						<input name="search_field" id="search_field" value="" />
-					</div>
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="search_value">Property value:</label>
-						<input name="search_value" id="search_value" value="" />
-					</div>
-					<div class="nav input_unit_container">
-						<label for="search_type">Type of search:</label>
-						<select name="search_type" id="search_type">
-							<option value="eq">Equals</option>
-							<option value="contains">Contains</option>
-						</select>
-					</div>
-					<div class="nav input_unit_container">
-						<label for="limit_field">Results limit:</label>
-						<input name="limit_field" id="limit_field" value="50" min="1" max="1000" type="number"/>
-					</div>
-				</div>
-				<div class="nav controls">
-					<button name="search query" onclick="search_query();">Search</button>
-				</div>
-			</div>
-			<div class="nav container" id="graph_bar">
-				<div class="nav inputs_container_bottom">
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="edge_filter">Traverse by edge:</label>
-						<input name="edge_filter" id="edge_filter" value="" />
-					</div>
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="nbLayers">Nb of layers</label>
-						<input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
-					</div>
-					<div class="nav input_unit_container">
-						<input type="checkbox" name="Freeze" id="freeze-in" />
-						<label class="nav input_label" for="freeze-in">Freeze exploration</label>
-					</div>
-					<div class="nav input_unit_container">
-						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>
-						<label class="nav input_label" for="showName">Show labels</label>
-					</div>
-				</div>
-				<div class="nav controls">
-					<button name="clear" onclick="graph_viz.clear();">Clear</button>
-				</div>
-			</div>
-		</div>
-		<div class="content">
+		<div class="container-fluid">
+			<div class="content">
 				<div class="main" id="main">
 					<svg></svg>
 				</div>
 
-				<div class="aside left_bar" style="background-color:transparent;pointer-events:auto;">
-					<div  id="graphInfoBar" style="background-color:transparent;pointer-events:auto;">
-						<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
+				<div class="aside left_bar" style="pointer-events:auto;">
+					<div  id="graphInfoBar" style="pointer-events:auto;">
+						<button name="graphInfo" class="btn btn-default btn-lg" onclick="get_graph_info();">Get graph info</button>
 						<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>Show/hide graph info
 					</div>
-					<div  id="graphInfo" style="background-color:transparent;pointer-events:none;">	
+					<div  id="graphInfo" style="pointer-events:none;">	
 					</div>
 				</div>
 
-				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:auto;">
+				<div class="aside right_bar" id="details" style="pointer-events:auto;">
 					<div id="messageArea"></div><div id="outputArea"></div>
-					<div id="nodeInfo" style="background-color:transparent;pointer-events:none;">
+					<div id="nodeInfo" style="pointer-events:none;">
 					</div>				
 				</div>
-				<!--
-				<div  class="aside" id="ImageInfo" style="background-color:transparent;">
-					<center><svg width="100" height="100"></svg></center>
+			</div>
+			<!-- Modal -->
+			<div class="modal fade" id="myModal" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">Server Settings :</h4>
+						</div>
+						<div class="modal-body">
+							<div class="footer">
+								<div class="container">
+									<form>
+										<div class="form-group">
+											<label for="server_address">Server address:</label>
+											<input name="server_address" type="text" class="form-control" id="server_address" placeholder="Enter server address" value="localhost">
+											<small id="emailHelp" class="form-text text-muted">The gremlin server address with which we want to communicate.</small>
+										</div>
+										<div class="form-group">
+											<label for="server_port">Server Port</label>
+											<input type="text" class="form-control" name="server_port" id="server_port" placeholder="Server port" value="8182">
+										</div>
+										<div class="form-group">
+											<label for="server_protocol">Protocol:</label>
+											<select class="form-control form-control-lg" name="server_protocol" id="server_protocol">
+												<option value="websocket">websocket</option>
+												<option value="REST">REST</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<label for="communication_method">Gremlin version:</label>
+											<select class="form-control form-control-lg" name="communication_method" id="communication_method">
+												<option value="GraphSON3">3.3.*</option>
+												<option value="GraphSON2">3.2.*</option>
+											</select>
+										</div>
+									</form>
+								</div>
+							</div>      
+						</div>
+						<div class="modal-footer">
+							<a style="display: block;position: absolute;left: 30px;" href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.8.0</a>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
 				</div>
-				-->
-		</div>
-		<div class="footer">
-			<div class="container">
-				<div class="nav inputs_container_top">
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="server_address">Server Address:</label>
-						<input name="server_address" id="server_address" value="localhost" />
-					</div>
-					<div class="nav input_unit_container">
-						<label class="nav input_label" for="server_port">Server port:</label>
-						<input name="server_port" id="server_port" type="number" value="8182"/>
-					</div>
-					<div class="nav input_unit_container">
-						<label for="server_protocol">Protocol:</label>
-						<select name="server_protocol" id="server_protocol">
-							<option value="websocket">websocket</option>
-							<option value="REST">REST</option>
-						</select>
-					</div>
-					<div class="nav input_unit_container">
-						<label for="communication_method">Gremlin version:</label>
-						<select name="communication_method" id="communication_method">
-							<option value="GraphSON3">3.3.*</option>
-							<option value="GraphSON2">3.2.*</option>
-						</select>
-					</div>
 			</div>
-				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.8.0</a>
-			</div>
-		</div>
-		<!-- INITIALIZATION -->
-		<script type="text/javascript">
-                        if(host){
-                            $('#server_address').val(host);
-                        }
-			init_property_bar();
+			<!-- INITIALIZATION -->
+			<script type="text/javascript">
+				if(host){
+					$('#server_address').val(host);
+				}
+				init_property_bar();
 			// Create the graph canvas in the chosen div element
 			graph_viz.init("#main");
 			// Add the zoom layer to the graph
@@ -178,122 +181,122 @@
 			//graph_viz.graph_events.test();
 
 
-	function init_property_bar(){
-		document.getElementById('nbLayers').value = default_nb_of_layers;
-	}
+			function init_property_bar(){
+				document.getElementById('nbLayers').value = default_nb_of_layers;
+			}
 
-	function change_nav_bar(node_data,edge_data){
-		var nav_bar = d3.select("#prop_choice");
-		nav_bar.select("input").remove();
-		nav_bar.select("select").remove();
+			function change_nav_bar(node_data,edge_data){
+				var nav_bar = d3.select("#prop_choice");
+				nav_bar.select("input").remove();
+				nav_bar.select("select").remove();
 		//nav_choices = nav_bar.append("ul");
 		//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
 		var select = d3.select('#prop_choice')
-			.append('select').attr('class','select').attr('id','search_field')
+		.append('select').attr('class','select').attr('id','search_field')
 		
 		var select_node = select.append('optgroup').attr('label','Nodes')
 			//.on('change',onchange)
 
-		var select_edge = select.append('optgroup').attr('label','Edges')
+			var select_edge = select.append('optgroup').attr('label','Edges')
 
-		var node_options = select_node
+			var node_options = select_node
 			.selectAll('option')
 			.data(node_data).enter()
 			.append('option')
 			.text(function (d) { return d; });
 
-		var edge_options = select_edge
+			var edge_options = select_edge
 			.selectAll('option')
 			.data(edge_data).enter()
 			.append('option')
 			.text(function (d) { return d; });
 
-	}
+		}
 
-	function display_properties_bar(prop_list,item,text){
-		var nav_bar = d3.select("#graphInfoBar");
-		nav_bar.select("#property_bar_"+item).remove();
-		var property_bar = nav_bar.append("div").attr("id","property_bar_"+item);
-		property_bar.append('text').text(text).style("font-weight","bold");
+		function display_properties_bar(prop_list,item,text){
+			var nav_bar = d3.select("#graphInfoBar");
+			nav_bar.select("#property_bar_"+item).remove();
+			var property_bar = nav_bar.append("div").attr("id","property_bar_"+item);
+			property_bar.append('text').text(text).style("font-weight","bold");
 		//d3.select('#property_bar').append('text').text('hello')
 		var property_label = property_bar.selectAll('input').append("ul")
-			.data(prop_list).enter().append("li");
+		.data(prop_list).enter().append("li");
 			//.append('label');
 
 			
-		property_label.append('input').attr('type','checkbox').attr('id',function (d) { return item+"_"+d; })
+			property_label.append('input').attr('type','checkbox').attr('id',function (d) { return item+"_"+d; })
 			.attr('id_nb',function (d) { return prop_list.indexOf(d); })
 			//.attr('onchange',function(d){display_prop(d);});
 			.attr('onchange','display_prop(this)');
 
-		property_label.append('label').text(function (d) { return d; });
-		
+			property_label.append('label').text(function (d) { return d; });
 
-	}
 
-	function display_color_choice(prop_list,item,text){
-		prop_list = ['none','label'].concat(prop_list);
-		var nav_bar = d3.select("#graphInfoBar");
-		nav_bar.select("#color_choice_"+item).remove();
-		var color_bar = nav_bar.append("div").attr("id","color_choice_"+item);
-		color_bar.append("div").append("text").text(text).style("font-weight","bold");
-		color_bar.append("div").append("select").attr("class","select").attr("id","color_select_"+item)
+		}
+
+		function display_color_choice(prop_list,item,text){
+			prop_list = ['none','label'].concat(prop_list);
+			var nav_bar = d3.select("#graphInfoBar");
+			nav_bar.select("#color_choice_"+item).remove();
+			var color_bar = nav_bar.append("div").attr("id","color_choice_"+item);
+			color_bar.append("div").append("text").text(text).style("font-weight","bold");
+			color_bar.append("div").append("select").attr("class","select").attr("id","color_select_"+item)
 			.attr("onchange","colorize(this)")
 			.selectAll("option")
 			.data(prop_list).enter()
 			.append("option")
 			.text(function (d) { return d; });
-	}
-
-	function colorize(selection){
-		var value = selection.value;
-		console.log('Color by '+value);
-		graphShapes.colorize(value);
-
-	}
-
-	function display_prop(prop){
-		var prop_id = prop.id;
-		var prop_id_nb = prop.getAttribute('id_nb');
-		var text_base_offset = 10;
-		var text_offset = 10;
-		var prop_name = prop_id.slice(prop_id.indexOf("_")+1);
-		var item = prop_id.slice(0,prop_id.indexOf("_"));
-		console.log(prop_id,item)		
-		if(d3.select("#"+prop_id).property("checked")){
-			if (item=='nodes'){
-				var elements_text = d3.selectAll('.node');
-			} else if (item=='edges'){
-				var elements_text = d3.selectAll('.edgelabel');
-			}
-			attach_property(elements_text,prop_name,prop_id_nb,item)
 		}
-		else{
+
+		function colorize(selection){
+			var value = selection.value;
+			console.log('Color by '+value);
+			graphShapes.colorize(value);
+
+		}
+
+		function display_prop(prop){
+			var prop_id = prop.id;
+			var prop_id_nb = prop.getAttribute('id_nb');
+			var text_base_offset = 10;
+			var text_offset = 10;
+			var prop_name = prop_id.slice(prop_id.indexOf("_")+1);
+			var item = prop_id.slice(0,prop_id.indexOf("_"));
+			console.log(prop_id,item)		
+			if(d3.select("#"+prop_id).property("checked")){
+				if (item=='nodes'){
+					var elements_text = d3.selectAll('.node');
+				} else if (item=='edges'){
+					var elements_text = d3.selectAll('.edgelabel');
+				}
+				attach_property(elements_text,prop_name,prop_id_nb,item)
+			}
+			else{
+				if (item=='nodes'){
+					d3.selectAll('.node').select('.'+prop_id).remove();
+				}
+				else if (item=='edges'){
+					d3.selectAll('.edgelabel').select('.'+prop_id).remove();
+				}
+
+			}
+		}
+
+
+		function attach_property(graph_objects,prop_name,prop_id_nb,item){
+			var text_base_offset = 10;
+			var text_offset = 10;
+			var prop_id = item+"_"+prop_name;
 			if (item=='nodes'){
-				d3.selectAll('.node').select('.'+prop_id).remove();
+				elements_text = graph_objects.append("text").style("pointer-events", "none");
 			}
 			else if (item=='edges'){
-				d3.selectAll('.edgelabel').select('.'+prop_id).remove();
-			}
-
-		}
-	}
-
-
-	function attach_property(graph_objects,prop_name,prop_id_nb,item){
-		var text_base_offset = 10;
-		var text_offset = 10;
-		var prop_id = item+"_"+prop_name;
-		if (item=='nodes'){
-			elements_text = graph_objects.append("text").style("pointer-events", "none");
-		}
-		else if (item=='edges'){
-			var elements_text = graph_objects.append("textPath")
-			.attr('class','edge_text')
-			.attr('href', function (d, i) {return '#edgepath' + d.id})
-			.style("text-anchor", "middle")
-			.style("pointer-events", "none")
-			.attr("startOffset", "70%");
+				var elements_text = graph_objects.append("textPath")
+				.attr('class','edge_text')
+				.attr('href', function (d, i) {return '#edgepath' + d.id})
+				.style("text-anchor", "middle")
+				.style("pointer-events", "none")
+				.attr("startOffset", "70%");
 			//.text(function (d) {return d.label});
 			prop_id_nb = prop_id_nb + 1;
 		}
@@ -304,11 +307,11 @@
 	  		//.attr("x", 12)
 	  		.attr("dy",function(d){return graphShapes.node_size(d)+text_base_offset+text_offset*parseInt(prop_id_nb);})
 	  		//.attr("y", ".31em")
-			.text(function(d){return get_prop_value(d,prop_name,item);});
-		}
+	  		.text(function(d){return get_prop_value(d,prop_name,item);});
+	  	}
 
 
-	function get_prop_value(d,prop_name,item){
+	  	function get_prop_value(d,prop_name,item){
 		//let COMMUNICATION_METHOD = $('#communication_method').val();
 		if (prop_name in d.properties){
 			if (item=='nodes'){
@@ -345,8 +348,7 @@
 		else {element.style("display", "none");}
 	}
 
-
-		</script>
-
-	</body>
+</script>
+</div>
+</body>
 </html>

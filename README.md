@@ -73,7 +73,7 @@ Note that the input is case-sensitive.
 
 ### URL query string parameters
 
-* `ts` specifies [TraversalSource](http://tinkerpop.apache.org/docs/current/reference/#the-graph-process) in case of multiple different graphs. Default is just `g`. For Example `http://localhost:8183/graphexp.html?ts=gTreeOfLife`.
+* `ts` specifies [TraversalSource](http://tinkerpop.apache.org/docs/current/reference/#the-graph-process) in case of multiple different graphs stored in the same database. If unspecified, the default is just `g`. For Example `http://localhost:8183/graphexp.html?ts=gTreeOfLife` replaces `g` by `gTreeOfLife` in all the gremlin queries (for example `g.V()` becomes `gTreeOfLife.V()`). 
 
 ## Visualization concept
 

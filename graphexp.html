@@ -21,6 +21,7 @@
 <script src="scripts/infobox.js"></script>
 <script src="scripts/graph_viz.js"></script>
 <script src="scripts/graphioGremlin.js"></script>
+<script src="scripts/editGraph.js"></script>
 
 <script type="text/javascript">
 
@@ -154,6 +155,83 @@
 							<option value="GraphSON2">3.2.*</option>
 						</select>
 					</div>
+					<div class="nav input_unit_container">
+						<button onclick="editGraph()" > Edit Graph </button>
+					</div>
+
+					<div class="nav input_unit_container", id="editGraph" style="display:none;">
+					     <button onclick="addVertexForm()"   style="height:25px; width:150px" > Add Vertex </button><br>
+					     <button onclick="editVertexForm()"  style="height:25px; width:150px" > Edit Vertex </button><br>
+					     <button onclick="addEditEdgeForm()"     style="height:25px; width:150px" > Add/Edit Edge </button><br>
+					</div>
+					
+					<div class="nav input_unit_container", id="addVertexForm" style="display:none;">
+						<table>
+					     <tr>
+						 <td><label for="vertexLabel" style="height:18px; width:200px"> Vertex Label: </label> </td>
+					     <td><input type="text" name="vertexLabel" id="vertexLabel" style="height:18px; width:500px" placeholder="Enter Vertex Label"></td>
+ 					     </tr>
+						 <tr>
+						 <td><label for="vertexPropertyName" style="height:18px; width:200px"> Vertex Property: </label> </td>
+					     <td><input type="text" name="vertexPropertyName" id="vertexPropertyName" style="height:18px; width:500px" placeholder="Enter Comma Seperated Property Name (e.g. name,age,gender)"> </td>
+					     </tr>
+						 <tr>
+						 <td><label for="vertexPropertyValue" style="height:18px; width:200px"> Property Value: </label> </td>
+					     <td><input type="text" name="vertexPropertyValue" id="vertexPropertyValue" style="height:18px; width:500px" placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,27,male)"> </td>
+					     </tr>
+						 </table>
+						 <button class=Center" style="margin-top:1%" onclick="addVertex()"> Add Vertex </button>						 
+					</div>
+					
+					<div class="nav input_unit_container", id="editVertexForm" style="display:none;">
+						<table>
+						<tr>
+					     <td><label for="vertexId" style="height:18px; width:500px" "display: inline-block"> Vertex ID: </label> </td>
+					     <td><input type="text" name="vertexId" id="vertexId" style="height:18px; width:500px" placeholder="Enter Vertex ID (e.g. 123)"> </td>
+ 					    </tr>
+						<tr>
+						 <td><label for="vertexPropertyName" style="height:18px; width:500px" "display: inline-block"> Vertex Property: </label> </td>
+					     <td><input type="text" name="vertexPropertyName_1" id="vertexPropertyName_1" style="height:18px; width:500px" placeholder="Enter Comma Seperated Property Name (e.g. name,age)"> </td>
+ 					    </tr>
+						<tr>
+						 <td><label for="vertexPropertyValue" style="height:18px; width:200px" "display: inline-block"> Property Value: </label> </td>
+					     <td><input type="text" name="vertexPropertyValue_1" id="vertexPropertyValue_1" style="height:18px; width:500px" placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,25)"> </td>
+ 					    </tr>
+						</table>
+						 <button class=Center" style="margin-top:1%" onclick="editVertex()"> Edit Vertex </button>
+						
+					</div>					
+
+					
+					<div class="nav input_unit_container", id="addEditEdgeForm" style="display:none;">
+					    <table>
+						<tr>
+						 <td><label for="edgeLabel" style="height:18px; width:350px" > Edge Label: </label> </td>
+					     <td><input type="text" name="edgeLabel" id="edgeLabel" style="height:18px; width:500px" placeholder="Enter Edge Label"> </td>
+					     </tr>
+						 <tr>
+						 <td><label for="sourceVertexId" style="height:18px; width:350px"> Source Vertex ID: </label> </td>
+						 <td><input type="text" name="sourceVertexId" id="sourceVertexId" style="height:18px; width:500px" placeholder="Enter Source Vertex ID"> </td>
+					     </tr>
+						 <tr>
+ 					     <td><label for="targetVertexId" style="height:18px; width:350px"> Target Vertex ID: </label> </td>
+						 <td><input type="text" name="targetVertexId" id="targetVertexId" style="height:18px; width:500px" placeholder="Enter Target Vertex ID"> </td>
+					     </tr>
+						 <tr>
+					     <td><label for="edgePropertyName" style="height:18px; width:350px"> Property Name: </label> </td>
+						 <td><input type="text" name="edgePropertyName" id="edgePropertyName" style="height:18px; width:500px" placeholder="Enter Comma Seperated Property Name"> </td>
+					     </tr>
+						 <tr>
+					     <td><label for="edgePropertyValue" style="height:18px; width:350px"> Property Value: </label> </td>
+						 <td><input type="text" name="edgePropertyValue" id="edgePropertyValue" style="height:18px; width:500px" placeholder="Enter Comma Seperated Property Value"> </td>
+						 </tr>
+						 </table>
+					     <button class=Center" style="margin-top:1%" onclick="addEditEdge()"> Add/Edit Edge </button>
+					</div>
+					
+					
+
+
 			</div>
 				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.8.0</a>
 			</div>

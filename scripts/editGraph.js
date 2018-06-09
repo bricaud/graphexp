@@ -55,10 +55,10 @@
 				gremlin_query=gremlin_query+".property('"+propertyName[count]+"' , '" + propertyValue[count]+ "')"
 			}
 		var message=""
-		send_to_server(gremlin_query, 'editGraph', null, message);
+		graphioGremlin.send_to_server(gremlin_query, 'editGraph', null, message);
 		console.log(gremlin_query)
 		console.log("Add Vertex")
-		window.alert("Vertex Added Succesfully")
+		//window.alert("Vertex Added Succesfully")
 		editGraph();
 		}
 	}
@@ -87,9 +87,9 @@
 		}
 		console.log(gremlin_query)
 		var message=""
-		send_to_server(gremlin_query, 'editGraph', null, message);
+		graphioGremlin.send_to_server(gremlin_query, 'editGraph', null, message);
 		console.log("Edit Vertex")
-		window.alert("Vertex Edited Succesfully")
+		//window.alert("Vertex Edited Succesfully")
 		editGraph();
 		}
 	}
@@ -120,98 +120,11 @@
 			}
 		gremlin_query=gremlin_query+".iterate()";
 		var message="";
-		send_to_server(gremlin_query, 'editGraph', null, message);console.log(gremlin_query)
+		graphioGremlin.send_to_server(gremlin_query, 'editGraph', null, message);console.log(gremlin_query)
 		console.log("Add Edge")
-		window.alert("Edge Added Succesfully")
+		//window.alert("Edge Added Succesfully")
 		editGraph();
 		}
 	}
 	
 	
-	
-	function send_to_server(gremlin_query,query_type,active_node,message, callback){
-
-	let server_address = $('#server_address').val();
-		let server_port = $('#server_port').val();
-		let COMMUNICATION_PROTOCOL = $('#server_protocol').val();
-			if (COMMUNICATION_PROTOCOL == 'REST'){
-				let server_url = "http://"+server_address+":"+server_port;
-				run_ajax_request(gremlin_query,server_url,query_type,active_node,message,callback);
-			}
-			else if (COMMUNICATION_PROTOCOL == 'websocket'){
-				let server_url = "ws://"+server_address+":"+server_port+"/gremlin"
-				run_websocket_request(gremlin_query,server_url,query_type,active_node,message,callback);
-			}
-			else {
-				console.log('Bad communication protocol. Check configuration file. Accept "REST" or "websocket" .')
-			}
-				
-	}
-	
-	function run_ajax_request(gremlin_query,server_url,query_type,active_node,message, callback){
-		// while busy, show we're doing something in the messageArea.
-		$('#messageArea').html('<h3>(loading)</h3>');
-
-		// Get the data from the server
-		$.ajax({
-			type: "POST",
-			accept: "application/json",
-			//contentType:"application/json; charset=utf-8",
-			url: server_url,
-			//headers: GRAPH_DATABASE_AUTH,
-			timeout: REST_TIMEOUT,
-			data: JSON.stringify({"gremlin" : gremlin_query}),
-			success: function(data, textStatus, jqXHR){
-							var Data = data.result.data;
-			},
-			error: function(result, status, error){
-				console.log("Connection failed. "+status);
-				$('#outputArea').html("<p> Can't access database using REST at "+server_url+"</p>"+
-					"<p> Message: "+status+ ", "+error+" </p>"+
-					"<p> Check the server configuration "+
-					"or try increasing the REST_TIMEOUT value in the config file.</p>");
-				$('#messageArea').html('');
-			}
-		});
-	}
-	
-	
-	function run_websocket_request(gremlin_query,server_url,query_type,active_node,message,callback){
-		$('#messageArea').html('<h3>(loading)</h3>');
-
-		var msg = { "requestId": uuidv4(),
-			"op":"eval",
-			"processor":"",
-			"args":{"gremlin": gremlin_query,
-				"bindings":{},
-				"language":"gremlin-groovy"}}
-
-		var data = JSON.stringify(msg);
-
-		var ws = new WebSocket(server_url);
-		ws.onopen = function (event){
-			ws.send(data,{ mask: true});	
-		};
-		ws.onerror = function (err){
-			console.log('Connection error using websocket');
-			console.log(err);
-			$('#outputArea').html("<p> Connection error using websocket</p>"
-				+"<p> Cannot connect to "+server_url+ " </p>");
-			$('#messageArea').html('');
-
-		};
-		ws.onmessage = function (event){
-			var response = JSON.parse(event.data);
-			var data = response.result.data;
-			if (data == null){
-				$('#outputArea').html(response.status.message);
-				$('#messageArea').html('Server error. No data.');
-				return 1;}
-			//console.log(data)
-			if(callback){
-				callback(data);
-			} else {
-				handle_server_answer(data,query_type,active_node,message);
-			}
-		};		
-	}

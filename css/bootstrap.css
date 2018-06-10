@@ -69,7 +69,7 @@ body {
   color: #212529;
   text-align: left;
   background-color: #fff;
-  background-image: url('../images/concrete_seamless.png');
+  background-image: url('../images/ticks.png');
 }
 
 [tabindex="-1"]:focus {
@@ -3940,6 +3940,7 @@ tbody.collapse.show {
   -ms-flex-pack: justify;
   justify-content: space-between;
   padding: 0.5rem 1rem;
+  z-index:2;
 }
 
 .navbar > .container,
@@ -5383,7 +5384,7 @@ tbody.collapse.show {
 button.close {
   padding: 0;
   background-color: transparent;
-  border: 0;
+  border: 0; 
   -webkit-appearance: none;
 }
 
@@ -5413,6 +5414,14 @@ button.close {
   width: auto;
   margin: 0.5rem;
   pointer-events: none;
+}
+
+.modal.fade .modal-dialog {
+  transition: -webkit-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  -webkit-transform: translate(0, -25%);
+  transform: translate(0, -25%);
 }
 
 .modal.in .modal-dialog {
@@ -5459,6 +5468,10 @@ button.close {
 }
 
 .modal-backdrop.fade {
+  opacity: 0;
+}
+
+.modal-backdrop.in {
   opacity: 0.5;
 }
 
@@ -5544,6 +5557,7 @@ button.close {
     max-width: 800px;
   }
 }
+
 
 .tooltip {
   position: absolute;
@@ -6126,7 +6140,7 @@ button.bg-light:focus {
 }
 
 .bg-dark {
-  background-color: #343a40 !important;
+  background-color: #00435d !important;
 }
 
 a.bg-dark:hover, a.bg-dark:focus,

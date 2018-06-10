@@ -153,30 +153,34 @@ Layout styles
 	height: 100%;
 }
 
-.left_bar
-{
-	position: absolute;
-	left: 0;
-	margin-left: 1em;
-	max-width: 275px;
-	background-color: #fff;
-    pointer-events: auto;
-    padding: 10px;
+.left_bar {
+    margin: 0;
+    position: absolute;
+    left: 0;
+    max-width: 275px;
+    background-color: #fff;
+    padding: 20px;
+    padding-top: 7px;
     opacity: 0.9;
-    border-radius: 5px;
+    border-bottom-right-radius: 15px;
+    overflow: auto;
+    max-height: 100%;
+    top: 0px;
+    display: block;
+    z-index: 1;
+    padding-top: 61px;
 }
 
-.right_bar
-{
-	position: absolute;
-	right: 0;
-	margin-right: 1em;
-	max-width: 275px;
-	background-color: #fff;
+.right_bar {
+	margin-top: !important 0px;
+    position: absolute;
+    right: 0;
+    max-width: 275px;
+    background-color: #fff;
     pointer-events: auto;
     padding: 10px;
     opacity: 0.9;
-    border-radius: 5px;
+    border-bottom-left-radius: 15px;
 }
 
 /* -----------------------
@@ -329,7 +333,6 @@ Wide styles
 	{
 		float: left;
 		margin-bottom: 1em;
-		margin-top: 1em;
 	}
 	
 	.nav li
@@ -346,3 +349,28 @@ Wide styles
 	}
 }
 
+
+
+.nav label {
+    margin-right: 15px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}

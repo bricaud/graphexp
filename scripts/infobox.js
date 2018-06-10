@@ -117,7 +117,6 @@ var infobox = (function(){
 	  	append_keysvalues(info_table,data_dic)
 	}
 
-
 	function _display_DBinfo(d){
 		_table_DBinfo.select("tbody").remove();
 	 	var info_table = _table_DBinfo.append("tbody");

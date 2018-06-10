@@ -34,7 +34,7 @@
 		</script>
 
 	</head>
-	<body>
+	<body style="overflow: hidden;">
 		<div class="pos-f-t">
 			<div class="collapse" id="navbarToggleExternalContent">
 				<nav class="navbar navbar-dark bg-dark" style="color:white;">
@@ -53,7 +53,7 @@
 						</div>
 						<div class="nav input_unit_container form-group">
 							<label for="search_type">Type of search:</label>
-							<select name="search_type" id="search_type">
+							<select class="form-control form-control-lg" name="search_type" id="search_type">
 								<option value="eq">Equals</option>
 								<option value="contains">Contains</option>
 							</select>
@@ -103,7 +103,12 @@
 				<div class="aside left_bar" style="pointer-events:auto;">
 					<div  id="graphInfoBar" style="pointer-events:auto;">
 						<button name="graphInfo" class="btn btn-default btn-lg" onclick="get_graph_info();">Get graph info</button>
-						<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>Show/hide graph info
+						<div class="form-check">
+						<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>
+						  <label class="form-check-label" for="showgraphinfo">
+						    Show/hide graph info
+						  </label>
+						</div>
 					</div>
 					<div  id="graphInfo" style="pointer-events:none;">	
 					</div>

@@ -18,6 +18,7 @@
 		<script src="scripts/graph_viz.js"></script>
 		<script src="scripts/graphioGremlin.js"></script>
 		<script src="scripts/bootstrap.min.js"></script>
+		<script src="scripts/editGraph.js"></script>
 
 		<script type="text/javascript">
 
@@ -75,8 +76,22 @@
 			</div>
 			<nav class="navbar navbar-dark bg-dark">
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span><span> Form Queries</span>
+					<span class="navbar-toggler-icon"></span><span style="color: white;"> Form Queries</span>
 				</button>
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					<li style="margin-left: 10px;">
+						<button style="float;left; position: relative;" class="btn btn-default"  onclick="editGraph()" > Edit Graph </button>
+					</li>
+					<li>
+						<div class="form-inline my-2 my-lg-0" id="editGraph" style="display:none; margin-left:10px;">
+							<div class="form-inline my-2 my-lg-0"> 
+								<button class="btn btn-default" onclick="addVertexForm()"> Add Vertex </button><br>
+								<button class="btn btn-default" onclick="editVertexForm()"> Edit Vertex </button><br>
+								<button class="btn btn-default" onclick="addEditEdgeForm()"> Add/Edit Edge </button><br>
+							</div>
+						</div>
+					</li>
+				</ul>
 				<div class="form-inline my-2 my-lg-0" style="color:white;">
 					<div class="form-inline my-2 my-lg-0"> 
 						<div class="form-check abc-checkbox" style="margin-right: 15px">
@@ -99,27 +114,89 @@
 				<div class="main" id="main">
 					<svg></svg>
 				</div>
+				<div class="aside left_bar_edit"><div class="nav input_unit_container", id="addVertexForm" style="display:none;">
+					<h2>Add Vertex :</h2>
+					<div class="nav input_unit_container form-group">
+						<label for="vertexLabel">Vertex Label: </label>
+						<input type="text" name="vertexLabel" id="vertexLabel" class="form-control" placeholder="Enter Vertex Label">
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label for="vertexPropertyName">Vertex Property:</label>
+						<input type="text" name="vertexPropertyName" class="form-control" id="vertexPropertyName" placeholder="Enter Comma Seperated Property Name (e.g. name,age,gender)"  size="45">
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label for="vertexPropertyValue">Property Value:</label>
+						<input type="text" name="vertexPropertyValue" class="form-control" id="vertexPropertyValue"  placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,27,male)">
+					</div>
+					<button class="btn btn-default btn-block" onclick="addVertex()"> Add Vertex </button>						 
+				</div><div class="nav input_unit_container", id="editVertexForm" style="display:none;">
+					<h2>Edit Vertex :</h2>
+					<div class="nav input_unit_container form-group">
+						<label for="vertexId" > Vertex ID: </label>
+						<input type="text" name="vertexId" id="vertexId" class="form-control" size="45"  placeholder="Enter Vertex ID (e.g. 123)">
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label for="vertexPropertyName" > Vertex Property: </label>
+						<input type="text" name="vertexPropertyName_1" id="vertexPropertyName_1" class="form-control" placeholder="Enter Comma Seperated Property Name (e.g. name,age)">
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label for="vertexPropertyValue" > Property Value: </label>
+						<input type="text" name="vertexPropertyValue_1" id="vertexPropertyValue_1" class="form-control" placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,25)">
+					</div>
+					<button class="btn btn-default btn-block" onclick="editVertex()"> Edit Vertex </button>
+				</div><div class="nav input_unit_container", id="addEditEdgeForm" style="display:none;">
+					<h2>Add / Edit Edge :</h2>
+					<div class="nav input_unit_container form-group">
 
+						<label for="edgeLabel" > Edge Label: </label>
+						<input type="text" name="edgeLabel" id="edgeLabel"  class="form-control" placeholder="Enter Edge Label">
+					</div>
+					<div class="nav input_unit_container form-group">
+
+						<label for="sourceVertexId"> Source Vertex ID: </label>
+						<input type="text" name="sourceVertexId" id="sourceVertexId" class="form-control"  placeholder="Enter Source Vertex ID">
+					</div>
+					<div class="nav input_unit_container form-group">
+
+						<label for="targetVertexId"> Target Vertex ID: </label>
+						<input type="text" name="targetVertexId" id="targetVertexId" class="form-control"  placeholder="Enter Target Vertex ID">
+					</div>
+					<div class="nav input_unit_container form-group">
+
+						<label for="edgePropertyName"> Property Name: </label>
+						<input type="text" name="edgePropertyName" id="edgePropertyName" class="form-control"  placeholder="Enter Comma Seperated Property Name">
+					</div>
+					<div class="nav input_unit_container form-group">
+
+						<label for="edgePropertyValue"> Property Value: </label>
+						<input type="text" name="edgePropertyValue" id="edgePropertyValue" class="form-control"  placeholder="Enter Comma Seperated Property Value">
+					</div>
+					<button  class="btn btn-default btn-block" onclick="addEditEdge()"> Add/Edit Edge </button>
+				</div></div>
 				<div class="aside left_bar" style="pointer-events:auto;">
 					<div  id="graphInfoBar" style="pointer-events:auto;">
 						<button name="graphInfo" class="btn btn-default btn-lg" onclick="get_graph_info();">Get graph info</button>
 						<div class="form-check">
-						<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>
-						  <label class="form-check-label" for="showgraphinfo">
-						    Show/hide graph info
-						  </label>
+							<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>
+							<label class="form-check-label" for="showgraphinfo">
+								Show/hide graph info
+							</label>
 						</div>
 					</div>
 					<div  id="graphInfo" style="pointer-events:none;">	
 					</div>
 				</div>
 
-				<div class="aside right_bar" id="details" style="pointer-events:auto;">
+				<div class="middle">
 					<div id="messageArea"></div><div id="outputArea"></div>
+				</div>
+				<div class="aside right_bar" id="details" style="pointer-events:auto;">
 					<div id="nodeInfo" style="pointer-events:none;">
 					</div>				
 				</div>
+
 			</div>
+
 			<!-- Modal -->
 			<div class="modal fade" id="myModal" role="dialog">
 				<div class="modal-dialog">
@@ -156,6 +233,7 @@
 											</select>
 										</div>
 									</form>
+
 								</div>
 							</div>      
 						</div>

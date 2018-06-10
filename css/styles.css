@@ -143,11 +143,14 @@ Layout styles
 	margin-bottom: 1em;
 	padding: 0em;
 	font: 12px sans-serif;
+	position: absolute;
+	top: 0;
 }
 
 .main
 {
 	position: absolute;
+	top:0;
 	left: 0;
 	width: 100%;
 	height: 100%;
@@ -161,7 +164,6 @@ Layout styles
     background-color: #fff;
     padding: 20px;
     padding-top: 7px;
-    opacity: 0.9;
     border-bottom-right-radius: 15px;
     overflow: auto;
     max-height: 100%;
@@ -172,15 +174,22 @@ Layout styles
 }
 
 .right_bar {
-	margin-top: !important 0px;
-    position: absolute;
+	position: absolute;
     right: 0;
+    top: 56px;
     max-width: 275px;
     background-color: #fff;
-    pointer-events: auto;
     padding: 10px;
-    opacity: 0.9;
     border-bottom-left-radius: 15px;
+    padding-left: 15px;
+}
+
+.left_bar_edit {
+    position: relative;
+    background-color: white;
+    border-bottom-right-radius: 15px;
+    z-index: 2;
+    box-shadow: 1px 1px 15px #888;
 }
 
 /* -----------------------
@@ -317,6 +326,16 @@ Single styles
 Wide styles
 ------------------------*/
 
+@media (max-width: 1024px)
+{
+	.left_bar {
+	    padding-top: 90px;
+	}
+	.right_bar {
+		top: 86px;
+	}
+}
+
 @media (min-width: 55em)
 {
 	.header { padding: 0.2em 3em; }
@@ -374,3 +393,42 @@ Wide styles
 ::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }
+
+.middle {
+	z-index: 999;
+    color: white;
+    font-size: large;
+    display: block;
+    position: relative;
+    text-align: center;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0.9;
+}
+
+#addVertexForm , #editVertexForm, #addEditEdgeForm{
+    padding: 15px;
+    padding-bottom: 6px;
+}
+
+#messageArea {
+    background-color: crimson;
+}
+#messageArea p {
+	margin:0;
+}
+
+#outputArea p {
+	margin: 0;
+    padding: 10px;
+    padding-left: 15px;
+}
+
+#outputArea {
+	display: block;
+    position: relative;
+    float: right;
+    background-color: darkslategrey;
+    border-bottom-left-radius: 15px;
+}
+

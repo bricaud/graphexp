@@ -75,6 +75,10 @@ Note that the input is case-sensitive.
 
 * `ts` specifies [TraversalSource](http://tinkerpop.apache.org/docs/current/reference/#the-graph-process) in case of multiple different graphs stored in the same database. If unspecified, the default is just `g`. For Example `http://localhost:8183/graphexp.html?ts=gTreeOfLife` replaces `g` by `gTreeOfLife` in all the gremlin queries (for example `g.V()` becomes `gTreeOfLife.V()`). 
 
+### Editing the graph
+
+There is now the possibility to add/edit the vertices and edges of the graph. A small button was added by [sandecho](https://github.com/sandecho) at the bottom `Edit Graph`. You can modify your graph using Graphexp but you have to update the view to see the result. You can check if the modification has been taken into account by the server in the message window on the top right of the interface.
+
 ## Visualization concept
 
 The visualization is based on a concept of layers of visualization. The idea is to progress in the graph as in a jungle. The clicked node immediately shows its neighbors, opening new paths for the exploration. If not clicked, a node vanishes little by little as we progress in the exploration. Coming back during the exploration is allowed. Before it completely disappears, a node can be clicked and will become active again.

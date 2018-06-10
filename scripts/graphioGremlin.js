@@ -235,11 +235,19 @@ var graphioGremlin = (function(){
 			},
 			error: function(result, status, error){
 				console.log("Connection failed. "+status);
-				$('#outputArea').html("<p> Can't access database using REST at "+server_url+"</p>"+
-					"<p> Message: "+status+ ", "+error+" </p>"+
-					"<p> Check the server configuration "+
-					"or try increasing the REST_TIMEOUT value in the config file.</p>");
-				$('#messageArea').html('');
+				if (query_type == 'editGraph'){
+					$('#outputArea').html("<p> Problem accessing the database using REST at "+server_url+"</p>"+
+						"<p> Message: "+status+ ", "+error+" </p>"+
+						"<p> Possible cause: creating a edge with bad node ids "+
+						"(linking nodes not existing in the DB). </p>");
+					$('#messageArea').html('');
+				} else {
+					$('#outputArea').html("<p> Can't access database using REST at "+server_url+"</p>"+
+						"<p> Message: "+status+ ", "+error+" </p>"+
+						"<p> Check the server configuration "+
+						"or try increasing the REST_TIMEOUT value in the config file.</p>");
+					$('#messageArea').html('');
+				}
 			}
 		});
 	}
@@ -266,18 +274,34 @@ var graphioGremlin = (function(){
 		ws.onerror = function (err){
 			console.log('Connection error using websocket');
 			console.log(err);
-			$('#outputArea').html("<p> Connection error using websocket</p>"
-				+"<p> Cannot connect to "+server_url+ " </p>");
-			$('#messageArea').html('');
+			if (query_type == 'editGraph'){
+				$('#outputArea').html("<p> Connection error using websocket</p>"
+					+"<p> Problem accessing "+server_url+ " </p>"+
+					"<p> Possible cause: creating a edge with bad node ids "+
+					"(linking nodes not existing in the DB). </p>");
+				$('#messageArea').html('');
+			} else {$('#outputArea').html("<p> Connection error using websocket</p>"
+					+"<p> Cannot connect to "+server_url+ " </p>");
+				$('#messageArea').html('');
+			}
 
 		};
 		ws.onmessage = function (event){
 			var response = JSON.parse(event.data);
 			var data = response.result.data;
 			if (data == null){
-				$('#outputArea').html(response.status.message);
-				$('#messageArea').html('Server error. No data.');
-				return 1;}
+				if (query_type == 'editGraph'){
+					$('#outputArea').html(response.status.message);
+					$('#messageArea').html('Could not write data to DB.' +
+						"<p> Possible cause: creating a edge with bad node ids "+
+						"(linking nodes not existing in the DB). </p>");
+					return 1;
+				} else {
+					$('#outputArea').html(response.status.message);
+					$('#messageArea').html('Server error. No data.');
+					return 1;
+				}
+			}
 			//console.log(data)
 			if(callback){
 				callback(data);
@@ -299,6 +323,12 @@ var graphioGremlin = (function(){
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	function handle_server_answer(data,query_type,active_node,message){
 		let COMMUNICATION_METHOD = $('#communication_method').val();
+		if (query_type == 'editGraph'){
+			//console.log(data)
+			$('#outputArea').html("<p> Data successfully written to the DB.</p>");
+			$('#messageArea').html('');
+			return // TODO handle answer to check if data has been written
+		}
 		//console.log(COMMUNICATION_METHOD)
 		if (COMMUNICATION_METHOD == 'GraphSON3'){
 			//console.log(data)
@@ -502,6 +532,7 @@ function get_vertex_prop_in_list(vertexProperty){
 		get_edge_properties : get_edge_properties,
 		get_graph_info : get_graph_info,
 		search_query : search_query,
-		click_query :click_query
+		click_query : click_query,
+		send_to_server : send_to_server
 	}
 })();

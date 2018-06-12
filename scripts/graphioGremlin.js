@@ -235,19 +235,36 @@ var graphioGremlin = (function(){
 			},
 			error: function(result, status, error){
 				console.log("Connection failed. "+status);
+
+				// This will hold all error messages, to be printed in the
+				// output area.
+				let msgs = [];
+
 				if (query_type == 'editGraph'){
-					$('#outputArea').html("<p> Problem accessing the database using REST at "+server_url+"</p>"+
-						"<p> Message: "+status+ ", "+error+" </p>"+
-						"<p> Possible cause: creating a edge with bad node ids "+
-						"(linking nodes not existing in the DB). </p>");
-					$('#messageArea').html('');
+					msgs.push('Problem accessing the database using REST at ' + server_url);
+					msgs.push('Message: ' + status + ', ' + error);
+					msgs.push('Possible cause: creating an edge with bad node ids ' +
+						'(linking nodes not existing in the DB).');
 				} else {
-					$('#outputArea').html("<p> Can't access database using REST at "+server_url+"</p>"+
-						"<p> Message: "+status+ ", "+error+" </p>"+
-						"<p> Check the server configuration "+
-						"or try increasing the REST_TIMEOUT value in the config file.</p>");
-					$('#messageArea').html('');
+					msgs.push('Can\'t access database using REST at ' + server_url);
+					msgs.push('Message: ' + status + ', ' + error);
+					msgs.push('Check the server configuration ' +
+						'or try increasing the REST_TIMEOUT value in the config file.');
 				}
+
+				// If a MalformedQueryException is received, user might be
+				// trying to reach an Amazon Neptune DB. Point them to the
+				// config file as a probable cause.
+				if (result.status === 400
+					&& SINGLE_COMMANDS_AND_NO_VARS === false
+					&& result.hasOwnProperty('responseJSON')
+					&& result.responseJSON.code === 'MalformedQueryException') {
+					msgs.push('If connecting to an Amazon Neptune databse, ensure that ' +
+						'SINGLE_COMMANDS_AND_NO_VARS is set to true in the config file.');
+				}
+
+				$('#outputArea').html(msgs.map(function (i) {return '<p>' + i + '</p>'}).join(''));
+				$('#messageArea').html('');
 			}
 		});
 	}

@@ -49,11 +49,17 @@
   fill: none;
   pointer-events: all;
 }
-/*
+
 .links line {
   stroke: #999;
   stroke-opacity: 0.6;
 }
+
+path {
+  fill: none;
+}
+
+/*
 
 .nodes circle {
   stroke: #fff;

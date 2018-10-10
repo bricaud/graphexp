@@ -494,8 +494,14 @@ var graphioGremlin = (function(){
 		}
 	}
 	if (data.type=="edge"){
-		data_dic.source = data.outV
-		data_dic.target = data.inV
+		data_dic.source = data.outV;
+		data_dic.target = data.inV;
+		if (data.id !== null && typeof data.id === 'object'){
+			console.log('Warning the edge id is an object')
+			if ("relationId" in data.id){
+				data_dic.id = data.id.relationId;
+			}
+		}
 	}
 	return data_dic
 }

@@ -21,7 +21,7 @@ Graphexp works with [Amazon Neptune](https://aws.amazon.com/neptune) thanks to a
 
 Additional parameters can be configured inside the file `graphConf.js`.
 
-**New** : GraphExp has now curved links and can display multiple edges between 2 nodes. Thanks to a contribution from [agussman](https://github.com/agussman). This is the default, you still can come back to straight edges by setting `use_curved_edges = False` in `graphConf.js`.
+**New** : GraphExp has now curved links and can display multiple edges between 2 nodes. Thanks to a contribution from [agussman](https://github.com/agussman). This is the default, you can still come back to straight edges by setting `use_curved_edges = false` in `graphConf.js`.
 
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 ![graphexpzoom with curved edges](https://github.com/bricaud/graphexp/blob/master/images/curved_links.png "Exploration of the Tinkerpop modern graph with curved links and multiple edges between node 1 and 2")

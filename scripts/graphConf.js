@@ -39,4 +39,6 @@ const node_position_y = 'graphexpy'
 const default_edge_stroke_width = 3;
 const default_edge_color = "#CCC";
 const edge_label_color = "#111";
+// Choose between curved (true) and straight edges (false). 
+// If set to false, multiple edges between 2 nodes will all be straight and overlap.
 const use_curved_edges = true;

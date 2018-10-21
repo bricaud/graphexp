@@ -39,3 +39,4 @@ const node_position_y = 'graphexpy'
 const default_edge_stroke_width = 3;
 const default_edge_color = "#CCC";
 const edge_label_color = "#111";
+const use_curved_edges = true;

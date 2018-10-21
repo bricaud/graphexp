@@ -179,7 +179,7 @@ var graphShapes = (function(){
 
 	function decorate_link(edges,edgepaths,edgelabels){
 
-		var edges_deco = edges.append("line").attr("class", "edge").classed("active_edge",true)
+		var edges_deco = edges.append("path").attr("class", "edge").classed("active_edge",true)
 			.attr("source_ID",function(d) { return d.source;})
 			.attr("target_ID",function(d) { return d.target;})
 			.attr("ID",function(d) { return d.id;});

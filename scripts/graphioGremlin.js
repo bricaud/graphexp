@@ -120,18 +120,6 @@ var graphioGremlin = (function(){
 				limit_field = node_limit_per_request;
 		}
 
-		let gremlin_query_nodes = "nodes = " + traversal_source + ".V()" + has_str;
-		if (limit_field !== "" && isInt(limit_field) && limit_field > 0) {
-			gremlin_query_nodes += ".limit(" + limit_field + ").toList();";
-		} else {
-			gremlin_query_nodes += ".toList();";
-		}
-		let gremlin_query_edges = "edges = " + traversal_source + ".V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-                let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-                //let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
-		let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
-		console.log(gremlin_query);
-
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 		// To display the queries in the message area:
@@ -139,20 +127,15 @@ var graphioGremlin = (function(){
 		//var message_edges = "<p>Edge query: '"+gremlin_query_edges+"'</p>";
 		//var message = message_nodes + message_edges;
 		var message = "";
-		if (SINGLE_COMMANDS_AND_NO_VARS) {
-			var nodeQuery = create_single_command(gremlin_query_nodes);
-			var edgeQuery = create_single_command(gremlin_query_edges_no_vars);
-			console.log("Node query: "+nodeQuery);
-			console.log("Edge query: "+edgeQuery);
-			send_to_server(nodeQuery, null, null, null, function(nodeData){
-				send_to_server(edgeQuery, null, null, null, function(edgeData){
-					var combinedData = [nodeData,edgeData];
-					handle_server_answer(combinedData, 'search', null, message);
-				});
-			});
-		} else {
-			send_to_server(gremlin_query,'search',null,message);
+		var gremlin_query = traversal_source + ".V()" + has_str;
+		if (limit_field !== "" && isInt(limit_field) && limit_field > 0) {
+			gremlin_query += ".limit(" + limit_field + ")";
 		}
+		gremlin_query += '.union(aggregate("nodes"),outE().filter(inV().where(within("nodes")))).toList()'
+		console.log(gremlin_query);
+		send_to_server(gremlin_query, null, null, null, function(data){
+			handle_server_answer([data], 'search', null, message);
+		});
 	}
 
 	function isInt(value) {
@@ -169,24 +152,13 @@ var graphioGremlin = (function(){
 		if(isNaN(id)){ // Add quotes if id is a string (not a number).
 			id = '"'+id+'"';
 		}
-		var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").inject(' + traversal_source + '.V('+id+')).unfold()'
-		var gremlin_query_edges = "edges = " + traversal_source + ".V("+id+").bothE("+(edge_filter?"'"+edge_filter+"'":"")+")";
-		var gremlin_query = gremlin_query_nodes+'\n'+gremlin_query_edges+'\n'+'[nodes.toList(),edges.toList()]'
 		// while busy, show we're doing something in the messageArea.
 		$('#messageArea').html('<h3>(loading)</h3>');
 		var message = "<p>Query ID: "+ d.id +"</p>"
-				if(SINGLE_COMMANDS_AND_NO_VARS){
-					var nodeQuery = create_single_command(gremlin_query_nodes);
-					var edgeQuery = create_single_command(gremlin_query_edges);
-					send_to_server(nodeQuery, null, null, null, function(nodeData){
-						send_to_server(edgeQuery, null, null, null, function(edgeData){
-							var combinedData = [nodeData,edgeData];
-							handle_server_answer(combinedData, 'click', d.id, message);
-						});
-					});
-				} else {
-					send_to_server(gremlin_query,'click',d.id,message);
-				}
+				var gremlin_query=traversal_source + '.V('+id+').union(identity(),both('+(edge_filter?'"'+edge_filter+'"':'')+'),bothE('+(edge_filter?'"'+edge_filter+'"':'')+'))'
+				send_to_server(gremlin_query,'click',d.id,message,function(data){
+					handle_server_answer([data], 'click', d.id, message);
+				});
 	}
 
 	function send_to_server(gremlin_query,query_type,active_node,message, callback){

@@ -306,6 +306,12 @@ var graphioGremlin = (function(){
 		};
 		ws.onmessage = function (event){
 			var response = JSON.parse(event.data);
+			var code=Number(response.status.code)
+			if(!isInt(code) || code<200 || code>299) {
+				$('#outputArea').html(response.status.message);
+				$('#messageArea').html("Error retrieving data");
+				return 1;
+			}
 			var data = response.result.data;
 			if (data == null){
 				if (query_type == 'editGraph'){

@@ -15,10 +15,14 @@ On your web browser, just access the file `graphexp.html`.
 
 Next step, configure the server settings on the bottom of the page. The default Gremlin server address is `localhost:8182`. You will have to specify the communication protocol `websocket` or `REST` and the gremlin server version. Graphexp is not able to handle secure connections yet and a contribution on this topic would be welcome.
 
-Graphexp works with Amazon Neptune thanks to a pull request of [jwalton922](https://github.com/jwalton922). With this database, set `SINGLE_COMMANDS_AND_NO_VARS = true` in the file `graphConf.js`.
+Graphexp works with [Amazon Neptune](https://aws.amazon.com/neptune) thanks to a pull request of [jwalton922](https://github.com/jwalton922). With this database, set `SINGLE_COMMANDS_AND_NO_VARS = true` in the file `graphConf.js`.
+
+Additional parameters can be configured inside the file `graphConf.js`.
+
+**New** : GraphExp has now curved links and can display multiple edges between 2 nodes. Thanks to a contribution from [agussman](https://github.com/agussman). This is the default, you can still come back to straight edges by setting `use_curved_edges = false` in `graphConf.js`.
 
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
-
+![graphexpzoom with curved edges](https://github.com/bricaud/graphexp/blob/master/images/curved_links.png "Exploration of the Tinkerpop modern graph with curved links and multiple edges between node 1 and 2")
 
 ## Getting started
 

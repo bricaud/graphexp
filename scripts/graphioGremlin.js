@@ -227,6 +227,7 @@ var graphioGremlin = (function(){
 			success: function(data, textStatus, jqXHR){
 							var Data = data.result.data;
 							//console.log(Data)
+							//console.log("Results received")
 							if(callback){
 								callback(Data);
 							} else {				
@@ -305,6 +306,12 @@ var graphioGremlin = (function(){
 		};
 		ws.onmessage = function (event){
 			var response = JSON.parse(event.data);
+			var code=Number(response.status.code)
+			if(!isInt(code) || code<200 || code>299) {
+				$('#outputArea').html(response.status.message);
+				$('#messageArea').html("Error retrieving data");
+				return 1;
+			}
 			var data = response.result.data;
 			if (data == null){
 				if (query_type == 'editGraph'){
@@ -314,12 +321,13 @@ var graphioGremlin = (function(){
 						"(linking nodes not existing in the DB). </p>");
 					return 1;
 				} else {
-					$('#outputArea').html(response.status.message);
-					$('#messageArea').html('Server error. No data.');
-					return 1;
+					//$('#outputArea').html(response.status.message);
+					//$('#messageArea').html('Server error. No data.');
+					//return 1;
 				}
 			}
 			//console.log(data)
+			//console.log("Results received")
 			if(callback){
 				callback(data);
 			} else {
@@ -438,17 +446,21 @@ var graphioGremlin = (function(){
 		// Extract node and edges from the data returned for 'search' and 'click' request
 		// Create the graph object
 		var nodes=[], links=[];
-		for (var key in data){
-			data[key].forEach(function (item) {
-				if (!("inV" in item) && idIndex(nodes,item.id) == null){ // if vertex and not already in the list
-					item.type = "vertex";
-					nodes.push(extract_infov3(item));
+		if(data!=null) {
+			for (var key in data){
+				if(data[key]!=null) {
+					data[key].forEach(function (item) {
+						if (!("inV" in item) && idIndex(nodes,item.id) == null){ // if vertex and not already in the list
+							item.type = "vertex";
+							nodes.push(extract_infov3(item));
+						}
+						if (("inV" in item) && idIndex(links,item.id) == null){
+							item.type = "edge";
+							links.push(extract_infov3(item));
+						}
+					});
 				}
-				if (("inV" in item) && idIndex(links,item.id) == null){
-					item.type = "edge";
-					links.push(extract_infov3(item));
-				}
-			});
+			}
 		}
 	  return {nodes:nodes, links:links};
 	}

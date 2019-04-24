@@ -122,6 +122,8 @@ var infobox = (function(){
 		_table_DBinfo.select("tbody").remove();
 	 	var info_table = _table_DBinfo.append("tbody");
 	 	if (d.type=='vertex'){
+	 		//console.log('display node data')
+	 		//console.log(d)
 		 	for (var key in d.properties){
 		 		_display_vertex_properties(key,d.properties[key],info_table)
 		 	}
@@ -137,24 +139,31 @@ var infobox = (function(){
 	}
 
 	function _display_vertex_properties(key,value,info_table) {
- 		for (var subkey in value){
-			// Ignore the summary field, which is set in graphioGremlin.extract_infov3()
-			if (subkey === "summary") {
-				continue;
+ 		if (typeof value === "string"){
+			var new_info_row = info_table.append("tr");
+ 			new_info_row.append("td").text(key).style("font-size",_font_size);
+ 			new_info_row.append("td").text(value).style("font-size",_font_size);
+ 			new_info_row.append("td").text('').style("font-size",_font_size);
+ 		} else {
+	 		for (var subkey in value){
+				// Ignore the summary field, which is set in graphioGremlin.extract_infov3()
+				if (subkey === "summary") {
+					continue;
+				}
+	 			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
+	 				for (var subsubkey in value[subkey].properties){
+	 					var new_info_row = info_table.append("tr");
+	 					new_info_row.append("td").text(key).style("font-size",_font_size);
+	 					new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+	 					new_info_row.append("td").text(subsubkey + ' : '+ value[subkey].properties[subsubkey]).style("font-size",_font_size);
+	 				}
+	 			} else {
+	 				var new_info_row = info_table.append("tr");
+	 				new_info_row.append("td").text(key).style("font-size",_font_size);
+	 				new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+	 				new_info_row.append("td").text('').style("font-size",_font_size);
+	 			}
 			}
- 			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
- 				for (var subsubkey in value[subkey].properties){
- 					var new_info_row = info_table.append("tr");
- 					new_info_row.append("td").text(key).style("font-size",_font_size);
- 					new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
- 					new_info_row.append("td").text(subsubkey + ' : '+ value[subkey].properties[subsubkey]).style("font-size",_font_size);
- 				}
- 			} else {
- 				var new_info_row = info_table.append("tr");
- 				new_info_row.append("td").text(key).style("font-size",_font_size);
- 				new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
- 				new_info_row.append("td").text('').style("font-size",_font_size);
- 			}
 		}
 	}
 

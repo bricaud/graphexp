@@ -389,11 +389,16 @@
 	function get_prop_value(d,prop_name,item){
 		//let COMMUNICATION_METHOD = $('#communication_method').val();
 		if (prop_name in d.properties){
+			prop_value = d.properties[prop_name]
 			if (item=='nodes'){
-				if ('summary' in d.properties[prop_name]) {
-					return d.properties[prop_name]['summary'];
-				} else if (COMMUNICATION_METHOD == 'GraphSON1') {
-					return d.properties[prop_name][0].value;
+				if (typeof prop_value === "string"){
+					return prop_value;
+				} else {
+					if ('summary' in prop_value) {
+						return prop_value['summary'];
+					} else if (COMMUNICATION_METHOD == 'GraphSON1') {
+						return prop_value[0].value;
+					}
 				}
 			}
 			else if (item=='edges'){

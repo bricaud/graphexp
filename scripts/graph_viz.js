@@ -116,7 +116,10 @@ var graph_viz = (function () {
 		_svg.selectAll("*").remove();
 		_Nodes = [], _Links = [];
 		layers.clear_old();
-		_simulation = {};
+        _simulation = {};
+
+        // clear DB table
+        $('#tableDBDetails tbody').empty()
 	}
 
 

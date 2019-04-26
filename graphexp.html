@@ -121,7 +121,7 @@
 
 				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:auto;">
 					<div id="messageArea"></div><div id="outputArea"></div>
-					<div id="nodeInfo" style="background-color:transparent;pointer-events:none;">
+					<div id="nodeInfo" style="background-color:transparent;overflow:scroll; height:400px;">
 					</div>				
 				</div>
 				<!--
@@ -151,6 +151,7 @@
 					<div class="nav input_unit_container">
 						<label for="communication_method">Gremlin version:</label>
 						<select name="communication_method" id="communication_method">
+							<option value="GraphSON4">3.4.*</option>
 							<option value="GraphSON3">3.3.*</option>
 							<option value="GraphSON2">3.2.*</option>
 						</select>

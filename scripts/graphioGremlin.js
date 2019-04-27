@@ -88,6 +88,8 @@ var graphioGremlin = (function(){
 
 
 	function search_query() {
+		// Query sent to the server when clicking the search button
+		//
 		// Preprocess query
 		let input_string = $('#search_value').val();
 		let input_field = $('#search_field').val();
@@ -122,17 +124,17 @@ var graphioGremlin = (function(){
 		}
 
 		let gremlin_query_nodes = "nodes = " + traversal_source + ".V()" + has_str;
+        // Query limit
 		if (limit_field !== "" && isInt(limit_field) && limit_field > 0) {
-			gremlin_query_nodes += ".limit(" + limit_field + ").toList();";
-			console.log(gremlin_query_nodes);
+			gremlin_query_nodes += ".limit(" + limit_field + ")";
         } else {
-            
-			console.log(gremlin_query_nodes);
+			console.log('Warning: no node limit set for the query. The query may fail if the graph is too big.')
         }
-
+		gremlin_query_nodes += ".toList();";
+		
 		let gremlin_query_edges = "edges = " + traversal_source + ".V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-                let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-                //let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
+        let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
+        //let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
 		let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
 		console.log(gremlin_query);
 
@@ -165,25 +167,28 @@ var graphioGremlin = (function(){
 			 !isNaN(parseInt(value, 10));
 	}
 	function click_query(d) {
+		// Query sent to the server when a node is clicked
+		//
         var edge_filter = $('#edge_filter').val();
         var communication_method = $('#communication_method').val();
-		// Gremlin query
-		//var gremlin_query = traversal_source + ".V("+d.id+").bothE().bothV().path()"
-		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
 		var id = d.id;
 		if(isNaN(id)){ // Add quotes if id is a string (not a number).
 			id = '"'+id+'"';
 		}
+		// Gremlin query
 		var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").unfold()'
-        // VERSION 3.4
-        if (communication_method == "GraphSON4") {
+        // Variant depending on the Gremlin version
+        if (communication_method == "GraphSON3_4") { 
+        	// Version 3.4
             gremlin_query_nodes += ".valueMap().with(WithOptions.tokens)";
             gremlin_query_nodes += 'fold().inject(' + traversal_source + '.V(' + id + ').valueMap().with(WithOptions.tokens)).unfold()';
+        } else {
+        	gremlin_query_nodes += 'fold().inject(' + traversal_source + '.V(' + id + ')).unfold()';
         }
 		//var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").unfold().valueMap()'
 		//gremlin_query_nodes += 'fold().inject(' + traversal_source + '.V('+id+').valueMap()).unfold()'
 
-
+		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
 		console.log('Query for the node and its neigbhors')
 		console.log(gremlin_query_nodes)
 		var gremlin_query_edges = "edges = " + traversal_source + ".V("+id+").bothE("+(edge_filter?"'"+edge_filter+"'":"")+")";
@@ -371,7 +376,7 @@ var graphioGremlin = (function(){
 			return // TODO handle answer to check if data has been written
 		}
 		//console.log(COMMUNICATION_METHOD)
-		if (COMMUNICATION_METHOD == 'GraphSON3'){
+		if (COMMUNICATION_METHOD == 'GraphSON3' || COMMUNICATION_METHOD == 'GraphSON3_4'){
 			//console.log(data)
 			data = graphson3to1(data);
 			var arrange_data = arrange_datav3;
@@ -498,11 +503,11 @@ var graphioGremlin = (function(){
 	}
 
     function extract_infov3(data) {
-        var isGraphSON4 = ($('#communication_method').val() == "GraphSON4");
+        var isGraphSON3_4 = ($('#communication_method').val() == "GraphSON3_4");
         var data_dic = { id: data.id, label: data.label, type: data.type, properties: {} };
         var prop_dic = {};
         // VERSION 3.4
-        if (isGraphSON4) {
+        if (isGraphSON3_4) {
            
             for (var key in data) {
                 if (data.hasOwnProperty(key) && key != 'id' && key != 'label' && key != 'type') prop_dic[key] = data[key];

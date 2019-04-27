@@ -49,7 +49,7 @@ var infobox = (function(){
 	  	var row = table_head.append("tr");
 	  	for (var key in entries){
 	 		row.append("th").text(entries[key]);
-            } 
+        } 
         var table_body = table_handle.append("tbody");
 	  	var row = table_body.append("tr");
 	  	for (var key in entries){
@@ -139,7 +139,7 @@ var infobox = (function(){
 	}
 
 	function _display_vertex_properties(key,value,info_table) {
-        if (typeof value === "string" && $('#communication_method').val() =="GraphSON4"){
+        if (typeof value === "string" && $('#communication_method').val() =="GraphSON3_4"){
 			var new_info_row = info_table.append("tr");
  			new_info_row.append("td").text(key).style("font-size",_font_size);
  			new_info_row.append("td").text(value).style("font-size",_font_size);

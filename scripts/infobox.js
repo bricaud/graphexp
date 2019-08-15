@@ -29,13 +29,13 @@ var infobox = (function(){
 	////////////////////////
 	// Public function
 	function create(label_graph,label_graphElem){
-		var graph_bar = d3.select(label_graph);
-		graph_bar.append("h2").text("Graph Info")
+        var graph_bar = d3.select(label_graph);
+        graph_bar.append("h2").text("Graph Info");
 		_table_Graphinfo = graph_bar.append("table").attr("id","tableGraph");
 		init_table(_table_Graphinfo,["Type","Count"]);
 
 		var graphElem_bar = d3.select(label_graphElem);
-		graphElem_bar.append("h2").text("Item Info")
+        graphElem_bar.append("h2").text("Item Info");
 		_table_IDinfo = graphElem_bar.append("table").attr("id","tableIdDetails");
 		init_table(_table_IDinfo,["Key","Value"]);
 		_table_DBinfo = graphElem_bar.append("table").attr("id","tableDBDetails");
@@ -49,8 +49,8 @@ var infobox = (function(){
 	  	var row = table_head.append("tr");
 	  	for (var key in entries){
 	 		row.append("th").text(entries[key]);
-	 	}
-	 	var table_body = table_handle.append("tbody");
+        } 
+        var table_body = table_handle.append("tbody");
 	  	var row = table_body.append("tr");
 	  	for (var key in entries){
 	 		row.append("td").text("");
@@ -58,7 +58,7 @@ var infobox = (function(){
 	}
 
 	function display_graph_info(data){
-		_table_Graphinfo.select("tbody").remove();
+        _table_Graphinfo.select("tbody").remove();
 	  	var info_table = _table_Graphinfo.append("tbody");
 	  	var data_to_display = data[0][0];
 	  	append_keysvalues(info_table,{"Node labels":""},"bold");
@@ -118,10 +118,12 @@ var infobox = (function(){
 	}
 
 
-	function _display_DBinfo(d){
-		_table_DBinfo.select("tbody").remove();
-	 	var info_table = _table_DBinfo.append("tbody");
+    function _display_DBinfo(d) {
+        _table_DBinfo.select("tbody").remove();
+        var info_table = _table_DBinfo.append("tbody");
 	 	if (d.type=='vertex'){
+	 		//console.log('display node data')
+	 		//console.log(d)
 		 	for (var key in d.properties){
 		 		_display_vertex_properties(key,d.properties[key],info_table)
 		 	}
@@ -137,24 +139,33 @@ var infobox = (function(){
 	}
 
 	function _display_vertex_properties(key,value,info_table) {
- 		for (var subkey in value){
-			// Ignore the summary field, which is set in graphioGremlin.extract_infov3()
-			if (subkey === "summary") {
-				continue;
+        if (typeof value === "string" && $('#communication_method').val() =="GraphSON3_4"){
+			var new_info_row = info_table.append("tr");
+ 			new_info_row.append("td").text(key).style("font-size",_font_size);
+ 			new_info_row.append("td").text(value).style("font-size",_font_size);
+ 			new_info_row.append("td").text('').style("font-size",_font_size);
+        }
+        else
+        {
+	 		for (var subkey in value){
+				// Ignore the summary field, which is set in graphioGremlin.extract_infov3()
+				if (subkey === "summary") {
+					continue;
+				}
+	 			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
+	 				for (var subsubkey in value[subkey].properties){
+	 					var new_info_row = info_table.append("tr");
+	 					new_info_row.append("td").text(key).style("font-size",_font_size);
+	 					new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+	 					new_info_row.append("td").text(subsubkey + ' : '+ value[subkey].properties[subsubkey]).style("font-size",_font_size);
+	 				}
+	 			} else {
+	 				var new_info_row = info_table.append("tr");
+	 				new_info_row.append("td").text(key).style("font-size",_font_size);
+	 				new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+	 				new_info_row.append("td").text('').style("font-size",_font_size);
+	 			}
 			}
- 			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
- 				for (var subsubkey in value[subkey].properties){
- 					var new_info_row = info_table.append("tr");
- 					new_info_row.append("td").text(key).style("font-size",_font_size);
- 					new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
- 					new_info_row.append("td").text(subsubkey + ' : '+ value[subkey].properties[subsubkey]).style("font-size",_font_size);
- 				}
- 			} else {
- 				var new_info_row = info_table.append("tr");
- 				new_info_row.append("td").text(key).style("font-size",_font_size);
- 				new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
- 				new_info_row.append("td").text('').style("font-size",_font_size);
- 			}
 		}
 	}
 

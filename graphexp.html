@@ -121,7 +121,7 @@
 
 				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:auto;">
 					<div id="messageArea"></div><div id="outputArea"></div>
-					<div id="nodeInfo" style="background-color:transparent;pointer-events:none;">
+					<div id="nodeInfo" style="background-color:transparent;overflow:scroll; height:400px;">
 					</div>				
 				</div>
 				<!--
@@ -151,6 +151,7 @@
 					<div class="nav input_unit_container">
 						<label for="communication_method">Gremlin version:</label>
 						<select name="communication_method" id="communication_method">
+							<option value="GraphSON3_4">3.4.*</option>
 							<option value="GraphSON3">3.3.*</option>
 							<option value="GraphSON2">3.2.*</option>
 						</select>
@@ -389,11 +390,16 @@
 	function get_prop_value(d,prop_name,item){
 		//let COMMUNICATION_METHOD = $('#communication_method').val();
 		if (prop_name in d.properties){
+			prop_value = d.properties[prop_name]
 			if (item=='nodes'){
-				if ('summary' in d.properties[prop_name]) {
-					return d.properties[prop_name]['summary'];
-				} else if (COMMUNICATION_METHOD == 'GraphSON1') {
-					return d.properties[prop_name][0].value;
+				if (typeof prop_value === "string"){
+					return prop_value;
+				} else {
+					if ('summary' in prop_value) {
+						return prop_value['summary'];
+					} else if (COMMUNICATION_METHOD == 'GraphSON1') {
+						return prop_value[0].value;
+					}
 				}
 			}
 			else if (item=='edges'){

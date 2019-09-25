@@ -181,9 +181,9 @@ var graphioGremlin = (function(){
         if (communication_method == "GraphSON3_4") { 
         	// Version 3.4
             gremlin_query_nodes += ".valueMap().with(WithOptions.tokens)";
-            gremlin_query_nodes += 'fold().inject(' + traversal_source + '.V(' + id + ').valueMap().with(WithOptions.tokens)).unfold()';
+            gremlin_query_nodes += '.fold().inject(' + traversal_source + '.V(' + id + ').valueMap().with(WithOptions.tokens)).unfold()';
         } else {
-        	gremlin_query_nodes += 'fold().inject(' + traversal_source + '.V(' + id + ')).unfold()';
+        	gremlin_query_nodes += '.fold().inject(' + traversal_source + '.V(' + id + ')).unfold()';
         }
 		//var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").unfold().valueMap()'
 		//gremlin_query_nodes += 'fold().inject(' + traversal_source + '.V('+id+').valueMap()).unfold()'

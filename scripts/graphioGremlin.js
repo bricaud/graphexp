@@ -92,6 +92,7 @@ var graphioGremlin = (function(){
 		//
 		// Preprocess query
 		let input_string = $('#search_value').val();
+        let input_id = $('#search_id').val();
 		let input_field = $('#search_field').val();
 		let label_field = $('#label_field').val();
 		let limit_field = $('#limit_field').val();
@@ -102,6 +103,15 @@ var graphioGremlin = (function(){
 		if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // limit string length
 		// Translate to Gremlin query
 		let has_str = "";
+        var id_query;
+        if (input_id!=="")
+        {
+
+            id_query=".V('"+input_id +"')"
+        }
+        else{
+            id_query=".V()"
+        }
 		if (label_field !== "") {
 			has_str = ".hasLabel('" + label_field + "')";
 		}
@@ -123,7 +133,7 @@ var graphioGremlin = (function(){
 				limit_field = node_limit_per_request;
 		}
 
-		let gremlin_query_nodes = "nodes = " + traversal_source + ".V()" + has_str;
+		let gremlin_query_nodes = "nodes = " + traversal_source + id_query + has_str;
         // Query limit
 		if (limit_field !== "" && isInt(limit_field) && limit_field > 0) {
 			gremlin_query_nodes += ".limit(" + limit_field + ")";
@@ -133,7 +143,7 @@ var graphioGremlin = (function(){
 		gremlin_query_nodes += ".toList();";
 		
 		let gremlin_query_edges = "edges = " + traversal_source + ".V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-        let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
+        let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V('" + input_id + "')"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
         //let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
 		let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
 		console.log(gremlin_query);
@@ -172,9 +182,9 @@ var graphioGremlin = (function(){
         var edge_filter = $('#edge_filter').val();
         var communication_method = $('#communication_method').val();
 		var id = d.id;
-		if(isNaN(id)){ // Add quotes if id is a string (not a number).
+		//if(isNaN(id)){ // Add quotes if id is a string (not a number).
 			id = '"'+id+'"';
-		}
+		//}
 		// Gremlin query
 		var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").unfold()'
         // Variant depending on the Gremlin version
@@ -213,10 +223,11 @@ var graphioGremlin = (function(){
 	function send_to_server(gremlin_query,query_type,active_node,message, callback){
 
 		let server_address = $('#server_address').val();
+        let server_scheme = $('#server_scheme').val();
 		let server_port = $('#server_port').val();
 		let COMMUNICATION_PROTOCOL = $('#server_protocol').val();
 			if (COMMUNICATION_PROTOCOL == 'REST'){
-				let server_url = "http://"+server_address+":"+server_port;
+				let server_url = server_scheme+server_address+":"+server_port;
 				run_ajax_request(gremlin_query,server_url,query_type,active_node,message,callback);
 			}
 			else if (COMMUNICATION_PROTOCOL == 'websocket'){

@@ -58,9 +58,14 @@
 						<input name="label_field" id="label_field" value="" />
 					</div>
 					<div class="nav input_unit_container">
+						<label class="nav input_label" for="search_id">Id value:</label>
+						<input name="search_value" id="search_id" value="" />
+					</div>
+					<div class="nav input_unit_container">
 						<label for="search_field">Node property:</label>
 						<input name="search_field" id="search_field" value="" />
 					</div>
+
 					<div class="nav input_unit_container">
 						<label class="nav input_label" for="search_value">Property value:</label>
 						<input name="search_value" id="search_value" value="" />
@@ -142,10 +147,18 @@
 						<input name="server_port" id="server_port" type="number" value="8182"/>
 					</div>
 					<div class="nav input_unit_container">
+						<label for="server_scheme">Scheme:</label>
+						<select name="server_protocol" id="server_scheme">
+							<option value="https://">HTTPS</option>
+							<option value="http://">HTTP</option>
+
+						</select>
+					<div class="nav input_unit_container">
 						<label for="server_protocol">Protocol:</label>
 						<select name="server_protocol" id="server_protocol">
-							<option value="websocket">websocket</option>
 							<option value="REST">REST</option>
+							<option value="websocket">websocket</option>
+
 						</select>
 					</div>
 					<div class="nav input_unit_container">

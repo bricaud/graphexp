@@ -442,7 +442,7 @@ var graphioGremlin = (function(){
 	  // find the element in list with id equal to elem
 	  // return its index or null if there is no
 	  for (var i=0;i<list.length;i++) {
-		if (list[i].id == elem) return i;
+		if (list[i].id === elem) return i;
 	  }
 	  return null;
 	}  

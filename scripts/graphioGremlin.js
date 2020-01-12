@@ -172,7 +172,7 @@ var graphioGremlin = (function(){
         var edge_filter = $('#edge_filter').val();
         var communication_method = $('#communication_method').val();
 		var id = d.id;
-		if(isNaN(id)){ // Add quotes if id is a string (not a number).
+		if (typeof id === 'string' || id instanceof String) { // Add quotes if id is a string (not a number).
 			id = '"'+id+'"';
 		}
 		// Gremlin query

@@ -216,7 +216,7 @@ var graphioGremlin = (function(){
 		let server_port = $('#server_port').val();
 		let COMMUNICATION_PROTOCOL = $('#server_protocol').val();
 			if (COMMUNICATION_PROTOCOL == 'REST'){
-				let server_url = "http://"+server_address+":"+server_port;
+				let server_url = "https://"+server_address+":"+server_port;
 				run_ajax_request(gremlin_query,server_url,query_type,active_node,message,callback);
 			}
 			else if (COMMUNICATION_PROTOCOL == 'websocket'){

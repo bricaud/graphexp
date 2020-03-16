@@ -227,6 +227,10 @@ var graphioGremlin = (function(){
 				let server_url = "ws://"+server_address+":"+server_port+"/gremlin"
 				run_websocket_request(gremlin_query,server_url,query_type,active_node,message,callback);
 			}
+			else if (COMMUNICATION_PROTOCOL == 'websockets'){
+				let server_url = "wss://"+server_address+":"+server_port+"/gremlin"
+				run_websocket_request(gremlin_query,server_url,query_type,active_node,message,callback);
+			}
 			else {
 				console.log('Bad communication protocol. Check configuration file. Accept "REST" or "websocket" .')
 			}

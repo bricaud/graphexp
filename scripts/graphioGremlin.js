@@ -128,7 +128,7 @@ var graphioGremlin = (function(){
 		}
 		let gremlin_query_edges = "edges = " + traversal_source + ".V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
                 let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-                //let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
+				//let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
 		let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
 		console.log(gremlin_query);
 
@@ -562,12 +562,30 @@ function get_vertex_prop_in_list(vertexProperty){
 		return data;
 	}
 
+	function custom_query() {
+		var my_query = $('#my_query').val();
+		if (!my_query) {
+			return;
+		}
+		var message = "";
+		my_query = my_query.trim();
+		my_query = 'nodes = '+my_query+'.toList();';
+		var edges = "edges = g.V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();[nodes,edges]";
+		my_query+=edges;
+		console.log('my query: ', my_query);
+		send_to_server(my_query, 'search' , null, message);
+		
+	}
+
+	
+
 	return {
 		get_node_properties : get_node_properties,
 		get_edge_properties : get_edge_properties,
 		get_graph_info : get_graph_info,
 		search_query : search_query,
 		click_query : click_query,
-		send_to_server : send_to_server
+		send_to_server : send_to_server,
+		custom_query : custom_query
 	}
 })();

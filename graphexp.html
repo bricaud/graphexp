@@ -142,6 +142,24 @@
 					<div class="nav input_unit_container form-group">
 						<label for="vertexPropertyValue">Property Value:</label>
 						<input type="text" name="vertexPropertyValue" class="form-control" id="vertexPropertyValue"  placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,27,male)">
+				</div>
+				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:auto;">
+					<div id="messageArea"></div><div id="outputArea"></div>
+					<div id="nodeInfo" style="background-color:transparent;overflow:scroll; height:400px;">
+					</div>				
+				</div>
+				<!--
+				<div  class="aside" id="ImageInfo" style="background-color:transparent;">
+					<center><svg width="100" height="100"></svg></center>
+				</div>
+				-->
+		</div>
+		<div class="footer">
+			<div class="container">
+				<div class="nav inputs_container_top">
+					<div class="nav input_unit_container">
+						<label class="nav input_label" for="server_address">Server Address:</label>
+						<input name="server_address" id="server_address" value="localhost" />
 					</div>
 					<button class="btn btn-default btn-block" onclick="addVertex()"> Add Vertex </button>						 
 				</div><div class="nav input_unit_container", id="editVertexForm" style="display:none;">
@@ -150,13 +168,21 @@
 						<label for="vertexId" > Vertex ID: </label>
 						<input type="text" name="vertexId" id="vertexId" class="form-control" size="45"  placeholder="Enter Vertex ID (e.g. 123)">
 					</div>
-					<div class="nav input_unit_container form-group">
-						<label for="vertexPropertyName" > Vertex Property: </label>
-						<input type="text" name="vertexPropertyName_1" id="vertexPropertyName_1" class="form-control" placeholder="Enter Comma Seperated Property Name (e.g. name,age)">
+					<div class="nav input_unit_container">
+						<label for="server_protocol">Protocol:</label>
+						<select name="server_protocol" id="server_protocol">
+							<option value="websocket">websocket</option>
+							<option value="websockets">websocket secure</option>
+							<option value="REST">REST</option>
+						</select>
 					</div>
-					<div class="nav input_unit_container form-group">
-						<label for="vertexPropertyValue" > Property Value: </label>
-						<input type="text" name="vertexPropertyValue_1" id="vertexPropertyValue_1" class="form-control" placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,25)">
+					<div class="nav input_unit_container">
+						<label for="communication_method">Gremlin version:</label>
+						<select name="communication_method" id="communication_method">
+							<option value="GraphSON3_4">3.4.*</option>
+							<option value="GraphSON3">3.3.*</option>
+							<option value="GraphSON2">3.2.*</option>
+						</select>
 					</div>
 					<button class="btn btn-default btn-block" onclick="editVertex()"> Edit Vertex </button>
 				</div><div class="nav input_unit_container", id="addEditEdgeForm" style="display:none;">
@@ -412,11 +438,16 @@
 	  	function get_prop_value(d,prop_name,item){
 		//let COMMUNICATION_METHOD = $('#communication_method').val();
 		if (prop_name in d.properties){
+			prop_value = d.properties[prop_name]
 			if (item=='nodes'){
-				if ('summary' in d.properties[prop_name]) {
-					return d.properties[prop_name]['summary'];
-				} else if (COMMUNICATION_METHOD == 'GraphSON1') {
-					return d.properties[prop_name][0].value;
+				if (typeof prop_value === "string"){
+					return prop_value;
+				} else {
+					if ('summary' in prop_value) {
+						return prop_value['summary'];
+					} else if (COMMUNICATION_METHOD == 'GraphSON1') {
+						return prop_value[0].value;
+					}
 				}
 			}
 			else if (item=='edges'){

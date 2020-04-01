@@ -565,7 +565,7 @@ function get_vertex_prop_in_list(vertexProperty){
 	function custom_query() {
 		var my_query = $('#my_query').val();
 		if (!my_query) {
-			return;
+			search_query();
 		}
 		var message = "";
 		my_query = my_query.trim();

@@ -13,6 +13,8 @@ const SINGLE_COMMANDS_AND_NO_VARS = false;
 const REST_TIMEOUT = 2000 
 // TODO: configuration for the secure server
 
+// limit number for graph info (avoid overwhelming the server for large graphs)
+const limit_request = 10000
 
 // Graph configuration
 const default_nb_of_layers = 3;

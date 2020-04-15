@@ -53,10 +53,10 @@ var graphioGremlin = (function(){
 		}
 
 	function get_graph_info(){
-		var gremlin_query_nodes = "nodes = " + traversal_source + ".V().limit(" + limit_request + ").groupCount().by(label);"
-		var gremlin_query_edges = "edges = " + traversal_source + ".E().limit(" + limit_request + ").groupCount().by(label);"
-		var gremlin_query_nodes_prop = "nodesprop = " + traversal_source + ".V().limit(" + limit_request + ").valueMap().select(keys).groupCount();"
-		var gremlin_query_edges_prop = "edgesprop = " + traversal_source + ".E().limit(" + limit_request + ").valueMap().select(keys).groupCount();"
+		var gremlin_query_nodes = "nodes = " + traversal_source + ".V().limit(" + limit_graphinfo_request + ").groupCount().by(label);"
+		var gremlin_query_edges = "edges = " + traversal_source + ".E().limit(" + limit_graphinfo_request + ").groupCount().by(label);"
+		var gremlin_query_nodes_prop = "nodesprop = " + traversal_source + ".V().limit(" + limit_graphinfo_request + ").valueMap().select(keys).groupCount();"
+		var gremlin_query_edges_prop = "edgesprop = " + traversal_source + ".E().limit(" + limit_graphinfo_request + ").valueMap().select(keys).groupCount();"
 
 		var gremlin_query = gremlin_query_nodes+gremlin_query_nodes_prop
 			+gremlin_query_edges+gremlin_query_edges_prop

@@ -172,7 +172,7 @@ var graphioGremlin = (function(){
         var edge_filter = $('#edge_filter').val();
         var communication_method = $('#communication_method').val();
 		var id = d.id;
-		if(isNaN(id)){ // Add quotes if id is a string (not a number).
+		if (typeof id === 'string' || id instanceof String) { // Add quotes if id is a string (not a number).
 			id = '"'+id+'"';
 		}
 		// Gremlin query
@@ -216,11 +216,20 @@ var graphioGremlin = (function(){
 		let server_port = $('#server_port').val();
 		let COMMUNICATION_PROTOCOL = $('#server_protocol').val();
 			if (COMMUNICATION_PROTOCOL == 'REST'){
-				let server_url = "http://"+server_address+":"+server_port;
+				let server_url = ""
+				if(REST_USE_HTTPS){
+					server_url = "https://"+server_address+":"+server_port;
+				} else{
+					server_url = "http://"+server_address+":"+server_port;
+				}
 				run_ajax_request(gremlin_query,server_url,query_type,active_node,message,callback);
 			}
 			else if (COMMUNICATION_PROTOCOL == 'websocket'){
 				let server_url = "ws://"+server_address+":"+server_port+"/gremlin"
+				run_websocket_request(gremlin_query,server_url,query_type,active_node,message,callback);
+			}
+			else if (COMMUNICATION_PROTOCOL == 'websockets'){
+				let server_url = "wss://"+server_address+":"+server_port+"/gremlin"
 				run_websocket_request(gremlin_query,server_url,query_type,active_node,message,callback);
 			}
 			else {
@@ -442,7 +451,7 @@ var graphioGremlin = (function(){
 	  // find the element in list with id equal to elem
 	  // return its index or null if there is no
 	  for (var i=0;i<list.length;i++) {
-		if (list[i].id == elem) return i;
+		if (list[i].id === elem) return i;
 	  }
 	  return null;
 	}  

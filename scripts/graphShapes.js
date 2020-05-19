@@ -23,6 +23,9 @@ var graphShapes = (function(){
 	var colored_prop = "none";
 	var node_code_color = [];
 
+	var sourceNode = null;
+	var targetNode = null;
+
 	function node_size(d){
 		if ('size' in d) {return d.size;}
 		else {return default_node_size;}
@@ -81,6 +84,49 @@ var graphShapes = (function(){
 		if ('color' in d){return d.color;}
 		else {return default_edge_color;}
 	}
+
+	d3.contextMenu = function (menu, openCallback) {
+
+		// create the div element that will hold the context menu
+		d3.selectAll('.d3-context-menu').data([1])
+			.enter()
+			.append('div')
+			.attr('class', 'd3-context-menu');
+
+		// close menu
+		d3.select('body').on('click.d3-context-menu', function() {
+			d3.select('.d3-context-menu').style('display', 'none');
+		});
+
+		// this gets executed when a contextmenu event occurs
+		return function(data, index) {	
+			var elm = this;
+
+			d3.selectAll('.d3-context-menu').html('');
+			var list = d3.selectAll('.d3-context-menu').append('ul');
+			list.selectAll('li').data(menu).enter()
+				.append('li')
+				.html(function(d) {
+					return d.title;
+				})
+				.on('click', function(d, i) {
+					d.action(elm, data, index);
+					d3.select('.d3-context-menu').style('display', 'none');
+				});
+
+			// the openCallback allows an action to fire before the menu is displayed
+			// an example usage would be closing a tooltip
+			if (openCallback) openCallback(data, index);
+
+			// display context menu
+			d3.select('.d3-context-menu')
+				.style('left', (d3.event.pageX - 2) + 'px')
+				.style('top', (d3.event.pageY - 2) + 'px')
+				.style('display', 'block');
+
+			d3.event.preventDefault();
+		};
+	};
 
 
 
@@ -161,7 +207,45 @@ var graphShapes = (function(){
 				.on("end", graph_viz.graph_events.dragended));
 
 
-	  	node.on("click", graph_viz.graph_events.clicked)
+		  node.on("click", function (data) {
+			  console.log(data);
+			if (event.shiftKey) {
+				
+				if (!targetNode && sourceNode && sourceNode.id != data.id) {
+					targetNode = JSON.parse(JSON.stringify(data));
+					d3.select(this).select('.base_circle').classed('temp-highlighted-node', true);
+				}
+
+				if (!sourceNode) {
+					sourceNode = JSON.parse(JSON.stringify(data));
+					d3.select(this).select('.base_circle').classed('temp-highlighted-node', true);
+				}
+
+				if (sourceNode && targetNode) {
+					const link = d3.linkHorizontal()
+									.source(d => [sourceNode.x, sourceNode.y])
+									.target(d => [targetNode.x, targetNode.y]);
+					d3.select('g')
+						.append('path')
+						.attr('id', 'tempPath')
+						.attr('d', link)
+						.attr('stroke', 'black')
+						.attr('stroke-width', '5')
+						.attr('fill', 'none');
+
+					toggleMyModals('addEditEdgeModal');
+					$('#edgeId').attr('readonly', true);
+					$('#sourceVertexId').val(sourceNode.id);
+					$('#targetVertexId').val(targetNode.id);
+					sourceNode = null;
+					targetNode = null;
+				}
+				
+			} else {
+				graph_viz.graph_events.clicked();	
+			}
+			
+		  })
 			.on("mouseover", function(){
 				d3.select(this).select(".Pin").style("visibility", "visible");
 				d3.select(this).selectAll(".text_details").style("visibility", "visible");
@@ -173,7 +257,47 @@ var graphShapes = (function(){
 				var show_checked = document.getElementById ("showName").checked;
 				if (!show_checked)
 					d3.select(this).selectAll(".text_details").style("visibility", "hidden");
-		  });
+		  })
+		  .on("contextmenu", function(){
+			  event.preventDefault();
+			  console.log("right click on node");
+			  console.log('The data for this node is: ', d);
+			  var menu = [
+				{
+					title: 'Update',
+					action: function(elm, d, i) {
+						var vId = d.id;
+						var vProperties = [];
+						var vValues = [];
+						if (Object.keys(d.properties) != undefined) {
+							Object.keys(d.properties).forEach(key => {
+								vProperties.push(key);
+								vValues.push(d.properties[key][0]['value']);
+							});
+							vProperties = vProperties.toString()
+							vValues = vValues.toString()
+
+						}
+						
+						$('#vertexId').val(vId);
+						$('#vertexPropertyName_1').val(vProperties);
+						$('#vertexPropertyValue_1').val(vValues);
+
+						toggleMyModals('editVertexModal');
+					}
+				},
+				{
+					title: 'Delete',
+					action: function(elm, d, i) {
+						confirm("Press ok to delete \"" + d.id + "\"");
+						graphioGremlin.deleteQuery(d, 'node');
+					}
+				}
+			];
+	
+			d3.select(this).on('contextmenu', d3.contextMenu(menu));
+	
+		});
 
 	}
 
@@ -255,6 +379,47 @@ var graphShapes = (function(){
 	}
 
 	function attach_edge_actions(edge){
+		var menu = [
+			{
+				title: 'Update',
+				action: function(elm, d, i) {
+					var eId = d.id;
+					var eSourceId = d.source.id;
+					var eTargetId = d.target.id;
+					var eLabel = d.label;
+					var eProperties = [];
+					var eValues = [];
+					if (Object.keys(d.properties) != undefined) {
+						Object.keys(d.properties).forEach(key => {
+							eProperties.push(key);
+							eValues.push(d.properties[key]);
+						});
+						eProperties = eProperties.toString();
+						eValues = eValues.toString();
+					}
+					toggleMyModals('addEditEdgeModal');
+					
+					$('#edgeId').val(eId);
+					$('#edgeId').attr('readonly', true);
+					$('#edgeLabel').val(eLabel);
+					$('#edgeLabel').attr('readonly', true);
+					$('#sourceVertexId').val(eSourceId);
+					$('#targetVertexId').val(eTargetId);
+					$('#edgePropertyName').val(eProperties);
+					$('#edgePropertyValue').val(eValues);
+
+					console.log("d: ",d);
+				}
+			},
+			{
+				title: 'Delete',
+				action: function(elm, d, i) {
+					confirm("Press ok to delete \"" + d.id + "\"");
+					console.log('The data for the edge is: ', d);
+					graphioGremlin.deleteQuery(d, 'edge');
+				}
+			}
+		];
 		edge.on("mouseover", function(){
 			console.log('mouse over!!');
 			d3.select(this).selectAll(".text_details").style("visibility", "visible");
@@ -262,8 +427,9 @@ var graphShapes = (function(){
 		  .on("mouseout", function(){
 			d3.select(this).selectAll(".text_details").style("visibility", "hidden");
 		  })
-		  .on("click", function(d){console.log('edge clicked!');infobox.display_info(d);});
-
+		  .on("click", function(d){console.log('edge clicked!');infobox.display_info(d);})
+		  .on('contextmenu', d3.contextMenu(menu));;
+		  
 	}
 
 

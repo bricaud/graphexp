@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Graphexp, graph explorer</title>
+
 	<head>
 		<link rel="stylesheet" href="css/graphStyle.css">
 		<link rel="stylesheet" href="css/styles.css">
@@ -22,7 +24,7 @@
 
 		<script type="text/javascript">
 
-			function search_query(){
+			function search_query() {
 				graphioGremlin.search_query();
 			}
 
@@ -31,191 +33,142 @@
 				graphioGremlin.custom_query();
 			}
 
-			function get_graph_info(){
+			function get_graph_info() {
 				graphioGremlin.get_graph_info();
 				infobox.show_element("#graphInfo");
-				document.getElementById ("showgraphinfo").checked = true;
+				document.getElementById("showgraphinfo").checked = true;
 			}
 
 		</script>
 
 	</head>
-	<body style="overflow: hidden;">
-		<div class="pos-f-t">
-			<div class="collapse" id="navbarToggleExternalContent">
-				<nav class="navbar navbar-dark bg-dark" style="color:white;">
-					<div class="form-inline my-2 my-lg-0" style="color:white;">
-						<div class="nav input_unit_container form-group">
-							<label for="label_field">Node label :</label>
-							<input type="text" class="form-control"  name="label_field" id="label_field" placeholder="Node label" value="" />
-						</div>
-						<div class="nav input_unit_container form-group">
-							<label for="search_field">Node property:</label>
-							<input name="search_field" class="form-control"  id="search_field" value="" />
-						</div>
-						<div class="nav input_unit_container form-group">
-							<label class="nav input_label" for="search_value">Property value:</label>
-							<input name="search_value" class="form-control"  id="search_value" value="" />
-						</div>
-						<div class="nav input_unit_container form-group">
-							<label for="search_type">Type of search:</label>
-							<select class="form-control form-control-lg" name="search_type" id="search_type">
-								<option value="eq">Equals</option>
-								<option value="contains">Contains</option>
-							</select>
-						</div>
-						<div class="nav input_unit_container form-group">
-							<label for="limit_field">Results limit:</label>
-							<input name="limit_field" class="form-control"  id="limit_field" value="50" min="1" max="1000" type="number"/>
-						</div>
-						<div class="nav input_unit_container form-group">
-							<label class="nav input_label" for="edge_filter">Traverse by edge:</label>
-							<input name="edge_filter" class="form-control"  id="edge_filter" value="" />
-						</div>
-						<div class="nav input_unit_container form-group">
-							<label class="nav input_label" for="nbLayers">Nb of layers</label>
-							<input type="number" class="form-control"  id="nbLayers" min="1" max="128" onclick="set_nb_layers()">
-						</div>
-					</div>
-				</nav>
-			</div>
-			<nav class="navbar navbar-dark bg-dark">
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span><span style="color: white;"> Form Queries</span>
-				</button>
-				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					<li style="margin-left: 10px;">
-						<button style="float;left; position: relative;" class="btn btn-default"  onclick="editGraph()" > Edit Graph </button>
-					</li>
-					<li>
-						<div class="form-inline my-2 my-lg-0" id="editGraph" style="display:none; margin-left:10px;">
-							<div class="form-inline my-2 my-lg-0"> 
-								<button class="btn btn-default" onclick="addVertexForm()"> Add Vertex </button><br>
-								<button class="btn btn-default" onclick="editVertexForm()"> Edit Vertex </button><br>
-								<button class="btn btn-default" onclick="addEditEdgeForm()"> Add/Edit Edge </button><br>
-							</div>
-						</div>
-					</li>
-				</ul>
+
+<body style="overflow: hidden;">
+	<div class="pos-f-t">
+		<div class="collapse" id="navbarToggleExternalContent">
+			<nav class="navbar navbar-dark bg-dark" style="color:white;">
 				<div class="form-inline my-2 my-lg-0" style="color:white;">
-					<div class="form-inline my-2 my-lg-0"> 
-						<div class="form-check abc-checkbox" style="margin-right: 15px">
-							<input class="form-check-input" type="checkbox" name="Freeze" id="freeze-in" />
-							<label class="form-check-label" for="freeze-in">Freeze exploration</label>
-						</div>
-						<div class="form-check abc-checkbox" style="margin-right: 15px">
-							<input class="form-check-input" type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>
-							<label class="form-check-label" for="showName">Show labels</label>
-						</div>
-						<button style="margin-right: 8px" name="search query" class="btn btn-outline-default my-2 my-sm-0" onclick="search_query();">Search</button>
-						<button style="margin-right: 8px" name="clear" class="btn btn-outline-danger my-2 my-sm-0"onclick="graph_viz.clear();">Clear</button>
-						<button  type="button"  class="btn btn-outline-info my-2 my-sm-0" data-toggle="modal" data-target="#myModal">Server Settings</button>
+					<div class="nav input_unit_container form-group">
+						<label for="label_field">Node label :</label>
+						<input type="text" class="form-control" name="label_field" id="label_field"
+							placeholder="Node label" value="" />
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label for="search_field">Node property:</label>
+						<input name="search_field" class="form-control" id="search_field" value="" />
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label class="nav input_label" for="search_value">Property value:</label>
+						<input name="search_value" class="form-control" id="search_value" value="" />
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label for="search_type">Type of search:</label>
+						<select class="form-control form-control-lg" name="search_type" id="search_type">
+							<option value="eq">Equals</option>
+							<option value="contains">Contains</option>
+						</select>
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label for="limit_field">Results limit:</label>
+						<input name="limit_field" class="form-control" id="limit_field" value="50" min="1" max="1000"
+							type="number" />
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label class="nav input_label" for="edge_filter">Traverse by edge:</label>
+						<input name="edge_filter" class="form-control" id="edge_filter" value="" />
+					</div>
+					<div class="nav input_unit_container form-group">
+						<label class="nav input_label" for="nbLayers">Nb of layers</label>
+						<input type="number" class="form-control" id="nbLayers" min="1" max="128"
+							onclick="set_nb_layers()">
 					</div>
 				</div>
-			</nav>
-			<nav class="navbar navbar-dark bg-dark">
-				<div class="col-md-11">
-					<input type="text" class="form-control" id="my_query" name="my_query" placeholder="Write your query here...">
-				</div>
-				<div class="col-md-1">
-					<button class="btn btn-info btn-block" onclick="custom_query()">Query</button>
-				</div>				
 			</nav>
 		</div>
-
-		<div class="container-fluid">
-			<div class="content">
-				<div class="main" id="main">
-					<svg></svg>
-				</div>
-				<div class="aside left_bar_edit">
-					<div class="nav input_unit_container", id="addVertexForm" style="display:none;">
-					<h2>Add Vertex :</h2>
-					<div class="nav input_unit_container form-group">
-						<label for="vertexLabel">Vertex Label: </label>
-						<input type="text" name="vertexLabel" id="vertexLabel" class="form-control" placeholder="Enter Vertex Label">
-					</div>
-					<div class="nav input_unit_container form-group">
-						<label for="vertexPropertyName">Vertex Property:</label>
-						<input type="text" name="vertexPropertyName" class="form-control" id="vertexPropertyName" placeholder="Enter Comma Seperated Property Name (e.g. name,age,gender)"  size="45">
-					</div>
-					<div class="nav input_unit_container form-group">
-						<label for="vertexPropertyValue">Property Value:</label>
-						<input type="text" name="vertexPropertyValue" class="form-control" id="vertexPropertyValue"  placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,27,male)">
-					</div>
-					<button class="btn btn-default btn-block" onclick="addVertex()"> Add Vertex </button>						 
-				</div><div class="nav input_unit_container", id="editVertexForm" style="display:none;">
-					<h2>Edit Vertex :</h2>
-					<div class="nav input_unit_container form-group">
-						<label for="vertexId" > Vertex ID: </label>
-						<input type="text" name="vertexId" id="vertexId" class="form-control" size="45"  placeholder="Enter Vertex ID (e.g. 123)">
-					</div>
-					<div class="nav input_unit_container form-group">
-						<label for="vertexPropertyName" > Vertex Property: </label>
-						<input type="text" name="vertexPropertyName_1" id="vertexPropertyName_1" class="form-control" placeholder="Enter Comma Seperated Property Name (e.g. name,age)">
-					</div>
-					<div class="nav input_unit_container form-group">
-						<label for="vertexPropertyValue" > Property Value: </label>
-						<input type="text" name="vertexPropertyValue_1" id="vertexPropertyValue_1" class="form-control" placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,25)">
-					</div>
-					<button class="btn btn-default btn-block" onclick="editVertex()"> Edit Vertex </button>
-				</div><div class="nav input_unit_container", id="addEditEdgeForm" style="display:none;">
-					<h2>Add / Edit Edge :</h2>
-					<div class="nav input_unit_container form-group">
-
-						<label for="edgeLabel" > Edge Label: </label>
-						<input type="text" name="edgeLabel" id="edgeLabel"  class="form-control" placeholder="Enter Edge Label">
-					</div>
-					<div class="nav input_unit_container form-group">
-
-						<label for="sourceVertexId"> Source Vertex ID: </label>
-						<input type="text" name="sourceVertexId" id="sourceVertexId" class="form-control"  placeholder="Enter Source Vertex ID">
-					</div>
-					<div class="nav input_unit_container form-group">
-
-						<label for="targetVertexId"> Target Vertex ID: </label>
-						<input type="text" name="targetVertexId" id="targetVertexId" class="form-control"  placeholder="Enter Target Vertex ID">
-					</div>
-					<div class="nav input_unit_container form-group">
-
-						<label for="edgePropertyName"> Property Name: </label>
-						<input type="text" name="edgePropertyName" id="edgePropertyName" class="form-control"  placeholder="Enter Comma Seperated Property Name">
-					</div>
-					<div class="nav input_unit_container form-group">
-
-						<label for="edgePropertyValue"> Property Value: </label>
-						<input type="text" name="edgePropertyValue" id="edgePropertyValue" class="form-control"  placeholder="Enter Comma Seperated Property Value">
-					</div>
-					<button  class="btn btn-default btn-block" onclick="addEditEdge()"> Add/Edit Edge </button>
-				</div></div>
-				<div class="aside left_bar" style="pointer-events:auto;margin-top: 3%;">
-					<div  id="graphInfoBar" style="pointer-events:auto;">
-						<button name="graphInfo" class="btn btn-default btn-lg" onclick="get_graph_info();">Get graph info</button>
-						<div class="form-check">
-							<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>
-							<label class="form-check-label" for="showgraphinfo">
-								Show/hide graph info
-							</label>
+		<nav class="navbar navbar-dark bg-dark">
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span><span style="color: white;"> Form Queries</span>
+			</button>
+			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+				<li>
+					<div class="form-inline my-2 my-lg-0" id="editGraph" style="margin-left:10px;">
+						<div class="form-inline my-2 my-lg-0">
+							<button class="btn btn-default mr-2" onclick="toggleMyModals('addVertexModal')"> Add Vertex </button><br>
+							<button class="btn btn-default mr-2" onclick="toggleMyModals('editVertexModal')"> Edit Vertex </button><br>
+							<button class="btn btn-default mr-2" onclick="toggleMyModals('addEditEdgeModal')"> Add/Edit Edge </button><br>
 						</div>
 					</div>
-					<div  id="graphInfo" style="pointer-events:none;">	
+				</li>
+			</ul>
+			<div class="form-inline my-2 my-lg-0" style="color:white;">
+				<div class="form-inline my-2 my-lg-0">
+					<div class="form-check abc-checkbox" style="margin-right: 15px">
+						<input class="form-check-input" type="checkbox" name="Freeze" id="freeze-in" />
+						<label class="form-check-label" for="freeze-in">Freeze exploration</label>
+					</div>
+					<div class="form-check abc-checkbox" style="margin-right: 15px">
+						<input class="form-check-input" type="checkbox" name="showName_box" id="showName"
+							onclick="graphShapes.show_names()" />
+						<label class="form-check-label" for="showName">Show labels</label>
+					</div>
+					<button style="margin-right: 8px" name="search query" class="btn btn-outline-default my-2 my-sm-0"
+						onclick="search_query();">Search</button>
+					<button style="margin-right: 8px" name="clear" class="btn btn-outline-danger my-2 my-sm-0"
+						onclick="graph_viz.clear();">Clear</button>
+					<button type="button" class="btn btn-outline-info my-2 my-sm-0" onclick="toggleMyModals('serverSettingModal')">Server Settings</button>						
+				</div>
+			</div>
+		</nav>
+		<nav class="navbar navbar-dark bg-dark">
+			<div class="col-md-11">
+				<input type="text" class="form-control" id="my_query" name="my_query"
+					placeholder="Write your graph node query here...">
+			</div>
+			<div class="col-md-1">
+				<button class="btn btn-info btn-block" onclick="custom_query()">Query</button>
+			</div>
+		</nav>
+	</div>
+
+	<div class="container-fluid">
+		<div class="content">
+			<div class="main" id="main">
+				<svg></svg>
+			</div>
+			<div class="aside left_bar_edit">
+			</div>
+			<div class="aside left_bar" style="pointer-events:auto;margin-top: 3%;">
+				<div id="graphInfoBar" style="pointer-events:auto;">
+					<button name="graphInfo" class="btn btn-default btn-lg" onclick="get_graph_info();">Get graph
+						info</button>
+					<div class="form-check">
+						<input type="checkbox" name="showgraphinfo" id="showgraphinfo"
+							onchange="show_hide_element('#graphInfo')" />
+						<label class="form-check-label" for="showgraphinfo">
+							Show/hide graph info
+						</label>
 					</div>
 				</div>
-
-				<div class="middle">
-					<div id="messageArea"></div><div id="outputArea"></div>
+				<div id="graphInfo" style="pointer-events:none;">
 				</div>
-				<div class="aside right_bar" id="details" style="pointer-events:auto;margin-top: 2%;">
-					<div id="nodeInfo" style="pointer-events:none;">
-					</div>				
-				</div>
-
 			</div>
 
-			<!-- Modal -->
-			<div class="modal fade" id="myModal" role="dialog">
+			<div class="middle">
+				<div id="messageArea"></div>
+				<div id="outputArea"></div>
+			</div>
+			<div class="aside right_bar" id="details" style="pointer-events:auto;margin-top: 2%;">
+				<div id="nodeInfo" style="pointer-events:none;">
+				</div>
+			</div>
+
+		</div>
+
+		<!-- server Setting Modal -->
+		<div class="modal fade" id="serverSettingModal" role="dialog">
 				<div class="modal-dialog">
-					<!-- Modal content-->
 					<div class="modal-content">
 						<div class="modal-header">
 							<h4 class="modal-title">Server Settings :</h4>
@@ -259,12 +212,134 @@
 					</div>
 				</div>
 			</div>
-			<!-- INITIALIZATION -->
-			<script type="text/javascript">
-				if(host){
-					$('#server_address').val(host);
-				}
-				init_property_bar();
+
+		<!-- Add Vertex Modal -->
+		<div class="modal fade" id="addVertexModal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title text-upper">Add Vertex</h4>
+					</div>
+					<div class="modal-body">
+						<div class="nav input_unit_container form-group">
+							<label for="vertexLabel">Vertex Label: </label>
+							<input type="text" name="vertexLabel" id="vertexLabel" class="form-control"
+								placeholder="Enter Vertex Label">
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label for="vertexPropertyName">Vertex Property:</label>
+							<input type="text" name="vertexPropertyName" class="form-control" id="vertexPropertyName"
+								placeholder="Enter Comma Seperated Property Name (e.g. name,age,gender)" size="45">
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label for="vertexPropertyValue">Property Value:</label>
+							<input type="text" name="vertexPropertyValue" class="form-control" id="vertexPropertyValue"
+								placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,27,male)">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary mr-1" data-dismiss="modal"> Close </button>						
+						<button class="btn btn-primary" onclick="addVertex()"> Add Vertex </button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Edit Vertex Modal -->
+		<div class="modal fade" id="editVertexModal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title text-upper">Edit Vertex</h4>
+					</div>
+					<div class="modal-body">
+						<div class="nav input_unit_container form-group">
+							<label for="vertexId"> Vertex ID: </label>
+							<input type="text" name="vertexId" id="vertexId" class="form-control" size="45"
+								placeholder="Enter Vertex ID (e.g. 123)">
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label for="vertexPropertyName"> Vertex Property: </label>
+							<input type="text" name="vertexPropertyName_1" id="vertexPropertyName_1"
+								class="form-control" placeholder="Enter Comma Seperated Property Name (e.g. name,age)">
+						</div>
+						<div class="nav input_unit_container form-group">
+							<label for="vertexPropertyValue"> Property Value: </label>
+							<input type="text" name="vertexPropertyValue_1" id="vertexPropertyValue_1"
+								class="form-control"
+								placeholder="Enter Comma Seperated Property Value (e.g. Sandeep,25)">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary mr-1" data-dismiss="modal"> Close </button>
+						<button class="btn btn-primary mr-1" onclick="editVertex()"> Update </button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Add Edge Modal -->
+		<div class="modal fade" id="addEditEdgeModal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title text-upper">Add/Edit Edge</h4>
+					</div>
+					<div class="modal-body">
+						<div class="nav input_unit_container form-group">
+							<label for="edgeLabel"> Edge Id: </label>
+							<input type="text" name="edgeId" id="edgeId" class="form-control"
+								placeholder="Leave Blank to Add New Edge">
+						</div>
+
+						<div class="nav input_unit_container form-group">
+							<label for="edgeLabel"> Edge Label: </label>
+							<input type="text" name="edgeLabel" id="edgeLabel" class="form-control"
+								placeholder="Enter Edge Label">
+						</div>
+
+						<div class="nav input_unit_container form-group">
+							<label for="sourceVertexId"> Source Vertex ID: </label>
+							<input type="text" name="sourceVertexId" id="sourceVertexId" class="form-control"
+								placeholder="Enter Source Vertex ID">
+						</div>
+
+						<div class="nav input_unit_container form-group">
+							<label for="targetVertexId"> Target Vertex ID: </label>
+							<input type="text" name="targetVertexId" id="targetVertexId" class="form-control"
+								placeholder="Enter Target Vertex ID">
+						</div>
+
+						<div class="nav input_unit_container form-group">
+							<label for="edgePropertyName"> Property Name: </label>
+							<input type="text" name="edgePropertyName" id="edgePropertyName" class="form-control"
+								placeholder="Enter Comma Seperated Property Name">
+						</div>
+
+						<div class="nav input_unit_container form-group">
+							<label for="edgePropertyValue"> Property Value: </label>
+							<input type="text" name="edgePropertyValue" id="edgePropertyValue" class="form-control"
+								placeholder="Enter Comma Seperated Property Value">
+						</div>
+						
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary mr-1" data-dismiss="modal"> Close </button>						
+						<button class="btn btn-primary" onclick="addEditEdge()"> Add/Edit Edge </button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- INITIALIZATION -->
+		<script type="text/javascript">
+			if (host) {
+				$('#server_address').val(host);
+			}
+			init_property_bar();
 			// Create the graph canvas in the chosen div element
 			graph_viz.init("#main");
 			// Add the zoom layer to the graph
@@ -273,180 +348,187 @@
 			//graph_viz.layers.set_nb_layers(4);
 
 			// Create the info box for node details
-			infobox.create("#graphInfo","#nodeInfo"); // from module in infobox.js
+			infobox.create("#graphInfo", "#nodeInfo"); // from module in infobox.js
 
 			//console.log(graph_viz.graph_events.ev);
 			//graph_viz.graph_events.test();
 
 
-			function init_property_bar(){
+			function init_property_bar() {
 				document.getElementById('nbLayers').value = default_nb_of_layers;
 			}
 
-			function change_nav_bar(node_data,edge_data){
+			function change_nav_bar(node_data, edge_data) {
 				var nav_bar = d3.select("#prop_choice");
 				nav_bar.select("input").remove();
 				nav_bar.select("select").remove();
-		//nav_choices = nav_bar.append("ul");
-		//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
-		var select = d3.select('#prop_choice')
-		.append('select').attr('class','select').attr('id','search_field')
-		
-		var select_node = select.append('optgroup').attr('label','Nodes')
-			//.on('change',onchange)
+				//nav_choices = nav_bar.append("ul");
+				//nav_choices.append("li").append("button").attr("onclick",search_query).text("Search")
+				var select = d3.select('#prop_choice')
+					.append('select').attr('class', 'select').attr('id', 'search_field')
 
-			var select_edge = select.append('optgroup').attr('label','Edges')
+				var select_node = select.append('optgroup').attr('label', 'Nodes')
+				//.on('change',onchange)
 
-			var node_options = select_node
-			.selectAll('option')
-			.data(node_data).enter()
-			.append('option')
-			.text(function (d) { return d; });
+				var select_edge = select.append('optgroup').attr('label', 'Edges')
 
-			var edge_options = select_edge
-			.selectAll('option')
-			.data(edge_data).enter()
-			.append('option')
-			.text(function (d) { return d; });
+				var node_options = select_node
+					.selectAll('option')
+					.data(node_data).enter()
+					.append('option')
+					.text(function (d) { return d; });
 
-		}
-
-		function display_properties_bar(prop_list,item,text){
-			var nav_bar = d3.select("#graphInfoBar");
-			nav_bar.select("#property_bar_"+item).remove();
-			var property_bar = nav_bar.append("div").attr("id","property_bar_"+item);
-			property_bar.append('text').text(text).style("font-weight","bold");
-		//d3.select('#property_bar').append('text').text('hello')
-		var property_label = property_bar.selectAll('input').append("ul")
-		.data(prop_list).enter().append("li");
-			//.append('label');
-
-			
-			property_label.append('input').attr('type','checkbox').attr('id',function (d) { return item+"_"+d; })
-			.attr('id_nb',function (d) { return prop_list.indexOf(d); })
-			//.attr('onchange',function(d){display_prop(d);});
-			.attr('onchange','display_prop(this)');
-
-			property_label.append('label').text(function (d) { return d; });
-
-
-		}
-
-		function display_color_choice(prop_list,item,text){
-			prop_list = ['none','label'].concat(prop_list);
-			var nav_bar = d3.select("#graphInfoBar");
-			nav_bar.select("#color_choice_"+item).remove();
-			var color_bar = nav_bar.append("div").attr("id","color_choice_"+item);
-			color_bar.append("div").append("text").text(text).style("font-weight","bold");
-			color_bar.append("div").append("select").attr("class","select").attr("id","color_select_"+item)
-			.attr("onchange","colorize(this)")
-			.selectAll("option")
-			.data(prop_list).enter()
-			.append("option")
-			.text(function (d) { return d; });
-		}
-
-		function colorize(selection){
-			var value = selection.value;
-			console.log('Color by '+value);
-			graphShapes.colorize(value);
-
-		}
-
-		function display_prop(prop){
-			var prop_id = prop.id;
-			var prop_id_nb = prop.getAttribute('id_nb');
-			var text_base_offset = 10;
-			var text_offset = 10;
-			var prop_name = prop_id.slice(prop_id.indexOf("_")+1);
-			var item = prop_id.slice(0,prop_id.indexOf("_"));
-			console.log(prop_id,item)		
-			if(d3.select("#"+prop_id).property("checked")){
-				if (item=='nodes'){
-					var elements_text = d3.selectAll('.node');
-				} else if (item=='edges'){
-					var elements_text = d3.selectAll('.edgelabel');
-				}
-				attach_property(elements_text,prop_name,prop_id_nb,item)
-			}
-			else{
-				if (item=='nodes'){
-					d3.selectAll('.node').select('.'+prop_id).remove();
-				}
-				else if (item=='edges'){
-					d3.selectAll('.edgelabel').select('.'+prop_id).remove();
-				}
+				var edge_options = select_edge
+					.selectAll('option')
+					.data(edge_data).enter()
+					.append('option')
+					.text(function (d) { return d; });
 
 			}
-		}
+
+			function display_properties_bar(prop_list, item, text) {
+				var nav_bar = d3.select("#graphInfoBar");
+				nav_bar.select("#property_bar_" + item).remove();
+				var property_bar = nav_bar.append("div").attr("id", "property_bar_" + item);
+				property_bar.append('text').text(text).style("font-weight", "bold");
+				//d3.select('#property_bar').append('text').text('hello')
+				var property_label = property_bar.selectAll('input').append("ul")
+					.data(prop_list).enter().append("li");
+				//.append('label');
 
 
-		function attach_property(graph_objects,prop_name,prop_id_nb,item){
-			var text_base_offset = 10;
-			var text_offset = 10;
-			var prop_id = item+"_"+prop_name;
-			if (item=='nodes'){
-				elements_text = graph_objects.append("text").style("pointer-events", "none");
+				property_label.append('input').attr('type', 'checkbox').attr('id', function (d) { return item + "_" + d; })
+					.attr('id_nb', function (d) { return prop_list.indexOf(d); })
+					//.attr('onchange',function(d){display_prop(d);});
+					.attr('onchange', 'display_prop(this)');
+
+				property_label.append('label').text(function (d) { return d; });
+
+
 			}
-			else if (item=='edges'){
-				var elements_text = graph_objects.append("textPath")
-				.attr('class','edge_text')
-				.attr('href', function (d, i) {return '#edgepath' + d.id})
-				.style("text-anchor", "middle")
-				.style("pointer-events", "none")
-				.attr("startOffset", "70%");
-			//.text(function (d) {return d.label});
-			prop_id_nb = prop_id_nb + 1;
-		}
-		else { 
-			console.log('Bad item name.'); return 1;
-		}
-		elements_text.classed("prop_details",true).classed(prop_id,true)
-	  		//.attr("x", 12)
-	  		.attr("dy",function(d){return graphShapes.node_size(d)+text_base_offset+text_offset*parseInt(prop_id_nb);})
-	  		//.attr("y", ".31em")
-	  		.text(function(d){return get_prop_value(d,prop_name,item);});
-	  	}
 
+			function display_color_choice(prop_list, item, text) {
+				prop_list = ['none', 'label'].concat(prop_list);
+				var nav_bar = d3.select("#graphInfoBar");
+				nav_bar.select("#color_choice_" + item).remove();
+				var color_bar = nav_bar.append("div").attr("id", "color_choice_" + item);
+				color_bar.append("div").append("text").text(text).style("font-weight", "bold");
+				color_bar.append("div").append("select").attr("class", "select").attr("id", "color_select_" + item)
+					.attr("onchange", "colorize(this)")
+					.selectAll("option")
+					.data(prop_list).enter()
+					.append("option")
+					.text(function (d) { return d; });
+			}
 
-	  	function get_prop_value(d,prop_name,item){
-		//let COMMUNICATION_METHOD = $('#communication_method').val();
-		if (prop_name in d.properties){
-			if (item=='nodes'){
-				if ('summary' in d.properties[prop_name]) {
-					return d.properties[prop_name]['summary'];
-				} else if (COMMUNICATION_METHOD == 'GraphSON1') {
-					return d.properties[prop_name][0].value;
+			function colorize(selection) {
+				var value = selection.value;
+				console.log('Color by ' + value);
+				graphShapes.colorize(value);
+
+			}
+
+			function display_prop(prop) {
+				var prop_id = prop.id;
+				var prop_id_nb = prop.getAttribute('id_nb');
+				var text_base_offset = 10;
+				var text_offset = 10;
+				var prop_name = prop_id.slice(prop_id.indexOf("_") + 1);
+				var item = prop_id.slice(0, prop_id.indexOf("_"));
+				console.log(prop_id, item)
+				if (d3.select("#" + prop_id).property("checked")) {
+					if (item == 'nodes') {
+						var elements_text = d3.selectAll('.node');
+					} else if (item == 'edges') {
+						var elements_text = d3.selectAll('.edgelabel');
+					}
+					attach_property(elements_text, prop_name, prop_id_nb, item)
+				}
+				else {
+					if (item == 'nodes') {
+						d3.selectAll('.node').select('.' + prop_id).remove();
+					}
+					else if (item == 'edges') {
+						d3.selectAll('.edgelabel').select('.' + prop_id).remove();
+					}
+
 				}
 			}
-			else if (item=='edges'){
-				//console.log(d.properties[prop_name])
-				return d.properties[prop_name];
+
+
+			function attach_property(graph_objects, prop_name, prop_id_nb, item) {
+				var text_base_offset = 10;
+				var text_offset = 10;
+				var prop_id = item + "_" + prop_name;
+				if (item == 'nodes') {
+					elements_text = graph_objects.append("text").style("pointer-events", "none");
+				}
+				else if (item == 'edges') {
+					var elements_text = graph_objects.append("textPath")
+						.attr('class', 'edge_text')
+						.attr('href', function (d, i) { return '#edgepath' + d.id })
+						.style("text-anchor", "middle")
+						.style("pointer-events", "none")
+						.attr("startOffset", "70%");
+					//.text(function (d) {return d.label});
+					prop_id_nb = prop_id_nb + 1;
+				}
+				else {
+					console.log('Bad item name.'); return 1;
+				}
+				elements_text.classed("prop_details", true).classed(prop_id, true)
+					//.attr("x", 12)
+					.attr("dy", function (d) { return graphShapes.node_size(d) + text_base_offset + text_offset * parseInt(prop_id_nb); })
+					//.attr("y", ".31em")
+					.text(function (d) { return get_prop_value(d, prop_name, item); });
 			}
-		}
-		else {
-			return "";
-		}
-	}
 
 
-	function set_nb_layers(){
-		var nb_layers = parseInt(document.getElementById('nbLayers').value);
-		//var nb_layers = parseInt(layer_input.getAttribute("value"));
-		console.log(nb_layers)
-		graph_viz.layers.set_nb_layers(nb_layers);
+			function get_prop_value(d, prop_name, item) {
+				//let COMMUNICATION_METHOD = $('#communication_method').val();
+				if (prop_name in d.properties) {
+					if (item == 'nodes') {
+						if ('summary' in d.properties[prop_name]) {
+							return d.properties[prop_name]['summary'];
+						} else if (COMMUNICATION_METHOD == 'GraphSON1') {
+							return d.properties[prop_name][0].value;
+						}
+					}
+					else if (item == 'edges') {
+						//console.log(d.properties[prop_name])
+						return d.properties[prop_name];
+					}
+				}
+				else {
+					return "";
+				}
+			}
 
-	}
 
-	function show_hide_element(element_label){
-		element = d3.select(element_label);
-		var input = document.getElementById ("showgraphinfo");
-		var isChecked = input.checked;
-		if (isChecked) element.style("display", "inline");
-		else {element.style("display", "none");}
-	}
+			function set_nb_layers() {
+				var nb_layers = parseInt(document.getElementById('nbLayers').value);
+				//var nb_layers = parseInt(layer_input.getAttribute("value"));
+				console.log(nb_layers)
+				graph_viz.layers.set_nb_layers(nb_layers);
 
-</script>
-</div>
+			}
+
+			function show_hide_element(element_label) {
+				element = d3.select(element_label);
+				var input = document.getElementById("showgraphinfo");
+				var isChecked = input.checked;
+				if (isChecked) element.style("display", "inline");
+				else { element.style("display", "none"); }
+			}
+
+
+			$("#addEditEdgeModal").on("hidden.bs.modal", function () {
+				d3.select('#tempPath').remove();
+				d3.selectAll('.base_circle').classed('temp-highlighted-node', false);
+			});
+
+		</script>
+	</div>
 </body>
+
 </html>

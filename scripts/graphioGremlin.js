@@ -354,6 +354,12 @@ var graphioGremlin = (function(){
 			$('#messageArea').html('');
 			return // TODO handle answer to check if data has been written
 		}
+		if (query_type == 'deleteGraph'){
+			//console.log(data)
+			$('#outputArea').html("<p> Data successfully deleted from the DB.</p>");
+			$('#messageArea').html('');
+			return // TODO handle answer to check if data has been written
+		}
 		//console.log(COMMUNICATION_METHOD)
 		if (COMMUNICATION_METHOD == 'GraphSON3'){
 			//console.log(data)
@@ -577,7 +583,20 @@ function get_vertex_prop_in_list(vertexProperty){
 		
 	}
 
-	
+	function deleteQuery(d, element) {
+		var query = '';
+		if(element == 'node'){
+			query = 'g.V('+d.id+').drop()';	
+			var edgeQuery = 'g.V('+d.id+').bothE().drop()';	
+			send_to_server(edgeQuery, 'deleteGraph' , null, 'message');
+		} 
+		if(element == 'edge'){
+			query = 'g.E('+d.id+').drop()';
+		}
+		toggleMyModals('hideAll');
+		send_to_server(query, 'deleteGraph' , null, 'message');
+		
+	}
 
 	return {
 		get_node_properties : get_node_properties,
@@ -586,6 +605,7 @@ function get_vertex_prop_in_list(vertexProperty){
 		search_query : search_query,
 		click_query : click_query,
 		send_to_server : send_to_server,
-		custom_query : custom_query
+		custom_query : custom_query,
+		deleteQuery: deleteQuery,
 	}
 })();

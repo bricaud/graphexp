@@ -29,7 +29,44 @@
 		document.getElementById("addVertexForm").style.display='none';
 		document.getElementById("editVertexForm").style.display='none';
 		document.getElementById("addEditEdgeForm").style.display='block';
+	}
 
+	function toggleMyModals(modelId) {
+		allModalsIds = ['addVertexModal', 'editVertexModal', 'editEdgeModal', 'addEditEdgeModal', 'serverSettingModal'];
+		allModalsIds.forEach(mId => {
+			if (modelId == mId) {
+				$('#'+mId).modal('toggle');
+			} else {
+				$('#'+mId).modal('hide');		
+			}			
+		});
+
+		switch (modelId) {
+			case 'addVertexModal':
+				$('#vertexLabel').val();
+				$('#vertexPropertyName').val();
+				$('#vertexPropertyValue').val();
+				break;
+			case 'editVertexModal':
+				$('#vertexId').val();
+				$('#vertexPropertyName_1').val();
+				$('#vertexPropertyValue_1').val();
+				break;
+			case 'addEditEdgeModal':
+				$('#edgeId').val();
+				$('#edgeId').attr('readonly', false);
+				$('#edgeLabel').val();
+				$('#edgeLabel').attr('readonly', false);
+				$('#sourceVertexId').val();
+				$('#targetVertexId').val();
+				$('#edgePropertyName').val();
+				$('#edgePropertyValue').val();
+				
+				break;
+			default:
+				break;
+		}
+		
 	}
 		
 	function addVertex()  {
@@ -59,7 +96,7 @@
 		console.log(gremlin_query)
 		console.log("Add Vertex")
 		//window.alert("Vertex Added Succesfully")
-		editGraph();
+		toggleMyModals('addVertexModal');
 		}
 	}
 	
@@ -90,12 +127,13 @@
 		graphioGremlin.send_to_server(gremlin_query, 'editGraph', null, message);
 		console.log("Edit Vertex")
 		//window.alert("Vertex Edited Succesfully")
-		editGraph();
+		toggleMyModals('editVertexModal');
 		}
 	}
 	
 	function addEditEdge()  {
 		
+		let edgeId = $('#edgeId').val();
 		let edgeLabel = $('#edgeLabel').val();
 		let sourceVertexId = $('#sourceVertexId').val();
 		let targetVertexId = $('#targetVertexId').val();		
@@ -114,7 +152,13 @@
 			document.getElementById('edgeLabel').value='';
 			document.getElementById('edgePropertyName').value='';
 			document.getElementById('edgePropertyValue').value='';
-			var gremlin_query = "g.V('"+sourceVertexId+"').addE('"+edgeLabel+"').to(V('" +targetVertexId+"'))"
+			
+			if (edgeId != undefined) {
+				var gremlin_query = "g.E('" + edgeId +"'))";
+			} else {
+				var gremlin_query = "g.V('"+sourceVertexId+"').addE('"+edgeLabel+"').to(V('" +targetVertexId+"'))";
+			}
+
 			for(count =0; count<nameLen; count++){
 				gremlin_query=gremlin_query+".property('"+propertyName[count]+"' , '" + propertyValue[count]+ "')"
 			}
@@ -123,8 +167,7 @@
 		graphioGremlin.send_to_server(gremlin_query, 'editGraph', null, message);console.log(gremlin_query)
 		console.log("Add Edge")
 		//window.alert("Edge Added Succesfully")
-		editGraph();
+		toggleMyModals('addEditEdgeModal');
 		}
 	}
-	
 	

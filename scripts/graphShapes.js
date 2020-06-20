@@ -242,7 +242,7 @@ var graphShapes = (function(){
 				}
 				
 			} else {
-				graph_viz.graph_events.clicked();	
+				graph_viz.graph_events.clicked(data);	
 			}
 			
 		  })
@@ -258,10 +258,10 @@ var graphShapes = (function(){
 				if (!show_checked)
 					d3.select(this).selectAll(".text_details").style("visibility", "hidden");
 		  })
-		  .on("contextmenu", function(){
+		  .on("contextmenu", function(data){
 			  event.preventDefault();
 			  console.log("right click on node");
-			  console.log('The data for this node is: ', d);
+			  console.log('The data for this node is: ', data);
 			  var menu = [
 				{
 					title: 'Update',

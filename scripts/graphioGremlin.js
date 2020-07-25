@@ -344,6 +344,13 @@ var graphioGremlin = (function(){
 			}
 			var data = response.result.data;
 			if (data == null){
+				// No response data expected for flush query, so just validate status code.
+				if (query_type == 'flushGraph' && response.status.code == 204) {
+					$('#outputArea').html("<p> Successfully flushed existing DB data.</p>");
+					$('#messageArea').html('');
+					return
+				}
+
 				if (query_type == 'editGraph'){
 					$('#outputArea').html(response.status.message);
 					$('#messageArea').html('Could not write data to DB.' +

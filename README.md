@@ -7,7 +7,7 @@ Graphexp is under the Apache 2.0 license.
 ![graphexp](https://github.com/bricaud/graphexp/blob/master/images/graphexp2018.png "Graph exploration")
 
 
- A version of Graphexp with the same backend but a nicer UI (using bootstrap) is available at [github.com/erandal/graphexp](https://github.com/erandal/graphexp). You can try it out and give some feedback in issue [#39](https://github.com/bricaud/graphexp/issues/39).
+ Versions of Graphexp with the same backend but a nicer UI (using bootstrap) are available here [github.com/erandal/graphexp](https://github.com/erandal/graphexp) and here [github.com/ddmx/graphexp](https://github.com/ddmx/graphexp).
  
 
 ## Configuration
@@ -19,9 +19,9 @@ Next step, configure the server settings on the bottom of the page. The default 
 
 Graphexp works with [Amazon Neptune](https://aws.amazon.com/neptune). With this database, set `SINGLE_COMMANDS_AND_NO_VARS = true` in the file `graphConf.js`. if you use REST over `https` you may need to set `REST_USE_HTTPS = true` as well.
 
-Additional parameters can be configured inside the file `graphConf.js`.
+Make sure you choose the correct version of Gremlin on the bottom right corner. Setting a wrong version may lead to unexpected problems such as not displaying the edges.
 
-**New** : GraphExp has now curved links and can display multiple edges between 2 nodes. Thanks to a contribution from [agussman](https://github.com/agussman). This is the default, you can still come back to straight edges by setting `use_curved_edges = false` in `graphConf.js`.
+Additional parameters can be configured inside the file `graphConf.js`.
 
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 ![graphexpzoom with curved edges](https://github.com/bricaud/graphexp/blob/master/images/curved_links.png "Exploration of the Tinkerpop modern graph with curved links and multiple edges between node 1 and 2")
@@ -106,6 +106,10 @@ If a node property called 'color' exists in the node properties with a hexadecim
 ## Predefined node positions
 
 Graphexp can display nodes at specific positions if they are stored in the DB. For that, modify `node_position_x` and `node_position_y` in `graphConf.js` (by default `graphexpx` and `graphexpy`), to whatever keys are refering to the node positions in the graphDB. Values must be numbers. According to [Sim Bamford](https://github.com/bricaud/graphexp/pull/24), reasonable values should be below 500 to stay within the page limits. Node with predefined positions are not subject to the force layout and will stay at the same position, while the others may move. It may be useful for plotting a hierarchical graph for example.
+
+## Curved edges
+
+GraphExp has now curved links and can display multiple edges between 2 nodes, thanks to a contribution from [agussman](https://github.com/agussman). This is the default, you can still come back to straight edges by setting `use_curved_edges = false` in `graphConf.js`.
 
 ## Program description
 

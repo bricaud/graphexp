@@ -126,5 +126,10 @@
 		editGraph();
 		}
 	}
+
+	function flush() {
+		const gremlin_query = "g.V().drop().iterate()"
+		graphioGremlin.send_to_server(gremlin_query, 'flushGraph', null, "")
+	}
 	
 	

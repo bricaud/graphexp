@@ -88,15 +88,12 @@ var graphioGremlin = (function(){
 
 
 	function search_query() {
-		// Query sent to the server when clicking the search button
-		//
 		// Preprocess query
 		let input_string = $('#search_value').val();
 		let input_field = $('#search_field').val();
 		let label_field = $('#label_field').val();
 		let limit_field = $('#limit_field').val();
-        let search_type = $('#search_type').val();
-        let communication_method = $('#communication_method').val();
+		let search_type = $('#search_type').val();
 		//console.log(input_field)
 		var filtered_string = input_string;//You may add .replace(/\W+/g, ''); to refuse any character not in the alphabet
 		if (filtered_string.length>50) filtered_string = filtered_string.substring(0,50); // limit string length
@@ -124,17 +121,14 @@ var graphioGremlin = (function(){
 		}
 
 		let gremlin_query_nodes = "nodes = " + traversal_source + ".V()" + has_str;
-        // Query limit
 		if (limit_field !== "" && isInt(limit_field) && limit_field > 0) {
-			gremlin_query_nodes += ".limit(" + limit_field + ")";
-        } else {
-			console.log('Warning: no node limit set for the query. The query may fail if the graph is too big.')
-        }
-		gremlin_query_nodes += ".toList();";
-		
+			gremlin_query_nodes += ".limit(" + limit_field + ").toList();";
+		} else {
+			gremlin_query_nodes += ".toList();";
+		}
 		let gremlin_query_edges = "edges = " + traversal_source + ".V(nodes).aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-    let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
-    //let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
+                let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".aggregate('node').outE().as('edge').inV().where(within('node')).select('edge').toList();";
+				//let gremlin_query_edges_no_vars = "edges = " + traversal_source + ".V()"+has_str+".bothE();";
 		let gremlin_query = gremlin_query_nodes + gremlin_query_edges + "[nodes,edges]";
 		console.log(gremlin_query);
 
@@ -167,30 +161,15 @@ var graphioGremlin = (function(){
 			 !isNaN(parseInt(value, 10));
 	}
 	function click_query(d) {
-		// Query sent to the server when a node is clicked
-		//
-        var edge_filter = $('#edge_filter').val();
-        var communication_method = $('#communication_method').val();
+		var edge_filter = $('#edge_filter').val();
+		// Gremlin query
+		//var gremlin_query = traversal_source + ".V("+d.id+").bothE().bothV().path()"
+		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
 		var id = d.id;
-		if (typeof id === 'string' || id instanceof String) { // Add quotes if id is a string (not a number).
+		if(isNaN(id)){ // Add quotes if id is a string (not a number).
 			id = '"'+id+'"';
 		}
-		// Gremlin query
-		var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").unfold()'
-        // Variant depending on the Gremlin version
-        if (communication_method == "GraphSON3_4") { 
-        	// Version 3.4
-            gremlin_query_nodes += ".valueMap().with(WithOptions.tokens)";
-            gremlin_query_nodes += '.fold().inject(' + traversal_source + '.V(' + id + ').valueMap().with(WithOptions.tokens)).unfold()';
-        } else {
-        	gremlin_query_nodes += '.fold().inject(' + traversal_source + '.V(' + id + ')).unfold()';
-        }
-		//var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").unfold().valueMap()'
-		//gremlin_query_nodes += 'fold().inject(' + traversal_source + '.V('+id+').valueMap()).unfold()'
-
-		// 'inject' is necessary in case of an isolated node ('both' would lead to an empty answer)
-		console.log('Query for the node and its neigbhors')
-		console.log(gremlin_query_nodes)
+		var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").inject(' + traversal_source + '.V('+id+')).unfold()'
 		var gremlin_query_edges = "edges = " + traversal_source + ".V("+id+").bothE("+(edge_filter?"'"+edge_filter+"'":"")+")";
 		var gremlin_query = gremlin_query_nodes+'\n'+gremlin_query_edges+'\n'+'[nodes.toList(),edges.toList()]'
 		// while busy, show we're doing something in the messageArea.
@@ -216,20 +195,11 @@ var graphioGremlin = (function(){
 		let server_port = $('#server_port').val();
 		let COMMUNICATION_PROTOCOL = $('#server_protocol').val();
 			if (COMMUNICATION_PROTOCOL == 'REST'){
-				let server_url = ""
-				if(REST_USE_HTTPS){
-					server_url = "https://"+server_address+":"+server_port;
-				} else{
-					server_url = "http://"+server_address+":"+server_port;
-				}
+				let server_url = "http://"+server_address+":"+server_port;
 				run_ajax_request(gremlin_query,server_url,query_type,active_node,message,callback);
 			}
 			else if (COMMUNICATION_PROTOCOL == 'websocket'){
 				let server_url = "ws://"+server_address+":"+server_port+"/gremlin"
-				run_websocket_request(gremlin_query,server_url,query_type,active_node,message,callback);
-			}
-			else if (COMMUNICATION_PROTOCOL == 'websockets'){
-				let server_url = "wss://"+server_address+":"+server_port+"/gremlin"
 				run_websocket_request(gremlin_query,server_url,query_type,active_node,message,callback);
 			}
 			else {
@@ -385,7 +355,7 @@ var graphioGremlin = (function(){
 			return // TODO handle answer to check if data has been written
 		}
 		//console.log(COMMUNICATION_METHOD)
-		if (COMMUNICATION_METHOD == 'GraphSON3' || COMMUNICATION_METHOD == 'GraphSON3_4'){
+		if (COMMUNICATION_METHOD == 'GraphSON3'){
 			//console.log(data)
 			data = graphson3to1(data);
 			var arrange_data = arrange_datav3;
@@ -451,7 +421,7 @@ var graphioGremlin = (function(){
 	  // find the element in list with id equal to elem
 	  // return its index or null if there is no
 	  for (var i=0;i<list.length;i++) {
-		if (list[i].id === elem) return i;
+		if (list[i].id == elem) return i;
 	  }
 	  return null;
 	}  
@@ -511,67 +481,30 @@ var graphioGremlin = (function(){
 		return data_dic
 	}
 
-    function extract_infov3(data) {
-        var isGraphSON3_4 = ($('#communication_method').val() == "GraphSON3_4");
-        var data_dic = { id: data.id, label: data.label, type: data.type, properties: {} };
-        var prop_dic = {};
-        // VERSION 3.4
-        if (isGraphSON3_4) {
-           
-            for (var key in data) {
-                if (data.hasOwnProperty(key) && key != 'id' && key != 'label' && key != 'type') prop_dic[key] = data[key];
-            }
-            //var prop_dic = data.properties
-            //console.log(prop_dic)
-            for (var key in prop_dic) {
-                if (prop_dic.hasOwnProperty(key)) {
-                    if (data.type == 'vertex') {// Extracting the Vertexproperties (properties of properties for vertices)
-                        var property = prop_dic[key].toString();
-                        //property['summary'] = get_vertex_prop_in_list(prop_dic[key]).toString();
-                        //property = get_vertex_prop_in_list(prop_dic[key]).toString();
-                    } else {
-                        var property = prop_dic[key];//['value'];
-                    }
-                    //console.log('key - Property:')
-                    //console.log(key,property)
-                    //property = property.toString();
-                    data_dic.properties[key] = property;
-                    // If  a node position is defined in the DB, the node will be positioned accordingly
-                    // a value in fx and/or fy tells D3js to fix the position at this value in the layout
-                    if (key == node_position_x) {
-                        data_dic.fx = prop_dic[node_position_x]['0']['value'];
-                    }
-                    if (key == node_position_y) {
-                        data_dic.fy = prop_dic[node_position_y]['0']['value'];
-                    }
-                }
-            }
-        }
-        else {
-            // NOT VERSION 3.4
-            prop_dic = data.properties;
-	        //console.log(prop_dic)
-	        for (var key2 in prop_dic) { 
-		        if (prop_dic.hasOwnProperty(key2)) {
-			        if (data.type == 'vertex'){// Extracting the Vertexproperties (properties of properties for vertices)
-				        var property2 = prop_dic[key2];
-				        property2['summary'] = get_vertex_prop_in_list(prop_dic[key2]).toString();
-			        } else {
-				        var property2 = prop_dic[key2]['value'];
-			        }
-			        //property = property.toString();
-			        data_dic.properties[key2] = property2;
-			        // If  a node position is defined in the DB, the node will be positioned accordingly
-			        // a value in fx and/or fy tells D3js to fix the position at this value in the layout
-			        if (key2 == node_position_x) {
-				        data_dic.fx = prop_dic[node_position_x]['0']['value'];
-			        }
-			        if (key2 == node_position_y) {
-				        data_dic.fy = prop_dic[node_position_y]['0']['value'];
-			        }
-		        }
-	        }
-        }
+	function extract_infov3(data) {
+	var data_dic = {id:data.id, label:data.label, type:data.type, properties:{}}
+	var prop_dic = data.properties
+	//console.log(prop_dic)
+	for (var key in prop_dic) { 
+		if (prop_dic.hasOwnProperty(key)) {
+			if (data.type == 'vertex'){// Extracting the Vertexproperties (properties of properties for vertices)
+				var property = prop_dic[key];
+				property['summary'] = get_vertex_prop_in_list(prop_dic[key]).toString();
+			} else {
+				var property = prop_dic[key]['value'];
+			}
+			//property = property.toString();
+			data_dic.properties[key] = property;
+			// If  a node position is defined in the DB, the node will be positioned accordingly
+			// a value in fx and/or fy tells D3js to fix the position at this value in the layout
+			if (key == node_position_x) {
+				data_dic.fx = prop_dic[node_position_x]['0']['value'];
+			}
+			if (key == node_position_y) {
+				data_dic.fy = prop_dic[node_position_y]['0']['value'];
+			}
+		}
+	}
 	if (data.type=="edge"){
 		data_dic.source = data.outV;
 		data_dic.target = data.inV;
@@ -582,7 +515,7 @@ var graphioGremlin = (function(){
 			}
 		}
 	}
-        return data_dic;
+	return data_dic
 }
 
 function get_vertex_prop_in_list(vertexProperty){

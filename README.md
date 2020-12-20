@@ -1,12 +1,14 @@
 # Graphexp: graph explorer with D3.js
 
-Graphexp is a lightweight web interface to explore and display a graph stored in a Gremlin graph database, via the Gremlin server (version 3.2.x or 3.3.x) .
+Graphexp is a lightweight web interface to explore and display a graph stored in a Gremlin graph database, via the Gremlin server (version 3.2.x, 3.3.x or 3.4.x).
 
 Graphexp is under the Apache 2.0 license.
 
 # Boostrap Version :
 
+ Versions of Graphexp with the same backend but a nicer UI (using bootstrap) are available here [github.com/erandal/graphexp](https://github.com/erandal/graphexp) and here [github.com/ddmx/graphexp](https://github.com/ddmx/graphexp).
 ![Preview](https://github.com/erandal/graphexp/blob/master/images/bootstrapthemec.png)
+ 
 
 ## Configuration
 
@@ -17,9 +19,9 @@ Next step, configure the server settings on the bottom of the page. The default 
 
 Graphexp works with [Amazon Neptune](https://aws.amazon.com/neptune) thanks to a pull request of [jwalton922](https://github.com/jwalton922). With this database, set `SINGLE_COMMANDS_AND_NO_VARS = true` in the file `graphConf.js`.
 
-Additional parameters can be configured inside the file `graphConf.js`.
+Make sure you choose the correct version of Gremlin on the bottom right corner. Setting a wrong version may lead to unexpected problems such as not displaying the edges.
 
-**New** : GraphExp has now curved links and can display multiple edges between 2 nodes. Thanks to a contribution from [agussman](https://github.com/agussman). This is the default, you can still come back to straight edges by setting `use_curved_edges = false` in `graphConf.js`.
+Additional parameters can be configured inside the file `graphConf.js`.
 
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 ![graphexpzoom with curved edges](https://github.com/bricaud/graphexp/blob/master/images/curved_links.png "Exploration of the Tinkerpop modern graph with curved links and multiple edges between node 1 and 2")
@@ -57,7 +59,7 @@ You may also try out a Graphexp demo on [joov's Github repository](https://githu
 ### Graphexp guidelines
 To get some first visualization of your graph, you may click on the `Search` button, without filling any box. Graphexp will then send a query to the graph DB, asking for the first 50 nodes and their edges.
 
-The node and edge properties can be automatically retrieved using the `get graph info` button. Pushing this button will also display some graph properties on the left side of the page. If it is not the case, check your configuration, it means Graphexp can not query the graphDB.
+The node and edge properties can be automatically retrieved using the `get graph info` button. Pushing this button will also display some graph properties on the left side of the page. If it is not the case, check your configuration, it means Graphexp can not query the graphDB. To get the properties, Graphexp should consider all the nodes and edges. This may be overwhelming for the server if the graph is very large. A limit to the 10000 first nodes and edges is set to avoid that. You may change it in `graphConf.js` with the parameter `limit_graphinfo_request`.
 
 When a node of the visualization is clicked, it will become 'active' with a circle surrounding it and its information will be displayed on the right side of the page. Moreover, this action will trigger the display of its neighbors.
 Clicking on an edge will show its properties (without highlighting the edge). 
@@ -104,6 +106,10 @@ If a node property called 'color' exists in the node properties with a hexadecim
 ## Predefined node positions
 
 Graphexp can display nodes at specific positions if they are stored in the DB. For that, modify `node_position_x` and `node_position_y` in `graphConf.js` (by default `graphexpx` and `graphexpy`), to whatever keys are refering to the node positions in the graphDB. Values must be numbers. According to [Sim Bamford](https://github.com/bricaud/graphexp/pull/24), reasonable values should be below 500 to stay within the page limits. Node with predefined positions are not subject to the force layout and will stay at the same position, while the others may move. It may be useful for plotting a hierarchical graph for example.
+
+## Curved edges
+
+GraphExp has now curved links and can display multiple edges between 2 nodes, thanks to a contribution from [agussman](https://github.com/agussman). This is the default, you can still come back to straight edges by setting `use_curved_edges = false` in `graphConf.js`.
 
 ## Program description
 

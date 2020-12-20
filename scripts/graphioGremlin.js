@@ -53,10 +53,10 @@ var graphioGremlin = (function(){
 		}
 
 	function get_graph_info(){
-		var gremlin_query_nodes = "nodes = " + traversal_source + ".V().groupCount().by(label);"
-		var gremlin_query_edges = "edges = " + traversal_source + ".E().groupCount().by(label);"
-		var gremlin_query_nodes_prop = "nodesprop = " + traversal_source + ".V().valueMap().select(keys).groupCount();"
-		var gremlin_query_edges_prop = "edgesprop = " + traversal_source + ".E().valueMap().select(keys).groupCount();"
+		var gremlin_query_nodes = "nodes = " + traversal_source + ".V().limit(" + limit_graphinfo_request + ").groupCount().by(label);"
+		var gremlin_query_edges = "edges = " + traversal_source + ".E().limit(" + limit_graphinfo_request + ").groupCount().by(label);"
+		var gremlin_query_nodes_prop = "nodesprop = " + traversal_source + ".V().limit(" + limit_graphinfo_request + ").valueMap().select(keys).groupCount();"
+		var gremlin_query_edges_prop = "edgesprop = " + traversal_source + ".E().limit(" + limit_graphinfo_request + ").valueMap().select(keys).groupCount();"
 
 		var gremlin_query = gremlin_query_nodes+gremlin_query_nodes_prop
 			+gremlin_query_edges+gremlin_query_edges_prop
@@ -314,6 +314,13 @@ var graphioGremlin = (function(){
 			}
 			var data = response.result.data;
 			if (data == null){
+				// No response data expected for flush query, so just validate status code.
+				if (query_type == 'flushGraph' && response.status.code == 204) {
+					$('#outputArea').html("<p> Successfully flushed existing DB data.</p>");
+					$('#messageArea').html('');
+					return
+				}
+
 				if (query_type == 'editGraph'){
 					$('#outputArea').html(response.status.message);
 					$('#messageArea').html('Could not write data to DB.' +

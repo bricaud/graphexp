@@ -4,7 +4,7 @@ Graphexp is a lightweight web interface to explore and display a graph stored in
 
 Graphexp is under the Apache 2.0 license.
 
-# Boostrap Version :
+# Bootstrap Version :
 
  Versions of Graphexp with the same backend but a nicer UI (using bootstrap) are available here [github.com/erandal/graphexp](https://github.com/erandal/graphexp) and here [github.com/ddmx/graphexp](https://github.com/ddmx/graphexp).
 ![Preview](https://github.com/erandal/graphexp/blob/master/images/bootstrapthemec.png)

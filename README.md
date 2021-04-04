@@ -8,7 +8,12 @@ Graphexp is under the Apache 2.0 license.
 
  Versions of Graphexp with the same backend but a nicer UI (using bootstrap) are available here [github.com/erandal/graphexp](https://github.com/erandal/graphexp) and here [github.com/ddmx/graphexp](https://github.com/ddmx/graphexp).
 ![Preview](https://github.com/erandal/graphexp/blob/master/images/bootstrapthemec.png)
+
+## Installation : 
  
+```bash
+docker pull ghcr.io/armandleopold/graphexp:0.8.3
+```
 
 ## Configuration
 

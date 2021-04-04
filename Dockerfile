@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:stable
 
 LABEL maintainer="armand.leopold@outlook.com"
 

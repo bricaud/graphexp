@@ -151,6 +151,9 @@ var graphioGremlin = (function(){
 			console.log("Node query: "+nodeQuery);
 			console.log("Edge query: "+edgeQuery);
 			send_to_server(nodeQuery, null, null, null, function(nodeData){
+				var vIdsArgs = graphson3to1(nodeData).map(function(v) { return `'${v.id}'` }).join();
+				edgeQuery = edgeQuery.replace(/^g.V\(\)/, `g.V(${vIdsArgs})`);
+				console.log("Edge query: "+edgeQuery);
 				send_to_server(edgeQuery, null, null, null, function(edgeData){
 					var combinedData = [nodeData,edgeData];
 					handle_server_answer(combinedData, 'search', null, message);
@@ -602,7 +605,7 @@ function get_vertex_prop_in_list(vertexProperty){
 }
 
 	function graphson3to1(data){
-		// Convert data from graphSON v2 format to graphSON v1
+		// Convert data from graphSON v3 format to graphSON v1
 		if (!(Array.isArray(data) || ((typeof data === "object") && (data !== null)) )) return data;
 		if ('@type' in data) {
 			if (data['@type']=='g:List'){

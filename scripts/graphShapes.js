@@ -224,7 +224,7 @@ var graphShapes = (function(){
 		for (var prop_idx in item_properties){
 			var prop_name = item_properties[prop_idx];
 			var prop_id_nb = prop_idx;
-			var prop_id = item+"_"+prop_name;
+			var prop_id = item+"_"+CSS.escape(prop_name);
 			if((!d3.select("#"+prop_id).empty()) && d3.select("#"+prop_id).property("checked")){
 				attach_property(selected_items,prop_name,prop_id_nb,item);
 			}

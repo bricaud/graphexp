@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Benjamin RICAUD
+Copyright 2017- Benjamin RICAUD and contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -182,7 +182,7 @@ var graphioGremlin = (function(){
 		var gremlin_query_nodes = 'nodes = ' + traversal_source + '.V('+id+').as("node").both('+(edge_filter?'"'+edge_filter+'"':'')+').as("node").select(all,"node").unfold()'
         // Variant depending on the Gremlin version
         if (communication_method == "GraphSON3_4") { 
-        	// Version 3.4
+        	// Version 3.4 with patch for version 3.5 and above with traversal_source replaced by '__'
             gremlin_query_nodes += ".valueMap().with(WithOptions.tokens)";
             gremlin_query_nodes += '.fold().inject(' + '__' + '.V(' + id + ').valueMap().with(WithOptions.tokens)).unfold()';
         } else {

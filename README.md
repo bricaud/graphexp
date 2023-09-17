@@ -26,6 +26,8 @@ Make sure you choose the correct version of Gremlin on the bottom right corner. 
 
 Additional parameters can be configured inside the file `graphConf.js`.
 
+To access a server running locally with your web browser you may need to allow insecure connections, with for example with Chrome `chrome://flags/#allow-insecure-localhost`.
+
 ![graphexpzoom](https://github.com/bricaud/graphexp/blob/master/images/graphexpzoom.png "Exploration of the Tinkerpop modern graph")
 ![graphexpzoom with curved edges](https://github.com/bricaud/graphexp/blob/master/images/curved_links.png "Exploration of the Tinkerpop modern graph with curved links and multiple edges between node 1 and 2")
 

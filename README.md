@@ -1,6 +1,6 @@
 # Graphexp: graph explorer with D3.js
 
-Graphexp is a lightweight web interface to explore and display a graph stored in a Gremlin graph database, via the Gremlin server (version 3.2.x, 3.3.x or 3.4.x). _Update for version 3.5 is required, see issue #102._
+Graphexp is a lightweight web interface to explore and display a graph stored in a Gremlin graph database, via the Gremlin server (version 3.2.x, 3.3.x or 3.4.x and above)
 
 Graphexp is under the Apache 2.0 license.
 
@@ -9,6 +9,9 @@ Graphexp is under the Apache 2.0 license.
 
  Versions of Graphexp with the same backend but a nicer UI (using bootstrap) are available here [github.com/erandal/graphexp](https://github.com/erandal/graphexp) and here [github.com/ddmx/graphexp](https://github.com/ddmx/graphexp).
  
+## Call for contributors
+
+I have difficulties to keep this repository updated. Anyone is welcome to contribute by suggesting some changes and making pull requests.
 
 ## Configuration
 
